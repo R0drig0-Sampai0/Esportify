@@ -1,7 +1,448 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home | Esportify";
 }
 
-<div>
-    
-</div>
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="hero-title">Compete in the World's Biggest <span class="text-gradient">Esports Tournaments</span></h1>
+                <p class="hero-subtitle">Join thousands of gamers, prove your skills, and win amazing prizes</p>
+                <div class="hero-buttons">
+                    <a asp-controller="Tournaments" asp-action="Index" class="btn btn-primary btn-lg me-3">
+                        <i class="fas fa-trophy me-2"></i> Browse Tournaments
+                    </a>
+                    <a asp-controller="Auth" asp-action="Register" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-user-plus me-2"></i> Join Now
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <img src="/images/hero-gamer.png" alt="Esports Gamer" class="img-fluid hero-image">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="featured-section py-5">
+    <div class="container">
+        <h2 class="section-title text-center mb-5"><span class="text-gradient">Featured</span> Tournaments</h2>
+
+        <div class="row">
+            <!-- Tournament Card 1 -->
+            <div class="col-md-4 mb-4">
+                <div class="tournament-card">
+                    <div class="game-badge">Valorant</div>
+                    <img src="/images/valorant-tournament.jpg" class="card-img-top" alt="Valorant Tournament">
+                    <div class="card-body">
+                        <h3 class="tournament-title">Valorant Champions Series</h3>
+                        <div class="tournament-details">
+                            <div class="detail-item">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>Jun 15-20, 2025</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-trophy"></i>
+                                <span>$25,000 Prize Pool</span>
+                            </div>
+                        </div>
+                        <a href="#" class="btn btn-outline-primary w-100 mt-3">View Details</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tournament Card 2 -->
+            <div class="col-md-4 mb-4">
+                <div class="tournament-card">
+                    <div class="game-badge">League of Legends</div>
+                    <img src="/images/lol-tournament.jpg" class="card-img-top" alt="League of Legends Tournament">
+                    <div class="card-body">
+                        <h3 class="tournament-title">LoL Summer Showdown</h3>
+                        <div class="tournament-details">
+                            <div class="detail-item">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>Jul 5-12, 2025</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-trophy"></i>
+                                <span>$50,000 Prize Pool</span>
+                            </div>
+                        </div>
+                        <a href="#" class="btn btn-outline-primary w-100 mt-3">View Details</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tournament Card 3 -->
+            <div class="col-md-4 mb-4">
+                <div class="tournament-card">
+                    <div class="game-badge">CS:GO 2</div>
+                    <img src="/images/csgo-tournament.jpg" class="card-img-top" alt="CS:GO Tournament">
+                    <div class="card-body">
+                        <h3 class="tournament-title">CS:GO Global Challenge</h3>
+                        <div class="tournament-details">
+                            <div class="detail-item">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>Aug 1-10, 2025</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-trophy"></i>
+                                <span>$100,000 Prize Pool</span>
+                            </div>
+                        </div>
+                        <a href="#" class="btn btn-outline-primary w-100 mt-3">View Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a asp-controller="Tournaments" asp-action="Index" class="btn btn-primary btn-lg">
+                View All Tournaments <i class="fas fa-arrow-right ms-2"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works -->
+<section class="how-it-works py-5 bg-dark">
+    <div class="container">
+        <h2 class="section-title text-center mb-5">How It <span class="text-gradient">Works</span></h2>
+
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="step-card text-center">
+                    <div class="step-number">1</div>
+                    <i class="fas fa-user-plus step-icon"></i>
+                    <h3 class="step-title">Create Account</h3>
+                    <p class="step-description">Sign up in seconds and set up your gaming profile</p>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="step-card text-center">
+                    <div class="step-number">2</div>
+                    <i class="fas fa-trophy step-icon"></i>
+                    <h3 class="step-title">Join Tournament</h3>
+                    <p class="step-description">Browse and register for upcoming tournaments</p>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="step-card text-center">
+                    <div class="step-number">3</div>
+                    <i class="fas fa-gamepad step-icon"></i>
+                    <h3 class="step-title">Compete & Win</h3>
+                    <p class="step-description">Play your matches and climb the leaderboard</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials -->
+<section class="testimonials py-5">
+    <div class="container">
+        <h2 class="section-title text-center mb-5">What <span class="text-gradient">Players</span> Say</h2>
+
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"Won my first tournament last month and already cashed out $5,000! This platform is legit."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="/images/player1.jpg" alt="Player" class="author-avatar">
+                        <div class="author-info">
+                            <h4>ProGamer92</h4>
+                            <span>Valorant Champion</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"The competition is fierce but fair. I've improved so much playing in these tournaments."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="/images/player2.jpg" alt="Player" class="author-avatar">
+                        <div class="author-info">
+                            <h4>ShadowStrike</h4>
+                            <span>CS:GO Competitor</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"Best tournament organization I've experienced. Match scheduling is always on point."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="/images/player3.jpg" alt="Player" class="author-avatar">
+                        <div class="author-info">
+                            <h4>LoLQueen</h4>
+                            <span>League of Legends Pro</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="cta-section py-5 bg-primary">
+    <div class="container text-center">
+        <h2 class="cta-title mb-4">Ready to Start Competing?</h2>
+        <p class="cta-subtitle mb-5">Join thousands of gamers and take your skills to the next level</p>
+        <a asp-controller="Auth" asp-action="Register" class="btn btn-light btn-lg px-5">
+            Sign Up Now <i class="fas fa-arrow-right ms-2"></i>
+        </a>
+    </div>
+</section>
+
+@section Styles {
+    <style>
+        /* Hero Section */
+        .hero-section {
+            padding: 5rem 0;
+            background: linear-gradient(rgba(15, 25, 35, 0.9), rgba(15, 25, 35, 0.9)), url('/images/hero-bg.jpg') no-repeat center center;
+            background-size: cover;
+            color: white;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .hero-image {
+            border-radius: 10px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Text Gradient */
+        .text-gradient {
+            background: linear-gradient(to right, var(--bs-primary), var(--highlight));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Section Titles */
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            text-transform: uppercase;
+        }
+
+        /* Tournament Cards */
+        .tournament-card {
+            background: rgba(15, 25, 35, 0.9);
+            border: 1px solid var(--accent);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            height: 100%;
+        }
+
+            .tournament-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            }
+
+        .game-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: var(--bs-primary);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .tournament-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .tournament-details {
+            margin-bottom: 1rem;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+            .detail-item i {
+                margin-right: 10px;
+                color: var(--bs-primary);
+            }
+
+        /* How It Works */
+        .step-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--accent);
+            border-radius: 8px;
+            padding: 2rem 1.5rem;
+            height: 100%;
+        }
+
+        .step-number {
+            background: var(--bs-primary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-weight: 700;
+        }
+
+        .step-icon {
+            font-size: 2rem;
+            color: var(--bs-primary);
+            margin-bottom: 1rem;
+        }
+
+        .step-title {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Testimonials */
+        .testimonial-card {
+            background: rgba(15, 25, 35, 0.9);
+            border: 1px solid var(--accent);
+            border-radius: 8px;
+            padding: 1.5rem;
+            height: 100%;
+        }
+
+        .testimonial-content {
+            margin-bottom: 1.5rem;
+            font-style: italic;
+            position: relative;
+        }
+
+            .testimonial-content p {
+                position: relative;
+                padding-left: 1.5rem;
+            }
+
+                .testimonial-content p::before {
+                    content: '"';
+                    position: absolute;
+                    left: 0;
+                    top: -10px;
+                    font-size: 3rem;
+                    color: var(--bs-primary);
+                    opacity: 0.3;
+                }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+            object-fit: cover;
+            border: 2px solid var(--bs-primary);
+        }
+
+        .author-info h4 {
+            margin-bottom: 0;
+        }
+
+        .author-info span {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        /* Call to Action */
+        .cta-section {
+            color: white;
+        }
+
+        .cta-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .cta-subtitle {
+            font-size: 1.25rem;
+            opacity: 0.9;
+        }
+
+        /* Responsive Adjustments */
+        @@media (max-width: 768px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .hero-buttons .btn {
+                display: block;
+                width: 100%;
+                margin-bottom: 1rem;
+            }
+
+                .hero-buttons .btn:last-child {
+                    margin-bottom: 0;
+                }
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        // Any homepage-specific scripts can go here
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simple animation for tournament cards on scroll
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.tournament-card').forEach(card => {
+                card.style.opacity = 0;
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.5s, transform 0.5s';
+                observer.observe(card);
+            });
+        });
+    </script>
+}

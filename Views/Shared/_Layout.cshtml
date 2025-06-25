@@ -7,12 +7,156 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Esportify.styles.css" asp-append-version="true" />
+    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;600;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #ff4655;
+            --secondary: #0f1923;
+            --accent: #1a2a3a;
+            --text: #ece8e1;
+            --highlight: #ff8a00;
+            --dark-bg: #0a0e13;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-image: radial-gradient(circle at 10% 20%, rgba(255, 70, 85, 0.1) 0%, transparent 20%), radial-gradient(circle at 90% 80%, rgba(255, 138, 0, 0.1) 0%, transparent 20%);
+        }
+
+        header {
+            background-color: rgba(15, 25, 35, 0.95) !important;
+            border-bottom: 1px solid var(--accent) !important;
+            backdrop-filter: blur(5px);
+        }
+
+        .navbar {
+            padding: 0.5rem 1rem;
+        }
+
+        .navbar-brand {
+            font-family: 'Oxanium', sans-serif;
+            font-weight: 700;
+            font-size: 1.8rem;
+            background: linear-gradient(to right, var(--primary), var(--highlight));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .nav-link {
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0.5rem 1rem !important;
+            margin: 0 0.25rem;
+            color: var(--text) !important;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+            .nav-link:hover {
+                color: var(--primary) !important;
+            }
+
+            .nav-link::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 0;
+                height: 2px;
+                background: var(--primary);
+                transition: width 0.3s ease;
+            }
+
+            .nav-link:hover::after {
+                width: 70%;
+            }
+
+        .navbar-toggler {
+            border-color: rgba(255, 255, 255, 0.1) !important;
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 70, 85, 0.8%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+        }
+
+        .container {
+            flex: 1;
+        }
+
+        main {
+            padding-top: 2rem;
+            padding-bottom: 3rem;
+        }
+
+        footer {
+            background-color: var(--secondary) !important;
+            border-top: 1px solid var(--accent) !important;
+            color: var(--text) !important;
+            padding: 1.5rem 0 !important;
+        }
+
+            footer a {
+                color: var(--primary) !important;
+                text-decoration: none;
+                transition: color 0.3s;
+            }
+
+                footer a:hover {
+                    color: var(--highlight) !important;
+                    text-decoration: underline;
+                }
+
+        .btn-primary {
+            background-color: var(--primary) !important;
+            border-color: var(--primary) !important;
+            color: white !important;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0.5rem 1.5rem;
+            transition: all 0.3s;
+        }
+
+            .btn-primary:hover {
+                background-color: #e63e4d !important;
+                border-color: #e63e4d !important;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(255, 70, 85, 0.3);
+            }
+
+        @@media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 1.5rem;
+            }
+
+            .nav-link {
+                padding: 0.5rem 0 !important;
+                margin: 0.25rem 0;
+            }
+
+                .nav-link::after {
+                    display: none;
+                }
+        }
+    </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Esportify</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="me-2"></i>Esportify
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -20,36 +164,89 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
+                                <i class="fas fa-home me-1"></i> Home
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link" asp-area="" asp-controller="Tournaments" asp-action="Index">
+                                <i class="fas fa-trophy me-1"></i> Tournaments
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Auth" asp-action="Register">Register</a>
+                            <a class="nav-link" asp-area="" asp-controller="Teams" asp-action="Index">
+                                <i class="fas fa-users me-1"></i> Teams
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Auth" asp-action="Login">Login</a>
+                            <a class="nav-link" asp-area="" asp-controller="Games" asp-action="Index">
+                                <i class="fas fa-gamepad me-1"></i> Games
+                            </a>
                         </li>
+                    </ul>
+                    <ul class="navbar-nav">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+
+                            <li class="nav-item d-flex align-items-center">
+                                <span class="navbar-text me-2">
+                                    <i class="fas fa-user me-1"></i> @User.Identity.Name
+                                </span>
+                            </li>
+                            <li class="nav-item">
+                                <form asp-controller="Auth" asp-action="Logout">
+                                    <button type="submit" class="nav-link btn btn-link">
+                                        <i class="fas fa-sign-out-alt me-1"></i> Logout
+                                    </button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                           
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Auth" asp-action="Register">
+                                    <i class="fas fa-user-plus me-1"></i> Register
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Auth" asp-action="Login">
+                                    <i class="fas fa-sign-in-alt me-1"></i> Login
+                                </a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="border-top footer">
         <div class="container">
-            &copy; 2025 - Esportify - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start">
+                    &copy; 2025 - Esportify - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy Policy</a>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <a href="#" class="mx-2"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="mx-2"><i class="fab fa-discord"></i></a>
+                    <a href="#" class="mx-2"><i class="fab fa-twitch"></i></a>
+                    <a href="#" class="mx-2"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    @await RenderSectionAsync("Styles", required: false)
 </body>
 </html>

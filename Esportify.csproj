@@ -8,6 +8,25 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\NewFolder1\**" />
+    <Compile Remove="Views\NewFolder2\**" />
+    <Compile Remove="Views\NewFolder3\**" />
+    <Compile Remove="Views\NewFolder4\**" />
+    <Content Remove="Views\NewFolder1\**" />
+    <Content Remove="Views\NewFolder2\**" />
+    <Content Remove="Views\NewFolder3\**" />
+    <Content Remove="Views\NewFolder4\**" />
+    <EmbeddedResource Remove="Views\NewFolder1\**" />
+    <EmbeddedResource Remove="Views\NewFolder2\**" />
+    <EmbeddedResource Remove="Views\NewFolder3\**" />
+    <EmbeddedResource Remove="Views\NewFolder4\**" />
+    <None Remove="Views\NewFolder1\**" />
+    <None Remove="Views\NewFolder2\**" />
+    <None Remove="Views\NewFolder3\**" />
+    <None Remove="Views\NewFolder4\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Models\Class.cs" />
     <Compile Remove="Views\Home\Login.cshtml.cs" />
   </ItemGroup>
@@ -17,19 +36,24 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.16" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.16">
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.6">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.16" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.16" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.6">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\NewFolder1\" />
-    <Folder Include="Views\NewFolder\" />
+    <Folder Include="Data\Migrations\" />
+    <Folder Include="Views\Teams\" />
   </ItemGroup>
 
 </Project>
