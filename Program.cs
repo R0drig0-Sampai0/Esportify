@@ -20,26 +20,36 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-builder.Services.AddControllersWithViews();
-
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
         options.Cookie.Path = "/";
-        options.Cookie.Domain = "localhost";
         options.LoginPath = "/Auth/Login";
         options.LogoutPath = "/Auth/Logout";
         options.Cookie.HttpOnly = true;
-        options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
     });
-
-builder.Services.AddSession();
 
 var app = builder.Build();
 
-app.UseSession();
+// Ensure the database is created and initialized before the app starts
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<EsportifyContext>();
+    try
+    {
+        context.Database.Migrate();
+        DbInitializer.Initialize(context);
+    }
+    catch (Exception ex)
+    {
+        // Log the exception (e.g., to console or a logging framework)
+        Console.WriteLine($"An error occurred while initializing the database: {ex.Message}");
+        throw;
+    }
+}
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
@@ -47,14 +57,13 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
 
+app.UseAntiforgery();
 app.UseRouting();
 
 app.UseSession();

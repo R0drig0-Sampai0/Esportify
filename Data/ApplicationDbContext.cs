@@ -8,6 +8,7 @@ namespace Esportify.Data
         public EsportifyContext(DbContextOptions<EsportifyContext> options) : base(options) { }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<Team> Teams { get; set; }
         public DbSet<TeamMember> TeamMembers { get; set; }
         public DbSet<Game> Games { get; set; }
@@ -25,6 +26,12 @@ namespace Esportify.Data
                 .WithMany()
                 .HasForeignKey(t => t.LeaderId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<User>()
+                .HasOne<UserProfile>()
+                .WithOne()
+                .HasForeignKey<UserProfile>(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             /*************** Relação 1:N ***************/
 

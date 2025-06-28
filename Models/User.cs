@@ -30,18 +30,6 @@ namespace Esportify.Models
         public string PasswordHash { get; set; } = string.Empty;
 
         /// <summary>
-        /// Decrição do utilizador.
-        /// </summary>
-        [StringLength(256)]
-        public string Description { get; set; } = string.Empty;
-
-        /// <summary>
-        /// País de morada do utilizador.
-        /// </summary>
-        [StringLength(64)]
-        public string? Country { get; set; }
-
-        /// <summary>
         /// URL da imagem de perfil do utilizador.
         /// </summary>
         public string? ProfileImageUrl { get; set; }

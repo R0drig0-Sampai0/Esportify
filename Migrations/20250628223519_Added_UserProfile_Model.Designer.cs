@@ -3,6 +3,7 @@ using System;
 using Esportify.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Esportify.Migrations
 {
     [DbContext(typeof(EsportifyContext))]
-    partial class EsportifyContextModelSnapshot : ModelSnapshot
+    [Migration("20250628223519_Added_UserProfile_Model")]
+    partial class Added_UserProfile_Model
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.6");
@@ -217,56 +220,6 @@ namespace Esportify.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Esportify.Models.UserProfile", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("AvatarUrl")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Bio")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Country")
-                        .HasMaxLength(64)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("DiscordUrl")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("FavoriteGame")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("FavoriteTeam")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("TotalMatchesPlayed")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("TournamentsJoined")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("TournamentsWon")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("TwitchUrl")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("TwitterUrl")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("YouTubeUrl")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("UserId");
-
-                    b.ToTable("UserProfiles");
-                });
-
             modelBuilder.Entity("Esportify.Models.Registration", b =>
                 {
                     b.HasOne("Esportify.Models.Team", "Team")
@@ -341,15 +294,6 @@ namespace Esportify.Migrations
                     b.Navigation("Creator");
 
                     b.Navigation("Game");
-                });
-
-            modelBuilder.Entity("Esportify.Models.UserProfile", b =>
-                {
-                    b.HasOne("Esportify.Models.User", null)
-                        .WithOne()
-                        .HasForeignKey("Esportify.Models.UserProfile", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Esportify.Models.Game", b =>

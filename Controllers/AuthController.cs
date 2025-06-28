@@ -3,7 +3,6 @@ using Esportify.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
@@ -39,7 +38,7 @@ namespace Esportify.Controllers
             {
                 Username = username,
                 Email = email,
-                PasswordHash = password
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(password)
             };
 
             _context.Users.Add(user);
@@ -97,7 +96,6 @@ namespace Esportify.Controllers
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
-            Console.WriteLine("Logout action called");
             var properties = new AuthenticationProperties
             {
                 ExpiresUtc = DateTimeOffset.UtcNow.AddDays(-1),
@@ -112,22 +110,7 @@ namespace Esportify.Controllers
 
             HttpContext.Session.Clear();
             var isAuthenticatedAfterSignOut = HttpContext.User.Identity.IsAuthenticated;
-            Console.WriteLine($"User signed out, IsAuthenticated after signout: {isAuthenticatedAfterSignOut}, redirecting to Home");
             return RedirectToAction("Index", "Home");
-        }
-
-        [HttpGet]
-        public IActionResult DebugAuth()
-        {
-            var result = new
-            {
-                IsAuthenticated = User.Identity.IsAuthenticated,
-                Username = User.Identity.Name,
-                ProfilePicture = User.FindFirst("ProfilePicture")?.Value,
-                UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
-                SessionUserId = HttpContext.Session.GetInt32("UserId")
-            };
-            return Json(result);
         }
 
     }
