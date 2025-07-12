@@ -1,0 +1,605 @@
+﻿@model Esportify.Models.LandingPageViewModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Esportify - Plataforma de Torneios de Esports";
+}
+
+<div class="landing-page">
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Compete. Vence. <span class="text-green">Esportify.</span></h1>
+                <p class="hero-subtitle">Junta-te à plataforma definitiva para torneios de esports e eleva o teu jogo ao próximo nível.</p>
+                <div class="cta-buttons">
+                    <a asp-controller="Account" asp-action="Register" class="btn btn-primary">Registar Grátis</a>
+                    <a asp-controller="Tournaments" asp-action="Index" class="btn btn-outline">Explorar Torneios</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="container">
+            <h2 class="section-title">Porquê <span class="text-green">Esportify?</span></h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon bg-dark-grey">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <h3>Torneios Competitivos</h3>
+                    <p>Participa em torneios diários com prémios em dinheiro e sobe nos nossos rankings globais.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon bg-dark-grey">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Procura de Equipas</h3>
+                    <p>Conecta-te com jogadores do teu nível e forma a equipa perfeita.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon bg-dark-grey">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Monitorização de Habilidades</h3>
+                    <p>Estatísticas avançadas para acompanhares a tua evolução ao longo do tempo.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon bg-dark-grey">
+                        <i class="fas fa-broadcast-tower"></i>
+                    </div>
+                    <h3>Integração de Streaming</h3>
+                    <p>Ferramentas de streaming para mostrares os teus jogos aos fãs.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Game Carousel -->
+    <section class="games-section bg-dark-grey">
+        <div class="container">
+            <h2 class="section-title">Jogos <span class="text-green">Destaque</span></h2>
+            <div class="games-carousel">
+                @foreach (var game in Model.FeaturedGames)
+                {
+                    <div class="game-card">
+                        <img src="@game.ImageUrl" alt="@game.Name" />
+                        <div class="game-overlay">
+                            <h3>@game.Name</h3>
+                            <a asp-controller="Tournaments" asp-action="Index" asp-route-game="@game.Name.ToLower()" class="btn btn-sm btn-outline">Ver Torneios</a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-container">
+            <div class="cta-content">
+                <h2 class="cta-title">
+                    <span class="cta-title-line">Pronto para</span>
+                    <span class="cta-title-highlight">Dominar?</span>
+                </h2>
+                <p class="cta-subtitle">Junta-te a <span class="stat-highlight">@Model.PlayerCount.ToString("N0")</span> jogadores que competem diariamente em <span class="stat-highlight">@Model.TournamentCount</span> torneios</p>
+
+                <div class="cta-button-group">
+                    <a asp-controller="Account" asp-action="Register" class="cta-button-primary">
+                        <span class="button-content">
+                            <span class="button-text">Começar Agora</span>
+                        </span>
+                        <span class="button-icon1"><i class="fas fa-arrow-right"></i></span>
+                    </a>
+                    <a asp-controller="Games" asp-action="Index" class="cta-button-secondary">
+                        <span class="button-icon2"><i class="fas fa-gamepad"></i></span>
+                        <span class="button-text">Explorar Jogos</span>
+                    </a>
+                </div>
+
+                <div class="cta-trust-badges">
+                    <div class="trust-badge">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Plataforma Segura</span>
+                    </div>
+                    <div class="trust-badge">
+                        <i class="fas fa-bolt"></i>
+                        <span>Pagamentos Instantâneos</span>
+                    </div>
+                    <div class="trust-badge">
+                        <i class="fas fa-headset"></i>
+                        <span>Suporte 24/7</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cta-visual">
+                <div class="floating-player-cards">
+                    @foreach (var player in Model.TopPlayers)
+                    {
+                        <div class="player-card player@(Model.TopPlayers.IndexOf(player) + 1)">
+                            <img src="@player.AvatarUrl" alt="@player.UserName" class="player-avatar">
+                            <div class="player-info">
+                                <span class="player-name">@player.UserName</span>
+                                <span class="player-earnings">@player.Earnings.ToString("C0", new System.Globalization.CultureInfo("pt-PT")) ganhos</span>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<style>
+    /* Color Variables */
+    :root {
+        --black: #0a0a0a;
+        --dark-grey: #1a1a1a;
+        --medium-grey: #2a2a2a;
+        --light-grey: #3a3a3a;
+        --green: #00ff88;
+        --dark-green: #00cc6a;
+    }
+
+    .landing-page {
+        color: white;
+        background-color: var(--black);
+        font-family: 'Rajdhani', sans-serif;
+    }
+
+    .text-green {
+        color: var(--green);
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    /* Button Styles */
+    .btn {
+        display: inline-block;
+        padding: 12px 24px;
+        border-radius: 4px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background-color: var(--green);
+        color: var(--black);
+    }
+
+        .btn-primary:hover {
+            background-color: var(--dark-green);
+            transform: translateY(-2px);
+        }
+
+    .btn-outline {
+        border: 2px solid var(--green);
+        color: var(--green);
+    }
+
+        .btn-outline:hover {
+            background-color: var(--green);
+            color: var(--black);
+        }
+
+    .btn-lg {
+        padding: 16px 32px;
+        font-size: 1.1rem;
+    }
+
+    .btn-sm {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+    }
+
+    /* Hero Section */
+    .hero-section {
+        padding: 80px 0;
+        background: linear-gradient(to right, var(--black) 40%, var(--dark-grey) 100%);
+    }
+
+    .hero-content {
+        max-width: 600px;
+    }
+
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 20px;
+        line-height: 1.2;
+    }
+
+    .hero-subtitle {
+        font-size: 1.2rem;
+        color: #ccc;
+        margin-bottom: 30px;
+    }
+
+    .cta-buttons {
+        display: flex;
+        gap: 20px;
+    }
+
+    .hero-image {
+        position: absolute;
+        right: 0;
+        top: 80px;
+        max-width: 50%;
+    }
+
+        .hero-image img {
+            max-width: 100%;
+            height: auto;
+        }
+
+    /* Features Section */
+    .features-section {
+        padding: 80px 0;
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+        text-align: center;
+        margin-bottom: 60px;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+    }
+
+    .feature-card {
+        background-color: var(--dark-grey);
+        padding: 30px;
+        border-radius: 8px;
+        text-align: center;
+        transition: transform 0.3s ease;
+    }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+
+    .feature-icon {
+        width: 70px;
+        height: 70px;
+        margin: 0 auto 20px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        color: var(--green);
+    }
+
+    .feature-card h3 {
+        font-size: 1.3rem;
+        margin-bottom: 15px;
+    }
+
+    .feature-card p {
+        color: #ccc;
+    }
+
+    /* Games Section */
+    .games-section {
+        padding: 80px 0;
+    }
+
+    .games-carousel {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+    }
+
+    .game-card {
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+        aspect-ratio: 16/9;
+    }
+
+        .game-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .game-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 20px;
+        background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+        .game-overlay h3 {
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+    /* CTA Section */
+    .cta-section {
+        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+        padding: 5rem 0;
+        position: relative;
+        overflow: hidden;
+        border-top: 1px solid rgba(0, 255, 136, 0.2);
+        border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+    }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 70% 30%, rgba(0, 255, 136, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+    .cta-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        display: flex;
+        align-items: center;
+        gap: 4rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .cta-content {
+        flex: 1;
+    }
+
+    .cta-visual {
+        flex: 1;
+        position: relative;
+        min-height: 300px;
+    }
+
+    /* Typography */
+    .cta-title {
+        font-weight: 800;
+        font-size: 3.5rem;
+        line-height: 1.1;
+        margin-bottom: 1.5rem;
+        color: white;
+    }
+
+    .cta-title-line {
+        display: block;
+    }
+
+    .cta-title-highlight {
+        background: linear-gradient(90deg, #00ff88, #00cc6a);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        position: relative;
+        display: inline-block;
+    }
+
+        .cta-title-highlight::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #00ff88, #00cc6a);
+            border-radius: 3px;
+        }
+
+    .cta-subtitle {
+        font-size: 1.25rem;
+        color: #b3b3b3;
+        margin-bottom: 2.5rem;
+        max-width: 500px;
+        line-height: 1.6;
+    }
+
+    .stat-highlight {
+        color: #00ff88;
+        font-weight: 700;
+    }
+
+    /* Buttons */
+    .cta-button-group {
+        display: flex;
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .cta-button-primary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: linear-gradient(90deg, #00ff88, #00cc6a);
+        color: #0a0a0a;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
+        min-width: 220px;
+    }
+
+        .cta-button-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 255, 136, 0.4);
+            color: white;
+        }
+
+    .button-content {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .button-text {
+        font-size: 1.1rem;
+    }
+
+    .button-subtext {
+        font-size: 0.7rem;
+        text-transform: none;
+        letter-spacing: 0;
+        opacity: 0.8;
+    }
+
+    .button-icon1 {
+        font-size: 1.2rem;
+        margin-left: 1rem;
+    }
+
+    .button-icon2 {
+        font-size: 1.2rem;
+        margin-right: 1.2rem;
+    }
+
+    .cta-button-secondary {
+        display: flex;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.05);
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0, 255, 136, 0.3);
+        min-width: 220px;
+    }
+
+        .cta-button-secondary:hover {
+            background: rgba(0, 255, 136, 0.1);
+            border-color: rgba(0, 255, 136, 0.5);
+            color: var(--green);
+        }
+
+    /* Trust Badges */
+    .cta-trust-badges {
+        display: flex;
+        gap: 1.5rem;
+    }
+
+    .trust-badge {
+        display: flex;
+        align-items: center;
+        color: #b3b3b3;
+        font-size: 0.9rem;
+        gap: 0.5rem;
+    }
+
+        .trust-badge i {
+            color: #00ff88;
+        }
+
+    /* Visual Elements */
+    .floating-player-cards {
+        position: relative;
+        height: 100%;
+    }
+
+    .player-card {
+        position: absolute;
+        background: rgba(26, 26, 26, 0.8);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(0, 255, 136, 0.2);
+        transition: all 0.5s ease;
+    }
+
+    .player1 {
+        top: 0;
+        left: 0;
+        transform: rotate(-5deg);
+        z-index: 3;
+    }
+
+    .player2 {
+        top: 30%;
+        right: 10%;
+        transform: rotate(3deg);
+        z-index: 2;
+    }
+
+    .player3 {
+        bottom: 0;
+        left: 20%;
+        transform: rotate(-2deg);
+        z-index: 1;
+    }
+
+    .player-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-right: 1rem;
+        border: 2px solid #00ff88;
+    }
+
+    .player-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .player-name {
+        font-weight: 700;
+        color: white;
+    }
+
+    .player-earnings {
+        font-size: 0.8rem;
+        color: #00ff88;
+    }
+
+    .cta-content {
+        text-align: center;
+    }
+
+    .cta-button-group {
+        justify-content: center;
+    }
+
+    .cta-trust-badges {
+        justify-content: center;
+    }
+
+    .cta-subtitle {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .cta-button-group {
+        flex-direction: column;
+    }
+
+    .cta-trust-badges {
+        flex-wrap: wrap;
+    }
+</style>

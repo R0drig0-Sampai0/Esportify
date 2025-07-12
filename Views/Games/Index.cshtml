@@ -1,158 +1,483 @@
-﻿@{
+﻿@model List<Game>
+
+@{
     ViewData["Title"] = "Games";
 }
 
-<div class="container py-5">
-    <div class="row mb-5">
-        <div class="col-12 text-center">
-            <h1 class="display-4">Supported <span class="text-gradient">Games</span></h1>
-            <p class="lead">Browse all the games we support for tournaments and competitive play</p>
-        </div>
-    </div>
-
-    <!-- Search and Filter Section -->
-    <div class="row mb-4">
-        <div class="col-md-6 mb-3 mb-md-0">
-            <div class="input-group">
-                <span class="input-group-text"><i class="fas fa-search"></i></span>
-                <input type="text" class="form-control" id="gameSearch" placeholder="Search games...">
+<!-- Hero Section -->
+<section class="games-hero">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title">Explore <span class="text-gradient">Competitive Games</span></h1>
+            <p class="hero-subtitle">Discover all supported titles for tournaments and ranked play</p>
+            <div class="search-container">
+                <div class="search-input">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="gameSearch" placeholder="Search games...">
+                </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <select class="form-select" id="gameFilter">
-                <option value="all">All Genres</option>
-                <option value="fps">FPS</option>
-                <option value="moba">MOBA</option>
-                <option value="battle-royale">Battle Royale</option>
-                <option value="strategy">Strategy</option>
-                <option value="sports">Sports</option>
-            </select>
-        </div>
     </div>
+</section>
 
-    <!-- Game Cards -->
-    <div class="row" id="gameContainer">
-        <!-- Game Card Template (this will be populated from database) -->
-        @for (int i = 0; i < 6; i++)
+<!-- Main Content -->
+<div class="games-container">
+    <div class="container">
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <div class="filter-group">
+                <span class="filter-label">Filter by:</span>
+                <div class="filter-options">
+                    <button class="filter-btn active" data-filter="all">All Games</button>
+                    <button class="filter-btn" data-filter="fps">FPS</button>
+                    <button class="filter-btn" data-filter="moba">MOBA</button>
+                    <button class="filter-btn" data-filter="battle-royale">Battle Royale</button>
+                    <button class="filter-btn" data-filter="strategy">Strategy</button>
+                    <button class="filter-btn" data-filter="sports">Sports</button>
+                </div>
+            </div>
+        </div>
+        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
         {
-            <div class="col-lg-4 col-md-6 mb-4 game-card" data-genre="fps">
-                <div class="card h-100 game-card-inner">
-                    <div class="game-image-container">
-                        <img src="https://via.placeholder.com/400x225?text=Game+Image" class="card-img-top" alt="Game placeholder">
-                        <div class="game-badge">FPS</div>
-                    </div>
-                    <div class="card-body">
-                        <h3 class="card-title">Game Title</h3>
-                        <p class="card-text">Short description of the game would go here. This will be loaded from the database.</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge bg-primary">Active Tournaments: 5</span>
-                            <a href="#" class="btn btn-sm btn-outline-primary">View Details</a>
+            <div class="admin-actions">
+                <a asp-action="AddGame" class="btn btn-add-game">
+                    <i class="fas fa-plus"></i> Add New Game
+                </a>
+            </div>
+        }
+
+        <!-- Games Grid -->
+        <div class="games-grid" id="gameContainer">
+            @foreach (var game in Model)
+            {
+                <div class="game-card" data-genre="@game.Genre?.ToLower()" data-popularity="high">
+                    <div class="game-card-inner">
+                        <div class="game-image">
+                            <img src="@game.ImageUrl" alt="@game.Name"
+                                 onerror="this.onerror=null;this.src='/images/default-game.jpg';">
+                            <div class="game-badge">@game.Genre</div>
+                            <div class="game-overlay">
+                                <span class="tournament-count">@game.Tournaments?.Count Active Tournaments</span>
+                            </div>
+                        </div>
+                        <div class="game-info">
+                            <h3 class="game-title">@game.Name</h3>
+                                <a asp-action="Details" asp-route-id="@game.Id" class="view-btn">
+                                    View Details <i class="fas fa-arrow-right"></i>
+                                </a>
                         </div>
                     </div>
                 </div>
+            }
+        </div>
+
+        <!-- Pagination -->
+        @if (ViewBag.TotalPages > 1)
+        {
+            <div class="pagination-container">
+                <nav class="pagination">
+                    <a asp-action="Index" asp-route-page="@(ViewBag.CurrentPage > 1 ? ViewBag.CurrentPage - 1 : 1)"
+                       class="page-nav @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+
+                    @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                    {
+                        <a asp-action="Index" asp-route-page="@i"
+                           class="page-number @(i == ViewBag.CurrentPage ? "active" : "")">
+                            @i
+                        </a>
+                    }
+
+                    <a asp-action="Index" asp-route-page="@(ViewBag.CurrentPage < ViewBag.TotalPages ? ViewBag.CurrentPage + 1 : ViewBag.TotalPages)"
+                       class="page-nav @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </nav>
             </div>
         }
     </div>
-
-    <!-- Pagination (you can implement server-side later) -->
-    <nav aria-label="Game pagination" class="mt-5">
-        <ul class="pagination justify-content-center">
-            <li class="page-item disabled">
-                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-            </li>
-            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item">
-                <a class="page-link" href="#">Next</a>
-            </li>
-        </ul>
-    </nav>
 </div>
 
 @section Styles {
     <style>
+        /* Games Page Styles */
+        .games-hero {
+            background: linear-gradient(rgba(10, 10, 10, 0.9), rgba(10, 10, 10, 0.9)), url('/images/games-hero-bg.jpg') no-repeat center center;
+            background-size: cover;
+            padding: 5rem 0 4rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+        }
+
+        .hero-title {
+            font-family: 'Oxanium', sans-serif;
+            font-weight: 800;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
         .text-gradient {
-            background: linear-gradient(to right, var(--bs-primary), var(--highlight));
+            background: linear-gradient(to right, var(--green), var(--dark-green));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .game-card-inner {
-            transition: all 0.3s ease;
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: #b3b3b3;
+            margin-bottom: 2rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: rgba(26, 26, 26, 0.8);
+            border-radius: 50px;
+            padding: 0.8rem 1.5rem;
+            border: 1px solid rgba(0, 255, 136, 0.3);
+        }
+
+            .search-input i {
+                color: var(--green);
+                margin-right: 1rem;
+                font-size: 1.1rem;
+            }
+
+            .search-input input {
+                background: transparent;
+                border: none;
+                color: white;
+                width: 100%;
+                font-size: 1rem;
+                outline: none;
+            }
+
+                .search-input input::placeholder {
+                    color: #666;
+                }
+
+        /* Filter Bar */
+        .filter-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin: 2rem 0;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .filter-group, .sort-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .filter-label, .sort-label {
+            color: var(--green);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .filter-options {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: rgba(26, 26, 26, 0.8);
+            color: #b3b3b3;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(15, 25, 35, 0.9);
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .filter-btn:hover, .filter-btn.active {
+                background: var(--green);
+                color: var(--black);
+                border-color: var(--green);
+            }
+
+        .sort-select {
+            background: rgba(26, 26, 26, 0.8);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        /* Games Grid */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .game-card {
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .game-card-inner {
+            background: rgba(26, 26, 26, 0.8);
             border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .game-card:hover .game-card-inner {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            border-color: var(--green);
+        }
+
+        .game-image {
+            position: relative;
+            aspect-ratio: 16/9;
             overflow: hidden;
         }
 
-            .game-card-inner:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-                border-color: var(--bs-primary);
+            .game-image img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.5s ease;
             }
 
-        .game-image-container {
-            position: relative;
-            overflow: hidden;
+        .game-card:hover .game-image img {
+            transform: scale(1.05);
         }
 
         .game-badge {
             position: absolute;
             top: 15px;
             right: 15px;
-            background: var(--bs-primary);
+            background: var(--green);
+            color: var(--black);
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .game-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .tournament-count {
             color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
+            font-size: 0.8rem;
             font-weight: 600;
+        }
+
+        .game-info {
+            padding: 1.25rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .game-title {
+            font-family: 'Oxanium', sans-serif;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+            font-size: 1.25rem;
+        }
+
+        .game-description {
+            color: #b3b3b3;
+            font-size: 0.9rem;
+            margin-bottom: 1.25rem;
+            flex-grow: 1;
+        }
+
+        .game-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #b3b3b3;
             font-size: 0.8rem;
         }
 
-        .card-title {
-            color: var(--bs-primary);
-            margin-bottom: 1rem;
+            .stat i {
+                color: var(--green);
+                font-size: 0.9rem;
+            }
+
+        .view-btn {
+            color: var(--green);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.3s ease;
         }
 
-        .card-text {
-            color: rgba(255, 255, 255, 0.7);
+            .view-btn:hover {
+                color: white;
+            }
+
+        /* Pagination */
+        .pagination-container {
+            margin: 3rem 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .page-nav, .page-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            color: #b3b3b3;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .page-nav {
+            background: rgba(26, 26, 26, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+            .page-nav:not(.disabled):hover {
+                border-color: var(--green);
+                color: var(--green);
+            }
+
+        .page-number {
+            background: transparent;
+            border: 1px solid transparent;
+        }
+
+            .page-number:hover, .page-number.active {
+                background: var(--green);
+                color: var(--black);
+                border-color: var(--green);
+            }
+
+        .page-ellipsis {
+            color: #666;
+            padding: 0 0.5rem;
+        }
+
+        .filter-bar {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .games-grid {
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        }
+
+        .admin-actions {
             margin-bottom: 1.5rem;
         }
 
-        .page-item.active .page-link {
-            background-color: var(--bs-primary);
-            border-color: var(--bs-primary);
+        .btn-add-game {
+            background: var(--green);
+            color: var(--black);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            border: none;
+            text-decoration: none;
         }
 
-        .page-link {
-            color: var(--bs-primary);
-        }
-
-        @@media (max-width: 768px) {
-            .game-card {
-                margin-bottom: 1.5rem;
+            .btn-add-game:hover {
+                background: var(--dark-green);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0, 255, 136, 0.2);
             }
-        }
+
     </style>
 }
 
 @section Scripts {
     <script>
-        // Client-side filtering and searching
         document.addEventListener('DOMContentLoaded', function() {
-            const gameSearch = document.getElementById('gameSearch');
-            const gameFilter = document.getElementById('gameFilter');
+            // Filter functionality
+            const filterBtns = document.querySelectorAll('.filter-btn');
             const gameCards = document.querySelectorAll('.game-card');
 
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Update active state
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+
+                    const filterValue = this.dataset.filter;
+
+                    // Filter games
+                    gameCards.forEach(card => {
+                        if (filterValue === 'all' || card.dataset.genre === filterValue) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+
             // Search functionality
-            gameSearch.addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase();
-
+            gameSearch.addEventListener('input', function () {
+                const searchTerm = this.value.trim().toLowerCase();
                 gameCards.forEach(card => {
-                    const title = card.querySelector('.card-title').textContent.toLowerCase();
-                    const description = card.querySelector('.card-text').textContent.toLowerCase();
-
-                    if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                    const title = card.querySelector('.game-title').textContent.toLowerCase();
+                    const genre = card.dataset.genre ? card.dataset.genre.toLowerCase() : '';
+                    if (title.includes(searchTerm) || genre.includes(searchTerm)) {
                         card.style.display = 'block';
                     } else {
                         card.style.display = 'none';
@@ -160,22 +485,18 @@
                 });
             });
 
-            // Filter functionality
-            gameFilter.addEventListener('change', function() {
-                const filterValue = this.value;
 
-                gameCards.forEach(card => {
-                    const genre = card.getAttribute('data-genre');
 
-                    if (filterValue === 'all' || genre === filterValue) {
-                        card.style.display = 'block';
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
+            // Sort functionality
+            const sortSelect = document.querySelector('.sort-select');
+            sortSelect.addEventListener('change', function() {
+                // In a real implementation, this would likely make an API call
+                // to your backend with the sort parameter
+                console.log('Sort by:', this.value);
+                // You would then re-render the games with the new sort order
             });
 
-            // Simple animation when cards come into view
+            // Animation for game cards
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -185,10 +506,10 @@
                 });
             }, { threshold: 0.1 });
 
-            document.querySelectorAll('.game-card-inner').forEach(card => {
+            document.querySelectorAll('.game-card').forEach((card, index) => {
                 card.style.opacity = 0;
                 card.style.transform = 'translateY(20px)';
-                card.style.transition = 'opacity 0.5s, transform 0.5s';
+                card.style.transition = `opacity 0.5s ${index * 0.1}s, transform 0.5s ${index * 0.1}s`;
                 observer.observe(card);
             });
         });

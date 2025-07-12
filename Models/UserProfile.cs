@@ -5,19 +5,32 @@ namespace Esportify.Models
 {
     public class UserProfile
     {
-        public User User { get; set; } = null!;
-
+        // Use UserId as the primary key to match User.Id (1-1 relationship)
         [Key]
         [ForeignKey("User")]
-        public int UserId { get; set; } 
+        public string UserId { get; set; }
+
+        // Navigation property (required)
+        public User User { get; set; } = null!;
+
+        // Allow null to match seeding default
+        [StringLength(256)]
+        public string? DisplayName { get; set; }
 
         [StringLength(256)]
-        public string Bio { get; set; } = string.Empty;
+        public string? Bio { get; set; }
 
         /// <summary>
         /// Imagem de perfil do utilizador.
         /// </summary>
-        public string AvatarUrl { get; set; } = string.Empty;
+        [StringLength(256)]
+        public string? AvatarUrl { get; set; }
+
+        /// <summary>
+        /// Imagem de banner do utilizador.
+        /// </summary>
+        [StringLength(256)]
+        public string? BannerUrl { get; set; }
 
         /// <summary>
         /// País do utilizador.
@@ -37,14 +50,19 @@ namespace Esportify.Models
         [Url]
         public string? DiscordUrl { get; set; }
 
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal Earnings { get; set; }
+
         // Game stats
-        public int TotalMatchesPlayed { get; set; } = 0;
-        public int TournamentsWon { get; set; } = 0;
-        public int TournamentsJoined { get; set; } = 0;
+        public int TotalMatchesPlayed { get; set; }
+        public int TournamentsWon { get; set; }
+        public int TournamentsJoined { get; set; }
 
         // Preferences
+        [StringLength(100)]
         public string? FavoriteGame { get; set; }
-        public string? FavoriteTeam { get; set; }
 
+        [StringLength(100)]
+        public string? FavoriteTeam { get; set; }
     }
 }

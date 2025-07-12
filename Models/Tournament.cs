@@ -1,86 +1,53 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Esportify.Models
 {
     public class Tournament
     {
-        /// <summary>
-        /// Identificador único do torneio.
-        /// </summary>
-        public int Id { get; set; }
+        public string Id { get; set; }
 
-        /// <summary>
-        /// Nome do torneio.
-        /// </summary>
-        [Required(ErrorMessage = "O nome do torneio é de preenchimento obrigatório")]
-        [StringLength(128)]
-        public string TournamentName { get; set; } = string.Empty;
+        [Required]
+        public string Name { get; set; }
 
-        /// <summary>
-        /// Descrição do torneio.
-        /// </summary>
-        [StringLength(512)]
-        public string? Description { get; set; }
+        public string Description { get; set; }
 
-        /// <summary>
-        /// Data de início e fim do torneio.
-        /// </summary>
-        public DateTime StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
-
-        /// <summary>
-        /// Identificador do jogo associado ao torneio.
-        /// </summary>
-        public int GameId { get; set; }
-
-        /// <summary>
-        /// Jogo associado ao torneio.
-        /// </summary>
+        [Required]
+        public string GameId { get; set; }
         public Game Game { get; set; }
 
-        /// <summary>
-        /// Identificador do criador do torneio (utilizador).
-        /// </summary>
-        public int CreatorId { get; set; }
+        [Required]
+        [Display(Name = "Start Date")]
+        public DateTime StartDate { get; set; }
 
-        /// <summary>
-        /// Criador do torneio, que é um utilizador.
-        /// </summary>
-        public User Creator { get; set; }
+        [Required]
+        [Display(Name = "End Date")]
+        public DateTime EndDate { get; set; }
 
-        /// <summary>
-        /// Número máximo de equipas que podem participar no torneio.
-        /// </summary>
-        public int MaxTeams { get; set; }
+        [Display(Name = "Registration Deadline")]
+        public DateTime RegistrationDeadline { get; set; }
 
-        /// <summary>
-        /// Tamanho da equipa, ou seja, o número de membros por equipa.
-        /// </summary>
-        public int TeamSize { get; set; }
+        [Display(Name = "Max Teams")]
+        public int MaxTeams { get; set; } = 16;
 
-        /// <summary>
-        /// Status do torneio, como "Upcoming", "Ongoing", "Completed"
-        /// </summary>
-        public string Status { get; set; } = "Upcoming";
+        [Display(Name = "Min Team Size")]
+        public int MinTeamSize { get; set; } = 3;
 
-        /// <summary>
-        /// Localização do torneio, por exemplo, "Online" ou "Presencial".
-        /// </summary>
-        public string Location { get; set; } = "Online";
+        [Display(Name = "Max Team Size")]
+        public int MaxTeamSize { get; set; } = 5;
 
-        /// <summary>
-        /// Prémio total do torneio.
-        /// </summary>
-        public string? PrizePool { get; set; }
+        [Display(Name = "Prize Pool")]
+        [Range(0, double.MaxValue)]
+        public decimal PrizePool { get; set; } = 1000;
 
-        /****************************
-        Definção dos relacionamentos
-        ****************************/
+        public string ImageUrl { get; set; }
 
-        /// <summary>
-        /// Lista de registos de torneios associados a este torneio.
-        /// </summary>
-        public ICollection<Registration> Registrations { get; set; } = new List<Registration>();
+        public string OrganizerId { get; set; }
+        public User Organizer { get; set; }
 
+        public DateTime CreatedDate { get; set; }
+
+        // Navigation properties
+        public ICollection<Registration> Registrations { get; set; }
     }
 }

@@ -1,178 +1,582 @@
-﻿@{
+﻿@model List<Tournament>
+@using Esportify.Models
+
+@{
     ViewData["Title"] = "Tournaments";
 }
 
-<div class="container py-5">
-    <div class="row mb-5">
-        <div class="col-12 text-center">
-            <h1 class="display-4">Current <span class="text-gradient">Tournaments</span></h1>
-            <p class="lead">Join competitive tournaments and show your skills</p>
-        </div>
-    </div>
-
-    <!-- Search and Filter Section -->
-    <div class="row mb-4">
-        <div class="col-md-6 mb-3 mb-md-0">
-            <div class="input-group">
-                <span class="input-group-text"><i class="fas fa-search"></i></span>
-                <input type="text" class="form-control" id="tournamentSearch" placeholder="Search tournaments...">
+<!-- Hero Section -->
+<section class="games-hero">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title">Current <span class="text-gradient">Tournaments</span></h1>
+            <p class="hero-subtitle">Compete against the best and prove your skills</p>
+            <div class="search-container">
+                <div class="search-input">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="tournamentSearch" placeholder="Search tournaments...">
+                </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <select class="form-select" id="tournamentFilter">
-                <option value="all">All Games</option>
-                <option value="valorant">Valorant</option>
-                <option value="lol">League of Legends</option>
-                <option value="csgo">CS:GO</option>
-                <option value="dota2">Dota 2</option>
-            </select>
-        </div>
     </div>
+</section>
 
-    <!-- Tournament Cards -->
-    <div class="row" id="tournamentContainer">
-        <!-- Tournament Card Template (will be populated from database) -->
-        @for (int i = 0; i < 6; i++)
+<!-- Main Content -->
+<div class="games-container">
+    <div class="container">
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <div class="filter-group">
+                <span class="filter-label">Filter by:</span>
+                <div class="filter-options">
+                    <button class="filter-btn active" data-filter="all">All Tournaments</button>
+                    <button class="filter-btn" data-filter="fps">FPS</button>
+                    <button class="filter-btn" data-filter="moba">MOBA</button>
+                    <button class="filter-btn" data-filter="battle-royale">Battle Royale</button>
+                    <button class="filter-btn" data-filter="strategy">Strategy</button>
+                    <button class="filter-btn" data-filter="sports">Sports</button>
+                </div>
+            </div>
+            <div class="sort-group">
+                <span class="sort-label">Sort by:</span>
+                <select class="sort-select">
+                    <option value="popular">Most Popular</option>
+                    <option value="prize">Highest Prize</option>
+                    <option value="newest">Newest</option>
+                    <option value="soonest">Starting Soonest</option>
+                </select>
+            </div>
+        </div>
+
+        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
         {
-            <div class="col-lg-4 col-md-6 mb-4 tournament-card" data-game="valorant">
-                <div class="card h-100 tournament-card-inner">
-                    <div class="tournament-image-container">
-                        <img src="https://via.placeholder.com/400x225?text=Tournament+Banner" class="card-img-top" alt="Tournament banner">
-                        <div class="tournament-badge">Valorant</div>
-                        <div class="tournament-prize">$10,000</div>
-                    </div>
-                    <div class="card-body">
-                        <h3 class="card-title">Weekly Valorant Challenge</h3>
-                        <div class="tournament-details mb-3">
-                            <div class="detail-item">
-                                <i class="fas fa-calendar-alt me-2"></i>
-                                <span>Jun 15-20, 2025</span>
-                            </div>
-                            <div class="detail-item">
-                                <i class="fas fa-users me-2"></i>
-                                <span>32/64 Teams</span>
+            <div class="admin-actions">
+                <a asp-controller="Tournaments" asp-action="Create" class="btn btn-add-game">
+                    <i class="fas fa-plus"></i> Create Tournament
+                </a>
+            </div>
+        }
+
+        <!-- Tournaments Grid -->
+        <div class="games-grid" id="tournamentContainer">
+            @foreach (var tournament in Model)
+            {
+                <div class="game-card" data-genre="@tournament.Game.Genre?.ToLower()">
+                    <div class="game-card-inner">
+                        <div class="game-image">
+                            <img src="@tournament.ImageUrl" alt="@tournament.Name"
+                                 onerror="this.onerror=null;this.src='/images/default-tournament.jpg';">
+                            <div class="game-badge">@tournament.Game.Genre</div>
+                            <div class="game-overlay">
+                                <span class="tournament-count">@tournament.PrizePool.ToString("C0") Prize Pool</span>
                             </div>
                         </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge bg-primary">Open Registration</span>
-                            <a href="#" class="btn btn-sm btn-outline-primary">View Details</a>
+                        <div class="game-info">
+                            <h3 class="game-title">@tournament.Name</h3>
+                            <div class="game-stats">
+                                <div class="stat">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <span>@tournament.StartDate.ToString("MMM dd")</span>
+                                </div>
+                                <div class="stat">
+                                    <i class="fas fa-users"></i>
+                                    <span>@tournament.Registrations.Count/@tournament.MaxTeams Teams</span>
+                                </div>
+                            </div>
+                            @{
+                                var status = tournament.StartDate > DateTime.Now
+                                ? "Registering"
+                                : tournament.EndDate > DateTime.Now
+                                ? "Ongoing"
+                                : "Completed";
+                                var statusClass = tournament.StartDate > DateTime.Now
+                                ? "status-registering"
+                                : tournament.EndDate > DateTime.Now
+                                ? "status-ongoing"
+                                : "status-completed";
+                            }
+                            <div class="tournament-status @statusClass">@status</div>
+                            <a asp-controller="Tournaments" asp-action="Details" asp-route-id="@tournament.Id" class="view-btn">
+                                View Details <i class="fas fa-arrow-right"></i>
+                            </a>
                         </div>
                     </div>
                 </div>
+            }
+        </div>
+
+        <!-- Empty State -->
+        @if (!Model.Any())
+        {
+            <div class="empty-state">
+                <i class="fas fa-trophy"></i>
+                <h3>No tournaments available</h3>
+                <p>Check back later or create your own tournament</p>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <a asp-controller="Tournaments" asp-action="Create" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Create Tournament
+                    </a>
+                }
+            </div>
+        }
+
+        <!-- Pagination -->
+        @if (ViewBag.TotalPages > 1)
+        {
+            <div class="pagination-container">
+                <nav class="pagination">
+                    <a asp-action="Index" asp-route-page="@(ViewBag.CurrentPage > 1 ? ViewBag.CurrentPage - 1 : 1)"
+                       class="page-nav @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+
+                    @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                    {
+                        <a asp-action="Index" asp-route-page="@i"
+                           class="page-number @(i == ViewBag.CurrentPage ? "active" : "")">
+                            @i
+                        </a>
+                    }
+
+                    <a asp-action="Index" asp-route-page="@(ViewBag.CurrentPage < ViewBag.TotalPages ? ViewBag.CurrentPage + 1 : ViewBag.TotalPages)"
+                       class="page-nav @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </nav>
             </div>
         }
     </div>
-
-    <!-- Pagination -->
-    <nav aria-label="Tournament pagination" class="mt-5">
-        <ul class="pagination justify-content-center">
-            <li class="page-item disabled">
-                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-            </li>
-            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item">
-                <a class="page-link" href="#">Next</a>
-            </li>
-        </ul>
-    </nav>
 </div>
 
 @section Styles {
     <style>
+        /* Games Page Styles */
+        .games-hero {
+            background: linear-gradient(rgba(10, 10, 10, 0.9), rgba(10, 10, 10, 0.9)), url('/images/tournaments-hero-bg.jpg') no-repeat center center;
+            background-size: cover;
+            padding: 5rem 0 4rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+        }
+
+        .hero-title {
+            font-family: 'Oxanium', sans-serif;
+            font-weight: 800;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
         .text-gradient {
-            background: linear-gradient(to right, var(--bs-primary), var(--highlight));
+            background: linear-gradient(to right, var(--green), var(--dark-green));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .tournament-card-inner {
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(15, 25, 35, 0.9);
-            border-radius: 8px;
-            overflow: hidden;
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: #b3b3b3;
+            margin-bottom: 2rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-            .tournament-card-inner:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-                border-color: var(--bs-primary);
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: rgba(26, 26, 26, 0.8);
+            border-radius: 50px;
+            padding: 0.8rem 1.5rem;
+            border: 1px solid rgba(0, 255, 136, 0.3);
+        }
+
+            .search-input i {
+                color: var(--green);
+                margin-right: 1rem;
+                font-size: 1.1rem;
             }
 
-        .tournament-image-container {
+            .search-input input {
+                background: transparent;
+                border: none;
+                color: white;
+                width: 100%;
+                font-size: 1rem;
+                outline: none;
+            }
+
+                .search-input input::placeholder {
+                    color: #666;
+                }
+
+        /* Filter Bar */
+        .filter-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin: 2rem 0;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .filter-group, .sort-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .filter-label, .sort-label {
+            color: var(--green);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .filter-options {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: rgba(26, 26, 26, 0.8);
+            color: #b3b3b3;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .filter-btn:hover, .filter-btn.active {
+                background: var(--green);
+                color: var(--black);
+                border-color: var(--green);
+            }
+
+        .sort-select {
+            background: rgba(26, 26, 26, 0.8);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        /* Admin Actions */
+        .admin-actions {
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-add-game {
+            background: var(--green);
+            color: var(--black);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            border: none;
+            text-decoration: none;
+        }
+
+            .btn-add-game:hover {
+                background: var(--dark-green);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0, 255, 136, 0.2);
+            }
+
+        /* Games Grid */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .game-card {
             position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .game-card-inner {
+            background: rgba(26, 26, 26, 0.8);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .game-card:hover .game-card-inner {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            border-color: var(--green);
+        }
+
+        .game-image {
+            position: relative;
+            aspect-ratio: 16/9;
             overflow: hidden;
         }
 
-        .tournament-badge {
+            .game-image img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.5s ease;
+            }
+
+        .game-card:hover .game-image img {
+            transform: scale(1.05);
+        }
+
+        .game-badge {
             position: absolute;
             top: 15px;
-            left: 15px;
-            background: var(--bs-primary);
+            right: 15px;
+            background: var(--green);
+            color: var(--black);
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .game-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .tournament-count {
             color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
+            font-size: 0.8rem;
             font-weight: 600;
+        }
+
+        .game-info {
+            padding: 1.25rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .game-title {
+            font-family: 'Oxanium', sans-serif;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+            font-size: 1.25rem;
+        }
+
+        .game-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 1rem 0;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #b3b3b3;
             font-size: 0.8rem;
         }
 
-        .tournament-prize {
-            position: absolute;
-            bottom: 15px;
-            right: 15px;
-            background: rgba(0, 0, 0, 0.7);
-            color: var(--highlight);
-            padding: 5px 15px;
-            border-radius: 20px;
+            .stat i {
+                color: var(--green);
+                font-size: 0.9rem;
+            }
+
+        /* Tournament Status */
+        .tournament-status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
             font-weight: 600;
+            margin: 0.5rem 0;
         }
 
-        .card-title {
-            color: var(--bs-primary);
-            margin-bottom: 1rem;
+        .status-registering {
+            background: rgba(40, 167, 69, 0.2);
+            color: var(--green);
+            border: 1px solid var(--green);
         }
 
-        .tournament-details {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 1rem;
+        .status-ongoing {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+            border: 1px solid #ffc107;
         }
 
-        .detail-item {
-            margin-bottom: 5px;
-            color: rgba(255, 255, 255, 0.7);
+        .status-completed {
+            background: rgba(108, 117, 125, 0.2);
+            color: #6c757d;
+            border: 1px solid #6c757d;
         }
 
-        .page-item.active .page-link {
-            background-color: var(--bs-primary);
-            border-color: var(--bs-primary);
+        .view-btn {
+            color: var(--green);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.3s ease;
+            margin-top: auto;
         }
 
-        .page-link {
-            color: var(--bs-primary);
+            .view-btn:hover {
+                color: white;
+            }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            background: rgba(26, 26, 26, 0.5);
+            border-radius: 8px;
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+            margin: 2rem 0;
+        }
+
+            .empty-state i {
+                font-size: 3rem;
+                color: var(--green);
+                margin-bottom: 1rem;
+            }
+
+            .empty-state h3 {
+                color: white;
+                margin-bottom: 0.5rem;
+            }
+
+            .empty-state p {
+                color: #b3b3b3;
+                margin-bottom: 1.5rem;
+            }
+
+        /* Pagination */
+        .pagination-container {
+            margin: 3rem 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .page-nav, .page-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            color: #b3b3b3;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .page-nav {
+            background: rgba(26, 26, 26, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+            .page-nav:not(.disabled):hover {
+                border-color: var(--green);
+                color: var(--green);
+            }
+
+        .page-number {
+            background: transparent;
+            border: 1px solid transparent;
+        }
+
+            .page-number:hover, .page-number.active {
+                background: var(--green);
+                color: var(--black);
+                border-color: var(--green);
+            }
+
+        /* Responsive adjustments */
+        @@media (max-width: 768px) {
+            .filter-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .games-grid {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            }
+
+            .hero-title {
+                font-size: 2rem;
+            }
         }
     </style>
 }
 
 @section Scripts {
     <script>
-        // Client-side filtering and searching
         document.addEventListener('DOMContentLoaded', function() {
-            const tournamentSearch = document.getElementById('tournamentSearch');
-            const tournamentFilter = document.getElementById('tournamentFilter');
-            const tournamentCards = document.querySelectorAll('.tournament-card');
+            // Filter functionality
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const tournamentCards = document.querySelectorAll('.game-card');
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Update active state
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+
+                    const filterValue = this.dataset.filter;
+
+                    // Filter tournaments
+                    tournamentCards.forEach(card => {
+                        if (filterValue === 'all' || card.dataset.genre === filterValue) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
 
             // Search functionality
+            const tournamentSearch = document.getElementById('tournamentSearch');
             tournamentSearch.addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase();
-
+                const searchTerm = this.value.trim().toLowerCase();
                 tournamentCards.forEach(card => {
-                    const title = card.querySelector('.card-title').textContent.toLowerCase();
-                    const game = card.getAttribute('data-game');
-
+                    const title = card.querySelector('.game-title').textContent.toLowerCase();
                     if (title.includes(searchTerm)) {
                         card.style.display = 'block';
                     } else {
@@ -181,22 +585,14 @@
                 });
             });
 
-            // Filter functionality
-            tournamentFilter.addEventListener('change', function() {
-                const filterValue = this.value;
-
-                tournamentCards.forEach(card => {
-                    const game = card.getAttribute('data-game');
-
-                    if (filterValue === 'all' || game === filterValue) {
-                        card.style.display = 'block';
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
+            // Sort functionality
+            const sortSelect = document.querySelector('.sort-select');
+            sortSelect.addEventListener('change', function() {
+                // In a real implementation, this would make an API call
+                console.log('Sort by:', this.value);
             });
 
-            // Simple animation when cards come into view
+            // Animation for tournament cards
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -206,10 +602,10 @@
                 });
             }, { threshold: 0.1 });
 
-            document.querySelectorAll('.tournament-card-inner').forEach(card => {
+            document.querySelectorAll('.game-card').forEach((card, index) => {
                 card.style.opacity = 0;
                 card.style.transform = 'translateY(20px)';
-                card.style.transition = 'opacity 0.5s, transform 0.5s';
+                card.style.transition = `opacity 0.5s ${index * 0.1}s, transform 0.5s ${index * 0.1}s`;
                 observer.observe(card);
             });
         });

@@ -7,12 +7,11 @@ namespace Esportify.Models
         /// <summary>
         /// Identificador único do jogo.
         /// </summary>
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         /// <summary>
         /// Nome do jogo.
         /// </summary>
-        [Required(ErrorMessage = "O nome do jogo é de preenchimento obrigatório")]
         [StringLength(100)]
         public string Name { get; set; } = string.Empty;
 
@@ -25,7 +24,7 @@ namespace Esportify.Models
         /// <summary>
         /// URL do logo do jogo.
         /// </summary>
-        public string? LogoUrl { get; set; }
+        public string? ImageUrl { get; set; }
 
         /// <summary>
         /// Site oficial do jogo.
@@ -40,6 +39,7 @@ namespace Esportify.Models
         /// Lista de torneios associados a este jogo.
         /// </summary>
         public ICollection<Tournament> Tournaments { get; set; } = new List<Tournament>();
+        public ICollection<UserGame> LikedByUsers { get; set; } = new List<UserGame>();
     }
 
 }

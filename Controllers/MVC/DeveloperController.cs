@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Esportify.Controllers
+namespace Esportify.Controllers.MVC
 {
-    public class GamesController : Controller
+    public class DeveloperController : Controller
     {
         public IActionResult Index()
         {

@@ -12,6 +12,7 @@ namespace Esportify.Data
         public DbSet<Team> Teams { get; set; }
         public DbSet<TeamMember> TeamMembers { get; set; }
         public DbSet<Game> Games { get; set; }
+        public DbSet<UserGame> UserGames { get; set; }
         public DbSet<Tournament> Tournaments { get; set; }
         public DbSet<Registration> Registrations { get; set; }
 
@@ -19,8 +20,7 @@ namespace Esportify.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            /*************** Relação 1:1 ***************/
-            /// Uma equipa tem um líder.
+            /*************** Relações 1:1 ***************/
             modelBuilder.Entity<Team>()
                 .HasOne(t => t.Leader)
                 .WithMany()
@@ -28,29 +28,31 @@ namespace Esportify.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<User>()
-                .HasOne<UserProfile>()
-                .WithOne()
+                .HasOne(u => u.Profile)
+                .WithOne(p => p.User)
                 .HasForeignKey<UserProfile>(p => p.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             /*************** Relação 1:N ***************/
-
-            /// Um jogo pode ter vários torneios.
             modelBuilder.Entity<Tournament>()
                 .HasOne(t => t.Game)
                 .WithMany(g => g.Tournaments)
                 .HasForeignKey(t => t.GameId);
 
-            /// Um user pode criar vários torneios.
-            modelBuilder.Entity<Tournament>()
-                .HasOne(t => t.Creator)
-                .WithMany()
-                .HasForeignKey(t => t.CreatorId)
-                .OnDelete(DeleteBehavior.Restrict);
-
             /*************** Relação N:N ***************/
+            modelBuilder.Entity<UserGame>()
+                .HasKey(ug => new { ug.UserId, ug.GameId });
 
-            /// Uma equipa pode ter vários membros e um membro pode pertencer a várias equipas.
+            modelBuilder.Entity<UserGame>()
+                .HasOne(ug => ug.User)
+                .WithMany(u => u.FavoriteGames)
+                .HasForeignKey(ug => ug.UserId);
+
+            modelBuilder.Entity<UserGame>()
+                .HasOne(ug => ug.Game)
+                .WithMany(g => g.LikedByUsers)
+                .HasForeignKey(ug => ug.GameId);
+
             modelBuilder.Entity<TeamMember>()
                 .HasKey(tm => new { tm.TeamId, tm.UserId });
 
@@ -64,7 +66,6 @@ namespace Esportify.Data
                 .WithMany(u => u.TeamMemberships)
                 .HasForeignKey(tm => tm.UserId);
 
-            /// Um torneio pode ter várias equipas registadas e uma equipa pode estar registada em vários torneios.
             modelBuilder.Entity<Registration>()
                 .HasKey(r => new { r.TournamentId, r.TeamId });
 
@@ -77,8 +78,6 @@ namespace Esportify.Data
                 .HasOne(r => r.Tournament)
                 .WithMany(t => t.Registrations)
                 .HasForeignKey(r => r.TournamentId);
-
         }
     }
-
 }

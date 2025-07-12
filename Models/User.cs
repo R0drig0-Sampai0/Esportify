@@ -1,62 +1,18 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace Esportify.Models
 {
-    public class User
+    public class User : IdentityUser
     {
-        /// <summary>
-        /// Identificador único do utilizador.
-        /// </summary>
-        public int Id { get; set; }
 
-        /// <summary>
-        /// Nome do utilizador.
-        /// </summary>
-        [Required(ErrorMessage = "O nome de utilizador é de preenchimento obrigatório.")]
-        [StringLength(32, MinimumLength = 3)]
-        public string Username { get; set; } = string.Empty;
-
-        /// <summary>
-        /// Endereço de email do utilizador.
-        /// </summary>
-        [Required(ErrorMessage = "O email é de preenchimento obrigatório.")]
-        [EmailAddress]
-        public string Email { get; set; } = string.Empty;
-
-        /// <summary>
-        /// Senha do utilizador, armazenada como um hash.
-        /// </summary>
-        [Required(ErrorMessage = "A password é de preenchimento obrigatório.")]
-        public string PasswordHash { get; set; } = string.Empty;
-
-        /// <summary>
-        /// URL da imagem de perfil do utilizador.
-        /// </summary>
-        public string? ProfileImageUrl { get; set; }
-
-        /// <summary>
-        /// Indica se o email do utilizador foi confirmado.
-        /// </summary>
-        public bool IsEmailConfirmed { get; set; } = false;
-
-        /// <summary>
-        /// Data e hora do último login do utilizador.
-        /// </summary>
-        public DateTime? LastLogin { get; set; }
-
-        /// <summary>
-        /// Data e hora de criação do utilizador.
-        /// </summary>
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-        /// <summary>
-        /// Data e hora da última atualização do utilizador.
-        /// </summary>
-        public DateTime? UpdatedAt { get; set; }
+        public bool IsAdmin { get; set; }
 
         /****************************
          Definção dos relacionamentos
         ****************************/
+
+        public UserProfile? Profile { get; set; }
 
         /// <summary>
         /// Lista de equipas que o utilizador faz parte.
@@ -72,5 +28,7 @@ namespace Esportify.Models
         /// Lista de equipas que o utilizador pertence.
         /// </summary>
         public ICollection<TeamMember> TeamMemberships { get; set; } = new List<TeamMember>();
+
+        public ICollection<UserGame> FavoriteGames { get; set; } = new List<UserGame>();
     }
 }

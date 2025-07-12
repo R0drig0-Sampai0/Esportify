@@ -5,7 +5,7 @@
         /// <summary>
         /// Identificador único do membro da equipa.
         /// </summary>
-        public int TeamId { get; set; }
+        public string TeamId { get; set; }
 
         /// <summary>
         /// Equipa à qual o membro pertence.
@@ -15,7 +15,7 @@
         /// <summary>
         /// Identificador único do utilizador que é membro da equipa.
         /// </summary>
-        public int UserId { get; set; }
+        public string UserId { get; set; }
 
         /// <summary>
         /// Utilizador que é membro da equipa.

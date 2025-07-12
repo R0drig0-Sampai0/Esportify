@@ -2,256 +2,283 @@
     ViewData["Title"] = "Home | Esportify";
 }
 
-<section class="hero-section">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-6">
-                <h1 class="hero-title">Compete in the World's Biggest <span class="text-gradient">Esports Tournaments</span></h1>
-                <p class="hero-subtitle">Join thousands of gamers, prove your skills, and win amazing prizes</p>
-                <div class="hero-buttons">
-                    <a asp-controller="Tournaments" asp-action="Index" class="btn btn-primary btn-lg me-3">
-                        <i class="fas fa-trophy me-2"></i> Browse Tournaments
-                    </a>
-                    <a asp-controller="Auth" asp-action="Register" class="btn btn-outline-light btn-lg">
-                        <i class="fas fa-user-plus me-2"></i> Join Now
-                    </a>
+<div class="homepage-container">
+    <div class="row">
+        <!-- Left Sidebar - Favorite Games -->
+        <div class="col-lg-3 sidebar">
+            <div class="sidebar-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="sidebar-title">My Games</h3>
+                    <a asp-controller="Games" asp-action="Index" class="btn btn-sm btn-outline-success">Add More</a>
                 </div>
-            </div>
-            <div class="col-lg-6">
-                <img src="/images/hero-gamer.png" alt="Esports Gamer" class="img-fluid hero-image">
-            </div>
-        </div>
-    </div>
-</section>
 
-<section class="featured-section py-5">
-    <div class="container">
-        <h2 class="section-title text-center mb-5"><span class="text-gradient">Featured</span> Tournaments</h2>
-
-        <div class="row">
-            <!-- Tournament Card 1 -->
-            <div class="col-md-4 mb-4">
-                <div class="tournament-card">
-                    <div class="game-badge">Valorant</div>
-                    <img src="/images/valorant-tournament.jpg" class="card-img-top" alt="Valorant Tournament">
-                    <div class="card-body">
-                        <h3 class="tournament-title">Valorant Champions Series</h3>
-                        <div class="tournament-details">
-                            <div class="detail-item">
-                                <i class="fas fa-calendar-alt"></i>
-                                <span>Jun 15-20, 2025</span>
-                            </div>
-                            <div class="detail-item">
-                                <i class="fas fa-trophy"></i>
-                                <span>$25,000 Prize Pool</span>
-                            </div>
-                        </div>
-                        <a href="#" class="btn btn-outline-primary w-100 mt-3">View Details</a>
+                @if (User.Identity.IsAuthenticated && ViewData["FavoriteGames"] is List<Game> favoriteGames && favoriteGames.Any())
+                {
+                    <ul class="favorite-games-list">
+                        @foreach (var game in favoriteGames)
+                        {
+                            <li class="favorite-game-item">
+                                <img src="@game.ImageUrl" alt="@game.Name" class="game-icon">
+                                <span>@game.Name</span>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <i class="fas fa-gamepad text-success"></i>
+                        <p>No favorite games yet</p>
+                        <a asp-controller="Games" asp-action="Index" class="btn btn-success btn-sm">Browse Games</a>
                     </div>
-                </div>
-            </div>
-
-            <!-- Tournament Card 2 -->
-            <div class="col-md-4 mb-4">
-                <div class="tournament-card">
-                    <div class="game-badge">League of Legends</div>
-                    <img src="/images/lol-tournament.jpg" class="card-img-top" alt="League of Legends Tournament">
-                    <div class="card-body">
-                        <h3 class="tournament-title">LoL Summer Showdown</h3>
-                        <div class="tournament-details">
-                            <div class="detail-item">
-                                <i class="fas fa-calendar-alt"></i>
-                                <span>Jul 5-12, 2025</span>
-                            </div>
-                            <div class="detail-item">
-                                <i class="fas fa-trophy"></i>
-                                <span>$50,000 Prize Pool</span>
-                            </div>
-                        </div>
-                        <a href="#" class="btn btn-outline-primary w-100 mt-3">View Details</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tournament Card 3 -->
-            <div class="col-md-4 mb-4">
-                <div class="tournament-card">
-                    <div class="game-badge">CS:GO 2</div>
-                    <img src="/images/csgo-tournament.jpg" class="card-img-top" alt="CS:GO Tournament">
-                    <div class="card-body">
-                        <h3 class="tournament-title">CS:GO Global Challenge</h3>
-                        <div class="tournament-details">
-                            <div class="detail-item">
-                                <i class="fas fa-calendar-alt"></i>
-                                <span>Aug 1-10, 2025</span>
-                            </div>
-                            <div class="detail-item">
-                                <i class="fas fa-trophy"></i>
-                                <span>$100,000 Prize Pool</span>
-                            </div>
-                        </div>
-                        <a href="#" class="btn btn-outline-primary w-100 mt-3">View Details</a>
-                    </div>
-                </div>
+                }
             </div>
         </div>
 
-        <div class="text-center mt-4">
-            <a asp-controller="Tournaments" asp-action="Index" class="btn btn-primary btn-lg">
-                View All Tournaments <i class="fas fa-arrow-right ms-2"></i>
-            </a>
-        </div>
-    </div>
-</section>
-
-<!-- How It Works -->
-<section class="how-it-works py-5 bg-dark">
-    <div class="container">
-        <h2 class="section-title text-center mb-5">How It <span class="text-gradient">Works</span></h2>
-
-        <div class="row">
-            <div class="col-md-4 mb-4">
-                <div class="step-card text-center">
-                    <div class="step-number">1</div>
-                    <i class="fas fa-user-plus step-icon"></i>
-                    <h3 class="step-title">Create Account</h3>
-                    <p class="step-description">Sign up in seconds and set up your gaming profile</p>
+        <!-- Main Content -->
+        <div class="col-lg-9 main-content">
+            <!-- Upcoming Tournaments Section -->
+            <section class="mb-5">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="section-title">Upcoming Tournaments</h2>
+                    <a asp-controller="Tournaments" asp-action="Index" class="btn btn-sm btn-outline-success">View All</a>
                 </div>
-            </div>
 
-            <div class="col-md-4 mb-4">
-                <div class="step-card text-center">
-                    <div class="step-number">2</div>
-                    <i class="fas fa-trophy step-icon"></i>
-                    <h3 class="step-title">Join Tournament</h3>
-                    <p class="step-description">Browse and register for upcoming tournaments</p>
+                <div class="row">
+                    @if (ViewData["UpcomingTournaments"] is List<Tournament> upcomingTournaments)
+                    {
+                        @foreach (var tournament in upcomingTournaments)
+                        {
+                            <div class="col-md-4 mb-4">
+                                <div class="tournament-card">
+                                    <div class="game-badge">@tournament.Game.Name</div>
+                                    <img src="@tournament.ImageUrl" class="card-img-top" alt="@tournament.Name">
+                                    <div class="card-body">
+                                        <h3 class="tournament-title">@tournament.Name</h3>
+                                        <div class="tournament-details">
+                                            <div class="detail-item">
+                                                <i class="fas fa-calendar-alt text-success"></i>
+                                                <span>@tournament.StartDate.ToString("MMM dd") - @tournament.EndDate.ToString("MMM dd, yyyy")</span>
+                                            </div>
+                                            <div class="detail-item">
+                                                <i class="fas fa-users text-success"></i>
+                                                <span>@tournament.Registrations.Count participants</span>
+                                            </div>
+                                            <div class="detail-item">
+                                                <i class="fas fa-trophy text-success"></i>
+                                                <span>@tournament.PrizePool Prize Pool</span>
+                                            </div>
+                                        </div>
+                                        <a asp-controller="Tournaments" asp-action="Details" asp-route-id="@tournament.Id" class="btn btn-outline-success w-100 mt-3">View Details</a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
                 </div>
-            </div>
+            </section>
 
-            <div class="col-md-4 mb-4">
-                <div class="step-card text-center">
-                    <div class="step-number">3</div>
-                    <i class="fas fa-gamepad step-icon"></i>
-                    <h3 class="step-title">Compete & Win</h3>
-                    <p class="step-description">Play your matches and climb the leaderboard</p>
+            <!-- Browse Games Section -->
+            <section class="mb-5">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="section-title">Browse Games</h2>
+                    <a asp-controller="Games" asp-action="Index" class="btn btn-sm btn-outline-success">View All</a>
                 </div>
-            </div>
-        </div>
-    </div>
-</section>
 
-<!-- Testimonials -->
-<section class="testimonials py-5">
-    <div class="container">
-        <h2 class="section-title text-center mb-5">What <span class="text-gradient">Players</span> Say</h2>
+                <div class="row">
+                    @if (ViewData["PopularGames"] is List<Game> popularGames)
+                    {
+                        @foreach (var game in popularGames)
+                        {
+                            <div class="col-6 col-md-3 mb-4">
+                                <div class="game-card">
+                                    <a asp-controller="Games" asp-action="Details" asp-route-id="@game.Id">
+                                        <img src="@game.ImageUrl" alt="@game.Name" class="game-image">
+                                        <div class="game-overlay">
+                                            <h3 class="game-title">@game.Name</h3>
+                                            <span class="game-tournaments">@game.Tournaments.Count tournaments</span>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </section>
 
-        <div class="row">
-            <div class="col-md-4 mb-4">
-                <div class="testimonial-card">
-                    <div class="testimonial-content">
-                        <p>"Won my first tournament last month and already cashed out $5,000! This platform is legit."</p>
-                    </div>
-                    <div class="testimonial-author">
-                        <img src="/images/player1.jpg" alt="Player" class="author-avatar">
-                        <div class="author-info">
-                            <h4>ProGamer92</h4>
-                            <span>Valorant Champion</span>
+            <!-- Create Team CTA -->
+            @if (User.Identity.IsAuthenticated)
+            {
+                <section class="mb-5">
+                    <div class="create-team-cta">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h2>Ready to build your dream team?</h2>
+                                <p>Create or join a team to compete in tournaments together</p>
+                            </div>
+                            <div class="col-md-4 text-md-end">
+                                <a asp-controller="Teams" asp-action="Create" class="btn btn-success btn-lg">Create Team</a>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                </section>
+            }
 
-            <div class="col-md-4 mb-4">
-                <div class="testimonial-card">
-                    <div class="testimonial-content">
-                        <p>"The competition is fierce but fair. I've improved so much playing in these tournaments."</p>
-                    </div>
-                    <div class="testimonial-author">
-                        <img src="/images/player2.jpg" alt="Player" class="author-avatar">
-                        <div class="author-info">
-                            <h4>ShadowStrike</h4>
-                            <span>CS:GO Competitor</span>
-                        </div>
-                    </div>
+            <!-- Popular Tournaments (Most Registrations) -->
+            <section class="mb-5">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="section-title">Popular Tournaments</h2>
+                    <a asp-controller="Tournaments" asp-action="Index" class="btn btn-sm btn-outline-success">View All</a>
                 </div>
-            </div>
 
-            <div class="col-md-4 mb-4">
-                <div class="testimonial-card">
-                    <div class="testimonial-content">
-                        <p>"Best tournament organization I've experienced. Match scheduling is always on point."</p>
-                    </div>
-                    <div class="testimonial-author">
-                        <img src="/images/player3.jpg" alt="Player" class="author-avatar">
-                        <div class="author-info">
-                            <h4>LoLQueen</h4>
-                            <span>League of Legends Pro</span>
-                        </div>
-                    </div>
+                <div class="popular-tournaments">
+                    @if (ViewData["PopularTournaments"] is List<Tournament> popularTournaments)
+                    {
+                        @foreach (var tournament in popularTournaments)
+                        {
+                            <div class="popular-tournament-card">
+                                <img src="@tournament.ImageUrl" alt="@tournament.Name" class="popular-tournament-image">
+                                <div class="popular-tournament-content">
+                                    <span class="game-badge">@tournament.Game.Name</span>
+                                    <h3>@tournament.Name</h3>
+                                    <div class="stats">
+                                        <span><i class="fas fa-users text-success"></i> @tournament.Registrations.Count Registered</span>
+                                        <span><i class="fas fa-trophy text-success"></i> @tournament.PrizePool</span>
+                                    </div>
+                                    <a asp-controller="Tournaments" asp-action="Details" asp-route-id="@tournament.Id" class="btn btn-success">Register Now</a>
+                                </div>
+                            </div>
+                        }
+                    }
                 </div>
-            </div>
+            </section>
+
+            <!-- High Prize Tournaments -->
+            <section class="mb-5">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="section-title">Big Prize Tournaments</h2>
+                    <a asp-controller="Tournaments" asp-action="Index" class="btn btn-sm btn-outline-success">View All</a>
+                </div>
+
+                <div class="row">
+                    @if (ViewData["HighPrizeTournaments"] is List<Tournament> highPrizeTournaments)
+                    {
+                        @foreach (var tournament in highPrizeTournaments)
+                        {
+                            <div class="col-md-4 mb-4">
+                                <div class="prize-tournament-card">
+                                    <div class="prize-badge">@tournament.PrizePool</div>
+                                    <img src="@tournament.ImageUrl" alt="@tournament.Name" class="card-img-top">
+                                    <div class="card-body">
+                                        <span class="game-tag">@tournament.Game.Name</span>
+                                        <h3 class="tournament-title">@tournament.Name</h3>
+                                        <div class="tournament-meta">
+                                            <span><i class="fas fa-calendar-alt text-success"></i> @tournament.StartDate.ToString("MMM dd")</span>
+                                            <span><i class="fas fa-users text-success"></i> @tournament.Registrations.Count</span>
+                                        </div>
+                                        <a asp-controller="Tournaments" asp-action="Details" asp-route-id="@tournament.Id" class="btn btn-success w-100 mt-3">Details</a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </section>
         </div>
     </div>
-</section>
-
-<!-- Call to Action -->
-<section class="cta-section py-5 bg-primary">
-    <div class="container text-center">
-        <h2 class="cta-title mb-4">Ready to Start Competing?</h2>
-        <p class="cta-subtitle mb-5">Join thousands of gamers and take your skills to the next level</p>
-        <a asp-controller="Auth" asp-action="Register" class="btn btn-light btn-lg px-5">
-            Sign Up Now <i class="fas fa-arrow-right ms-2"></i>
-        </a>
-    </div>
-</section>
+</div>
 
 @section Styles {
     <style>
-        /* Hero Section */
-        .hero-section {
-            padding: 5rem 0;
-            background: linear-gradient(rgba(15, 25, 35, 0.9), rgba(15, 25, 35, 0.9)), url('/images/hero-bg.jpg') no-repeat center center;
-            background-size: cover;
-            color: white;
+        :root {
+            --bs-primary: #28a745; /* Green */
+            --bs-dark: #121212; /* Dark background */
+            --bs-light: #f8f9fa; /* Light text */
+            --accent: #1e1e1e; /* Slightly lighter dark for accents */
+            --highlight: #218838; /* Darker green for highlights */
         }
 
-        .hero-title {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            line-height: 1.2;
+        body {
+            background-color: var(--bs-dark);
+            color: var(--bs-light);
         }
 
-        .hero-subtitle {
-            font-size: 1.5rem;
+        /* Base Layout */
+        .homepage-container {
+            padding: 2rem 0;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+        }
+
+        .sidebar-card {
+            background: var(--accent);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1.5rem;
             margin-bottom: 2rem;
-            opacity: 0.9;
         }
 
-        .hero-image {
-            border-radius: 10px;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+        .sidebar-title {
+            font-size: 1.25rem;
+            margin-bottom: 0;
+            color: var(--bs-primary);
         }
 
-        /* Text Gradient */
-        .text-gradient {
-            background: linear-gradient(to right, var(--bs-primary), var(--highlight));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .favorite-games-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
         }
 
-        /* Section Titles */
-        .section-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 3rem;
-            text-transform: uppercase;
+        .favorite-game-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: background-color 0.2s;
         }
+
+            .favorite-game-item:hover {
+                background-color: rgba(40, 167, 69, 0.1);
+                border-radius: 4px;
+            }
+
+            .favorite-game-item:last-child {
+                border-bottom: none;
+            }
+
+        .game-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            margin-right: 12px;
+            object-fit: cover;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 1.5rem 0;
+        }
+
+            .empty-state i {
+                font-size: 2rem;
+                margin-bottom: 1rem;
+            }
+
+            .empty-state p {
+                margin-bottom: 1rem;
+                opacity: 0.8;
+            }
 
         /* Tournament Cards */
         .tournament-card {
-            background: rgba(15, 25, 35, 0.9);
-            border: 1px solid var(--accent);
+            background: var(--accent);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 8px;
             overflow: hidden;
             transition: transform 0.3s, box-shadow 0.3s;
@@ -261,6 +288,7 @@
             .tournament-card:hover {
                 transform: translateY(-5px);
                 box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+                border-color: var(--bs-primary);
             }
 
         .game-badge {
@@ -276,8 +304,9 @@
         }
 
         .tournament-title {
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             margin-bottom: 1rem;
+            color: white;
         }
 
         .tournament-details {
@@ -288,146 +317,259 @@
             display: flex;
             align-items: center;
             margin-bottom: 0.5rem;
+            font-size: 0.9rem;
         }
 
             .detail-item i {
                 margin-right: 10px;
-                color: var(--bs-primary);
+                width: 16px;
+                text-align: center;
             }
 
-        /* How It Works */
-        .step-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--accent);
-            border-radius: 8px;
-            padding: 2rem 1.5rem;
-            height: 100%;
-        }
-
-        .step-number {
-            background: var(--bs-primary);
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1rem;
-            font-weight: 700;
-        }
-
-        .step-icon {
-            font-size: 2rem;
-            color: var(--bs-primary);
-            margin-bottom: 1rem;
-        }
-
-        .step-title {
-            font-size: 1.25rem;
-            margin-bottom: 1rem;
-        }
-
-        /* Testimonials */
-        .testimonial-card {
-            background: rgba(15, 25, 35, 0.9);
-            border: 1px solid var(--accent);
-            border-radius: 8px;
-            padding: 1.5rem;
-            height: 100%;
-        }
-
-        .testimonial-content {
-            margin-bottom: 1.5rem;
-            font-style: italic;
+        /* Game Cards */
+        .game-card {
             position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            aspect-ratio: 1/1;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-            .testimonial-content p {
-                position: relative;
-                padding-left: 1.5rem;
-            }
-
-                .testimonial-content p::before {
-                    content: '"';
-                    position: absolute;
-                    left: 0;
-                    top: -10px;
-                    font-size: 3rem;
-                    color: var(--bs-primary);
-                    opacity: 0.3;
-                }
-
-        .testimonial-author {
-            display: flex;
-            align-items: center;
-        }
-
-        .author-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            margin-right: 15px;
+        .game-image {
+            width: 100%;
+            height: 100%;
             object-fit: cover;
-            border: 2px solid var(--bs-primary);
+            transition: transform 0.3s;
         }
 
-        .author-info h4 {
-            margin-bottom: 0;
+        .game-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            padding: 1rem;
+            color: white;
+            transform: translateY(100%);
+            transition: transform 0.3s;
         }
 
-        .author-info span {
+        .game-card:hover .game-overlay {
+            transform: translateY(0);
+        }
+
+        .game-card:hover .game-image {
+            transform: scale(1.05);
+        }
+
+        .game-card:hover {
+            border-color: var(--bs-primary);
+        }
+
+        .game-title {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .game-tournaments {
             font-size: 0.8rem;
             opacity: 0.8;
         }
 
-        /* Call to Action */
-        .cta-section {
+        /* Create Team CTA */
+        .create-team-cta {
+            background: linear-gradient(rgba(18, 18, 18, 0.9), url('/images/team-bg.jpg') no-repeat center center;
+            background-size: cover;
+            padding: 2rem;
+            border-radius: 8px;
             color: white;
+            border: 1px solid var(--bs-primary);
         }
 
-        .cta-title {
-            font-size: 2.5rem;
+            .create-team-cta h2 {
+                font-size: 1.75rem;
+                margin-bottom: 0.5rem;
+                color: var(--bs-primary);
+            }
+
+            .create-team-cta p {
+                opacity: 0.9;
+                margin-bottom: 0;
+            }
+
+        /* Popular Tournaments */
+        .popular-tournaments {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .popular-tournament-card {
+            display: flex;
+            background: var(--accent);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            height: 200px;
+        }
+
+            .popular-tournament-card:hover {
+                border-color: var(--bs-primary);
+            }
+
+        .popular-tournament-image {
+            width: 40%;
+            object-fit: cover;
+        }
+
+        .popular-tournament-content {
+            padding: 1.5rem;
+            flex: 1;
+            position: relative;
+        }
+
+            .popular-tournament-content h3 {
+                font-size: 1.5rem;
+                margin: 0.5rem 0 1rem;
+                color: white;
+            }
+
+            .popular-tournament-content .stats {
+                display: flex;
+                gap: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+                .popular-tournament-content .stats span {
+                    display: flex;
+                    align-items: center;
+                    font-size: 0.9rem;
+                }
+
+                    .popular-tournament-content .stats span i {
+                        margin-right: 5px;
+                    }
+
+        /* Prize Tournaments */
+        .prize-tournament-card {
+            background: var(--accent);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            height: 100%;
+        }
+
+            .prize-tournament-card:hover {
+                border-color: var(--bs-primary);
+            }
+
+        .prize-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--highlight);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
             font-weight: 700;
+            font-size: 0.9rem;
+            z-index: 2;
         }
 
-        .cta-subtitle {
-            font-size: 1.25rem;
-            opacity: 0.9;
+        .game-tag {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
         }
+
+        .tournament-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+            .tournament-meta span {
+                display: flex;
+                align-items: center;
+            }
+
+                .tournament-meta span i {
+                    margin-right: 5px;
+                }
+
+        /* Section Titles */
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0;
+            color: var(--bs-primary);
+        }
+
+        /* Buttons */
+        .btn-success {
+            background-color: var(--bs-primary);
+            border-color: var(--bs-primary);
+        }
+
+            .btn-success:hover {
+                background-color: var(--highlight);
+                border-color: var(--highlight);
+            }
+
+        .btn-outline-success {
+            color: var(--bs-primary);
+            border-color: var(--bs-primary);
+        }
+
+            .btn-outline-success:hover {
+                background-color: var(--bs-primary);
+                color: white;
+            }
 
         /* Responsive Adjustments */
-        @@media (max-width: 768px) {
-            .hero-title {
-                font-size: 2rem;
+        @@media (max-width: 992px) {
+            .sidebar {
+                position: static;
+                margin-bottom: 2rem;
             }
 
-            .hero-subtitle {
-                font-size: 1.2rem;
+            .popular-tournament-card {
+                flex-direction: column;
+                height: auto;
             }
 
-            .section-title {
-                font-size: 2rem;
-            }
-
-            .hero-buttons .btn {
-                display: block;
+            .popular-tournament-image {
                 width: 100%;
-                margin-bottom: 1rem;
+                height: 150px;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .section-title {
+                font-size: 1.5rem;
             }
 
-                .hero-buttons .btn:last-child {
-                    margin-bottom: 0;
-                }
+            .create-team-cta .row {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .create-team-cta .col-md-4 {
+                margin-top: 1rem;
+                text-align: center !important;
+            }
         }
     </style>
 }
 
 @section Scripts {
     <script>
-        // Any homepage-specific scripts can go here
+        // Simple animation for cards on scroll
         document.addEventListener('DOMContentLoaded', function() {
-            // Simple animation for tournament cards on scroll
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -437,7 +579,7 @@
                 });
             }, { threshold: 0.1 });
 
-            document.querySelectorAll('.tournament-card').forEach(card => {
+            document.querySelectorAll('.tournament-card, .game-card, .popular-tournament-card, .prize-tournament-card').forEach(card => {
                 card.style.opacity = 0;
                 card.style.transform = 'translateY(20px)';
                 card.style.transition = 'opacity 0.5s, transform 0.5s';

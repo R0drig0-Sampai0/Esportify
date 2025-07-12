@@ -1,0 +1,234 @@
+﻿@{
+    ViewData["Title"] = "Developers Information";
+    Layout = "_Layout"; // Ensure this points to your shared layout
+}
+
+<div class="container developers-container">
+    <div class="developers-header text-center mb-5">
+        <h1 class="text-gradient">PROJECT INFORMATION</h1>
+        <p class="tagline">Details about the Esportify development</p>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h2 class="section-title">Course Information</h2>
+        </div>
+        <div class="card-body">
+            <ul class="dev-list list-group list-group-flush">
+                <li class="dev-list-item list-group-item"><strong>Course:</strong> Engenharia Informática</li>
+                <li class="dev-list-item list-group-item"><strong>Discipline:</strong> Desenvolvimento Web</li>
+                <li class="dev-list-item list-group-item"><strong>Academic Year:</strong> 2024/2025</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h2 class="section-title">Development Team</h2>
+        </div>
+        <div class="card-body">
+            <ul class="dev-list list-group list-group-flush">
+                <li class="dev-list-item list-group-item">
+                    <strong>Rodrigo Sampaio:</strong> Número 24882
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h2 class="section-title">Technologies Used</h2>
+        </div>
+        <div class="card-body">
+            <h5 class="section-subtitle">Core Technologies:</h5>
+            <ul class="dev-list">
+                <li class="dev-list-item">ASP.NET Core MVC 7.0</li>
+                <li class="dev-list-item">Entity Framework Core 7.0</li>
+                <li class="dev-list-item">SQLite</li>
+                <li class="dev-list-item">SignalR</li>
+                <li class="dev-list-item">Bootstrap 5.3</li>
+                <li class="dev-list-item">Font Awesome 6.4</li>
+            </ul>
+
+            <h5 class="section-subtitle mt-3">NuGet Packages:</h5>
+            <ul class="dev-list">
+                <li class="dev-list-item">Microsoft.AspNetCore.SignalR</li>
+                <li class="dev-list-item">Microsoft.EntityFrameworkCore.Sqlite</li>
+                <li class="dev-list-item">Microsoft.EntityFrameworkCore.Design</li>
+                <li class="dev-list-item">BCrypt.Net-Next</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h2 class="section-title">Test Credentials</h2>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Role</th>
+                        <th>Username</th>
+                        <th>Password</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Administrator</td>
+                        <td>admin@esportify.com</td>
+                        <td>Admin@123</td>
+                    </tr>
+                    <tr>
+                        <td>Regular User</td>
+                        <td>user@esportify.com</td>
+                        <td>User@123</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        :root {
+            --black: #0a0a0a;
+            --dark-grey: #1a1a1a;
+            --medium-grey: #2a2a2a;
+            --light-grey: #3a3a3a;
+            --green: #00ff88;
+            --dark-green: #00cc6a;
+            --text: #ffffff;
+            --error: #ff4655;
+        }
+
+        .developers-container {
+            padding: 2rem 0;
+            background-color: var(--black);
+        }
+
+        .developers-header h1.text-gradient {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            background: linear-gradient(to right, var(--green), var(--dark-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: var(--green); /* Fallback for non-WebKit browsers */
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            color: var(--text);
+            letter-spacing: 1px;
+        }
+
+        .card {
+            background: var(--dark-grey);
+            border: 1px solid var(--medium-grey);
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .card-header {
+            background: var(--medium-grey);
+            border-bottom: 1px solid var(--light-grey);
+            padding: 1rem;
+        }
+
+        .section-title {
+            color: var(--green);
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: 0;
+            font-weight: 600;
+            font-size: 1.5rem;
+        }
+
+        .section-subtitle {
+            color: var(--green);
+            text-transform: uppercase;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .card-body {
+            padding: 2rem;
+            color: var(--text);
+        }
+
+        .dev-list.list-group {
+            background: transparent;
+        }
+
+        .dev-list-item.list-group-item {
+            background: transparent;
+            border-bottom: 1px solid var(--medium-grey);
+            color: var(--text);
+            padding: 1rem;
+        }
+
+            .dev-list-item.list-group-item strong {
+                color: var(--text);
+            }
+
+        .dev-list:not(.list-group) {
+            list-style-type: none;
+            padding-left: 1rem;
+        }
+
+        .dev-list-item:not(.list-group-item) {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+            .dev-list-item:not(.list-group-item)::before {
+                content: '\f105';
+                font-family: 'Font Awesome 6 Free';
+                font-weight: 900;
+                position: absolute;
+                left: 0;
+                color: var(--green);
+            }
+
+        .table {
+            background: var(--dark-grey);
+            color: var(--text);
+        }
+
+            .table th,
+            .table td {
+                border: 1px solid var(--medium-grey);
+                padding: 0.75rem;
+            }
+
+            .table thead {
+                background: var(--medium-grey);
+                color: var(--green);
+                text-transform: uppercase;
+            }
+
+            .table tbody tr:hover {
+                background: var(--medium-grey);
+            }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+        }
+
+        .table {
+            font-size: 0.9rem;
+        }
+
+        }
+    </style>
+}

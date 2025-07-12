@@ -14,52 +14,55 @@
                 <div class="register-box">
                     <div class="register-form">
                         <h2 class="section-title">PLAYER REGISTRATION</h2>
-                        <form asp-controller="Auth" asp-action="Register" method="post">
+                        <form id="register-form" asp-controller="Auth" asp-action="Register" method="post">
+                            @Html.AntiForgeryToken()
                             <div class="form-group mb-4">
                                 <label class="form-label">Gamer Tag</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-gamepad"></i></span>
-                                    <input type="text" name="username" class="form-control" placeholder="Enter your unique gamer tag" required />
+                                    <input type="text" id="username" name="username" class="form-control" placeholder="Enter your unique gamer tag" required />
                                 </div>
+                                <small id="username-feedback" class="form-text"></small>
                             </div>
                             <div class="form-group mb-4">
                                 <label class="form-label">Email</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                                    <input type="email" name="email" class="form-control" placeholder="Enter your email" required />
+                                    <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email" required />
                                 </div>
                             </div>
                             <div class="form-group mb-4">
                                 <label class="form-label">Password</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                                    <input type="password" name="password" class="form-control" placeholder="Create a strong password" required />
+                                    <input type="password" id="password" name="password" class="form-control" placeholder="Create a strong password" required />
                                 </div>
                                 <div class="password-strength mt-2">
                                     <div class="strength-bar"></div>
-                                    <small class="text-muted">Password strength: <span id="strength-text">Weak</span></small>
+                                    <small class="text-light-grey">Password strength: <span id="strength-text">Weak</span></small>
                                 </div>
                             </div>
                             <div class="form-group mb-4">
                                 <label class="form-label">Confirm Password</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                                    <input type="password" name="confirmPassword" class="form-control" placeholder="Confirm your password" required />
+                                    <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" placeholder="Confirm your password" required />
                                 </div>
+                                <small id="confirm-password-feedback" class="form-text"></small>
                             </div>
                             <div class="form-check mb-4">
                                 <input class="form-check-input" type="checkbox" id="termsCheck" required>
                                 <label class="form-check-label" for="termsCheck">
-                                    I agree to the <a href="#" class="text-primary">Terms of Service</a> and <a href="#" class="text-primary">Privacy Policy</a>
+                                    I agree to the <a asp-controller="Home" asp-action="Terms" class="text-green">Terms of Service</a> and <a asp-controller="Home" asp-action="Privacy" class="text-green">Privacy Policy</a>
                                 </label>
                             </div>
-                            <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">
+                            <button type="submit" class="btn btn-green btn-lg w-100 mb-3">
                                 <span>CREATE ACCOUNT</span>
                                 <i class="fas fa-user-plus ms-2"></i>
                             </button>
                             <div class="text-center">
-                                <span class="text-muted">Already have an account?</span>
-                                <a asp-controller="Auth" asp-action="Login" class="ms-2 text-primary">Sign In</a>
+                                <span class="text-light-grey">Already have an account?</span>
+                                <a asp-controller="Auth" asp-action="Login" class="ms-2 text-green">Sign In</a>
                             </div>
                         </form>
                     </div>
@@ -84,32 +87,42 @@
 
 @section Styles {
     <style>
-        .register-container {
-            padding: 2rem 0;
+        :root {
+            --black: #0a0a0a;
+            --dark-grey: #1a1a1a;
+            --medium-grey: #2a2a2a;
+            --light-grey: #3a3a3a;
+            --green: #00ff88;
+            --dark-green: #00cc6a;
+            --text: #ffffff;var(--light-grey)
+            --error: #ff4655;
         }
 
-        .register-header h1 {
+        .register-container {
+            padding: 2rem 0;
+            background-color: var(--black);
+        }
+
+        .register-header h1.text-gradient {
             font-size: 2.5rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
             text-transform: uppercase;
-        }
-
-        .text-gradient {
-            background: linear-gradient(to right, var(--bs-primary), var(--highlight));
+            background: linear-gradient(to right, var(--green), var(--dark-green));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            color: var(--green);
         }
 
         .tagline {
             font-size: 1.2rem;
-            color: var(--bs-gray-400);
+            color: var( --text);
             letter-spacing: 1px;
         }
 
         .register-box {
-            background: rgba(15, 25, 35, 0.9);
-            border: 1px solid var(--accent);
+            background: var(--dark-grey);
+            border: 1px solid var(--medium-grey);
             border-radius: 8px;
             padding: 2rem;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
@@ -117,7 +130,7 @@
         }
 
         .section-title {
-            color: var(--bs-primary);
+            color: var(--green);
             text-transform: uppercase;
             text-align: center;
             margin-bottom: 2rem;
@@ -129,27 +142,27 @@
             font-size: 0.9rem;
             letter-spacing: 1px;
             margin-bottom: 0.5rem;
-            color: var(--bs-gray-300);
+            color: var(--text);
         }
 
         .form-control {
-            background-color: rgba(255, 255, 255, 0.1);
-            border: 1px solid var(--accent);
-            color: var(--bs-light);
+            background-color: var(--medium-grey);
+            border: 1px solid var(--light-grey);
+            color: var(--text);
             padding: 0.75rem 1rem;
         }
 
             .form-control:focus {
-                background-color: rgba(255, 255, 255, 0.15);
-                border-color: var(--bs-primary);
-                box-shadow: 0 0 0 0.25rem rgba(255, 70, 85, 0.25);
-                color: var(--bs-light);
+                background-color: var(--medium-grey);
+                border-color: var(--green);
+                box-shadow: 0 0 0 0.25rem rgba(0, 255, 136, 0.25);
+                color: var(--text);
             }
 
         .input-group-text {
-            background-color: rgba(255, 255, 255, 0.1);
-            border: 1px solid var(--accent);
-            color: var(--bs-primary);
+            background-color: var(--medium-grey);
+            border: 1px solid var(--light-grey);
+            color: var(--green);
         }
 
         .password-strength {
@@ -159,34 +172,109 @@
         .strength-bar {
             height: 4px;
             width: 0%;
-            background: #ff4655;
+            background: var(--error);
             transition: width 0.3s, background 0.3s;
             margin-bottom: 0.25rem;
             border-radius: 2px;
         }
 
         .form-check-label {
-            color: var(--bs-gray-400);
+            color: var(--text);
         }
 
         .form-check-input {
-            background-color: rgba(255, 255, 255, 0.1);
-            border: 1px solid var(--accent);
+            background-color: var(--medium-grey);
+            border: 1px solid var(--light-grey);
         }
 
             .form-check-input:checked {
-                background-color: var(--bs-primary);
-                border-color: var(--bs-primary);
+                background-color: var(--green);
+                border-color: var(--green);
             }
 
-        @@media (max-width: 768px) {
-            .register-header h1 {
-                font-size: 2rem;
+        .btn-green {
+            background-color: var(--green);
+            border-color: var(--green);
+            color: var(--black);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0.5rem 1.5rem;
+            transition: all 0.3s;
+        }
+
+            .btn-green:hover {
+                background-color: var(--dark-green);
+                border-color: var(--dark-green);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0, 255, 136, 0.3);
             }
 
-            .register-box {
-                padding: 1.5rem;
+        .btn-social {
+            font-weight: 600;
+            text-transform: uppercase;
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: var(--text);
+        }
+
+        .btn-steam {
+            background-color: var(--medium-grey);
+            border: 1px solid var(--light-grey);
+        }
+
+            .btn-steam:hover {
+                background-color: var(--dark-green);
+                border-color: var(--green);
             }
+
+        .btn-discord {
+            background-color: var(--medium-grey);
+            border: 1px solid var(--light-grey);
+        }
+
+            .btn-discord:hover {
+                background-color: var(--dark-green);
+                border-color: var(--green);
+            }
+
+        .text-green {
+            color: var(--green);
+        }
+
+            .text-green:hover {
+                color: var(--dark-green);
+            }
+
+        .text-light-grey {
+            color: var( --text);
+        }
+
+        .alert-danger {
+            background-color: var(--dark-grey);
+            border-color: var(--error);
+            color: var(--error);
+        }
+
+        .social-login {
+            border-top: 1px solid var(--medium-grey);
+        }
+
+            .social-login p {
+                color: var(--white);
+            }
+
+        .register-box {
+            padding: 1.5rem;
+        }
+
+        .social-buttons {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
         }
     </style>
 }
@@ -194,20 +282,164 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const passwordInput = document.querySelector('input[name="password"]');
+        document.addEventListener('DOMContentLoaded', function () {
+            const usernameInput = document.querySelector('#username');
+            const usernameFeedback = document.getElementById('username-feedback');
+            const passwordInput = document.querySelector('#password');
+            const confirmPasswordInput = document.querySelector('#confirmPassword');
+            const confirmPasswordFeedback = document.getElementById('confirm-password-feedback');
             const strengthBar = document.querySelector('.strength-bar');
             const strengthText = document.getElementById('strength-text');
+            const registerButton = document.querySelector('button[type="submit"]');
+            let usernameCheckTimeout;
 
-            passwordInput.addEventListener('input', function() {
+            // Real-time username availability check
+            usernameInput.addEventListener('input', function () {
+                clearTimeout(usernameCheckTimeout);
+
+                const username = this.value.trim();
+                if (username.length < 3) {
+                    usernameFeedback.textContent = 'Username must be at least 3 characters';
+                    usernameFeedback.style.color = 'var(--error)';
+                    registerButton.disabled = true;
+                    return;
+                }
+
+                usernameFeedback.textContent = 'Checking...';
+                usernameFeedback.style.color = 'var(--light-grey)';
+
+                usernameCheckTimeout = setTimeout(async () => {
+                    try {
+                        const token = document.querySelector('[name="__RequestVerificationToken"]')?.value;
+                        if (!token) {
+                            usernameFeedback.textContent = 'Error: CSRF token missing';
+                            usernameFeedback.style.color = 'var(--error)';
+                            console.error('CSRF token not found');
+                            return;
+                        }
+
+                        const response = await fetch('/api/auth/check-username', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': token
+                            },
+                            body: JSON.stringify({ username })
+                        });
+
+                        if (!response.ok) throw new Error('Network error');
+
+                        const data = await response.json();
+                        usernameFeedback.textContent = data.message || (data.available ? 'Username available' : 'Username taken');
+                        usernameFeedback.style.color = data.available ? 'var(--green)' : 'var(--error)';
+                        registerButton.disabled = !data.available;
+
+                    } catch (error) {
+                        usernameFeedback.textContent = 'Error checking username';
+                        usernameFeedback.style.color = 'var(--error)';
+                        console.error('Username check failed:', error);
+                    }
+                }, 500); // 500ms debounce delay
+            });
+
+            // Password validation
+            passwordInput.addEventListener('input', async function () {
                 const password = this.value;
-                const strength = calculatePasswordStrength(password);
+                const clientStrength = calculatePasswordStrength(password);
+                updateStrengthUI(clientStrength);
 
+                clearTimeout(this.debounce);
+                this.debounce = setTimeout(async () => {
+                    try {
+                        const response = await fetch('/api/auth/validate-password', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ password })
+                        });
+
+                        if (response.ok) {
+                            const serverValidation = await response.json();
+                            if (!serverValidation.isValid) {
+                                strengthText.textContent += " (Server: Too weak)";
+                                strengthText.style.color = 'var(--error)';
+                                registerButton.disabled = true;
+                            } else {
+                                registerButton.disabled = confirmPasswordInput.value !== password;
+                            }
+                        } else {
+                            strengthText.textContent = 'Error validating password';
+                            strengthText.style.color = 'var(--error)';
+                            registerButton.disabled = true;
+                        }
+                    } catch (error) {
+                        strengthText.textContent = 'Error validating password';
+                        strengthText.style.color = 'var(--error)';
+                        console.error('Password validation failed:', error);
+                    }
+                }, 500);
+            });
+
+            // Confirm password validation
+            confirmPasswordInput.addEventListener('input', function () {
+                const password = passwordInput.value;
+                const confirmPassword = this.value;
+                if (password !== confirmPassword) {
+                    confirmPasswordFeedback.textContent = 'Passwords do not match';
+                    confirmPasswordFeedback.style.color = 'var(--error)';
+                    registerButton.disabled = true;
+                } else {
+                    confirmPasswordFeedback.textContent = 'Passwords match';
+                    confirmPasswordFeedback.style.color = 'var(--green)';
+                    registerButton.disabled = false;
+                }
+            });
+
+            // Form submission
+            document.querySelector('#register-form').addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                const formData = {
+                    username: usernameInput.value,
+                    email: document.querySelector('#email').value,
+                    password: passwordInput.value,
+                    confirmPassword: confirmPasswordInput.value
+                };
+
+                try {
+                    const token = document.querySelector('[name="__RequestVerificationToken"]')?.value;
+                    if (!token) {
+                        alert('Error: CSRF token missing');
+                        console.error('CSRF token not found');
+                        return;
+                    }
+
+                    const response = await fetch('/api/auth/register', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': token
+                        },
+                        body: JSON.stringify(formData)
+                    });
+
+                    if (response.ok) {
+                        window.location.href = '/';
+                    } else {
+                        const error = await response.json();
+                        alert(error.error || 'Registration failed');
+                    }
+                } catch (error) {
+                    alert('Registration failed. Please try again later.');
+                    console.error('Registration error:', error);
+                }
+            });
+
+            function updateStrengthUI(strength) {
                 strengthBar.style.width = strength.percentage + '%';
                 strengthBar.style.background = strength.color;
                 strengthText.textContent = strength.text;
                 strengthText.style.color = strength.color;
-            });
+            }
 
             function calculatePasswordStrength(password) {
                 let strength = 0;
@@ -220,11 +452,11 @@
                 strength = Math.min(strength, 100);
 
                 if (strength < 30) {
-                    return { percentage: strength, color: '#ff4655', text: 'Weak' };
+                    return { percentage: strength, color: 'var(--error)', text: 'Weak' };
                 } else if (strength < 70) {
-                    return { percentage: strength, color: '#ff8a00', text: 'Medium' };
+                    return { percentage: strength, color: 'var(--light-grey)', text: 'Medium' };
                 } else {
-                    return { percentage: strength, color: '#2ecc71', text: 'Strong' };
+                    return { percentage: strength, color: 'var(--green)', text: 'Strong' };
                 }
             }
         });

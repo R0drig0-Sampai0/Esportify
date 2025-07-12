@@ -19,15 +19,14 @@ namespace Esportify.Migrations
 
             modelBuilder.Entity("Esportify.Models.Game", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Genre")
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("LogoUrl")
+                    b.Property<string>("ImageUrl")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
@@ -45,20 +44,20 @@ namespace Esportify.Migrations
 
             modelBuilder.Entity("Esportify.Models.Registration", b =>
                 {
-                    b.Property<int>("TournamentId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("TournamentId")
+                        .HasColumnType("TEXT");
 
-                    b.Property<int>("TeamId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("TeamId")
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("RegistrationDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("RegistrationId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("RegistrationId")
+                        .HasColumnType("TEXT");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
 
                     b.HasKey("TournamentId", "TeamId");
 
@@ -71,9 +70,8 @@ namespace Esportify.Migrations
 
             modelBuilder.Entity("Esportify.Models.Team", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
@@ -81,8 +79,9 @@ namespace Esportify.Migrations
                     b.Property<bool>("IsOpenForMembers")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("LeaderId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("LeaderId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("LogoUrl")
                         .HasColumnType("TEXT");
@@ -95,8 +94,8 @@ namespace Esportify.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -109,11 +108,11 @@ namespace Esportify.Migrations
 
             modelBuilder.Entity("Esportify.Models.TeamMember", b =>
                 {
-                    b.Property<int>("TeamId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("TeamId")
+                        .HasColumnType("TEXT");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("JoinedAt")
                         .HasColumnType("TEXT");
@@ -127,89 +126,110 @@ namespace Esportify.Migrations
 
             modelBuilder.Entity("Esportify.Models.Tournament", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
 
-                    b.Property<int>("CreatorId")
-                        .HasColumnType("INTEGER");
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(512)
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("EndDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("GameId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Location")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("GameId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("MaxTeamSize")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("MaxTeams")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("PrizePool")
+                    b.Property<int>("MinTeamSize")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("OrganizerId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("PrizePool")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("RegistrationDeadline")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("TeamSize")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("TournamentName")
-                        .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("TEXT");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatorId");
-
                     b.HasIndex("GameId");
+
+                    b.HasIndex("OrganizerId");
 
                     b.ToTable("Tournaments");
                 });
 
             modelBuilder.Entity("Esportify.Models.User", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("AccessFailedCount")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<string>("ConcurrencyStamp")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("IsEmailConfirmed")
+                    b.Property<bool>("EmailConfirmed")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime?>("LastLogin")
+                    b.Property<bool>("IsAdmin")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NormalizedUserName")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PasswordHash")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("ProfileImageUrl")
+                    b.Property<string>("PhoneNumber")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime?>("UpdatedAt")
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("SecurityStamp")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasMaxLength(32)
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("UserName")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -217,17 +237,35 @@ namespace Esportify.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("Esportify.Models.UserGame", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("GameId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("UserId", "GameId");
+
+                    b.HasIndex("GameId");
+
+                    b.ToTable("UserGames");
+                });
+
             modelBuilder.Entity("Esportify.Models.UserProfile", b =>
                 {
-                    b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("AvatarUrl")
-                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("BannerUrl")
+                        .HasMaxLength(256)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Bio")
-                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("TEXT");
 
@@ -238,10 +276,19 @@ namespace Esportify.Migrations
                     b.Property<string>("DiscordUrl")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("DisplayName")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("Earnings")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("FavoriteGame")
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("FavoriteTeam")
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("TotalMatchesPlayed")
@@ -326,34 +373,57 @@ namespace Esportify.Migrations
 
             modelBuilder.Entity("Esportify.Models.Tournament", b =>
                 {
-                    b.HasOne("Esportify.Models.User", "Creator")
-                        .WithMany()
-                        .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("Esportify.Models.Game", "Game")
                         .WithMany("Tournaments")
                         .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Creator");
+                    b.HasOne("Esportify.Models.User", "Organizer")
+                        .WithMany()
+                        .HasForeignKey("OrganizerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Game");
+
+                    b.Navigation("Organizer");
+                });
+
+            modelBuilder.Entity("Esportify.Models.UserGame", b =>
+                {
+                    b.HasOne("Esportify.Models.Game", "Game")
+                        .WithMany("LikedByUsers")
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Esportify.Models.User", "User")
+                        .WithMany("FavoriteGames")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Game");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Esportify.Models.UserProfile", b =>
                 {
-                    b.HasOne("Esportify.Models.User", null)
-                        .WithOne()
+                    b.HasOne("Esportify.Models.User", "User")
+                        .WithOne("Profile")
                         .HasForeignKey("Esportify.Models.UserProfile", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Esportify.Models.Game", b =>
                 {
+                    b.Navigation("LikedByUsers");
+
                     b.Navigation("Tournaments");
                 });
 
@@ -371,6 +441,10 @@ namespace Esportify.Migrations
 
             modelBuilder.Entity("Esportify.Models.User", b =>
                 {
+                    b.Navigation("FavoriteGames");
+
+                    b.Navigation("Profile");
+
                     b.Navigation("Registrations");
 
                     b.Navigation("TeamMemberships");

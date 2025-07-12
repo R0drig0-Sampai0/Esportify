@@ -7,12 +7,11 @@ namespace Esportify.Models
         /// <summary>
         /// Identificador único da equipa.
         /// </summary>
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         /// <summary>
         /// Nome da equipa.
         /// </summary>
-        [Required(ErrorMessage = "O nome da equipa é de preenchimento obrigatório.")]
         [StringLength(64)]
         public string TeamName { get; set; } = string.Empty;
 
@@ -39,7 +38,7 @@ namespace Esportify.Models
         /// <summary>
         /// Identificador do líder da equipa.
         /// </summary>
-        public int LeaderId { get; set; }
+        public string LeaderId { get; set; }
 
         /// <summary>
         /// Líder da equipa, que é um utilizador.

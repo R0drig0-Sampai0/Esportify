@@ -15,11 +15,10 @@ namespace Esportify.Migrations
                 name: "Games",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    Id = table.Column<string>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     Genre = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
-                    LogoUrl = table.Column<string>(type: "TEXT", nullable: true),
+                    ImageUrl = table.Column<string>(type: "TEXT", nullable: true),
                     OfficialWebsite = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
@@ -31,18 +30,22 @@ namespace Esportify.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Username = table.Column<string>(type: "TEXT", maxLength: 32, nullable: false),
-                    Email = table.Column<string>(type: "TEXT", nullable: false),
-                    PasswordHash = table.Column<string>(type: "TEXT", nullable: false),
-                    Description = table.Column<string>(type: "TEXT", maxLength: 256, nullable: false),
-                    Country = table.Column<string>(type: "TEXT", maxLength: 64, nullable: true),
-                    ProfileImageUrl = table.Column<string>(type: "TEXT", nullable: true),
-                    IsEmailConfirmed = table.Column<bool>(type: "INTEGER", nullable: false),
-                    LastLogin = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: true)
+                    Id = table.Column<string>(type: "TEXT", nullable: false),
+                    IsAdmin = table.Column<bool>(type: "INTEGER", nullable: false),
+                    UserName = table.Column<string>(type: "TEXT", nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "TEXT", nullable: true),
+                    Email = table.Column<string>(type: "TEXT", nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "TEXT", nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "INTEGER", nullable: false),
+                    PasswordHash = table.Column<string>(type: "TEXT", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "TEXT", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "TEXT", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "TEXT", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "INTEGER", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "INTEGER", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "TEXT", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "INTEGER", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -53,15 +56,14 @@ namespace Esportify.Migrations
                 name: "Teams",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    Id = table.Column<string>(type: "TEXT", nullable: false),
                     TeamName = table.Column<string>(type: "TEXT", maxLength: 64, nullable: false),
                     Tag = table.Column<string>(type: "TEXT", nullable: true),
                     LogoUrl = table.Column<string>(type: "TEXT", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     IsOpenForMembers = table.Column<bool>(type: "INTEGER", nullable: false),
-                    LeaderId = table.Column<int>(type: "INTEGER", nullable: false),
-                    UserId = table.Column<int>(type: "INTEGER", nullable: true)
+                    LeaderId = table.Column<string>(type: "TEXT", nullable: false),
+                    UserId = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -83,19 +85,20 @@ namespace Esportify.Migrations
                 name: "Tournaments",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    TournamentName = table.Column<string>(type: "TEXT", maxLength: 128, nullable: false),
-                    Description = table.Column<string>(type: "TEXT", maxLength: 512, nullable: true),
+                    Id = table.Column<string>(type: "TEXT", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    Description = table.Column<string>(type: "TEXT", nullable: false),
+                    GameId = table.Column<string>(type: "TEXT", nullable: false),
                     StartDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    GameId = table.Column<int>(type: "INTEGER", nullable: false),
-                    CreatorId = table.Column<int>(type: "INTEGER", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    RegistrationDeadline = table.Column<DateTime>(type: "TEXT", nullable: false),
                     MaxTeams = table.Column<int>(type: "INTEGER", nullable: false),
-                    TeamSize = table.Column<int>(type: "INTEGER", nullable: false),
-                    Status = table.Column<string>(type: "TEXT", nullable: false),
-                    Location = table.Column<string>(type: "TEXT", nullable: false),
-                    PrizePool = table.Column<string>(type: "TEXT", nullable: true)
+                    MinTeamSize = table.Column<int>(type: "INTEGER", nullable: false),
+                    MaxTeamSize = table.Column<int>(type: "INTEGER", nullable: false),
+                    PrizePool = table.Column<decimal>(type: "TEXT", nullable: false),
+                    ImageUrl = table.Column<string>(type: "TEXT", nullable: false),
+                    OrganizerId = table.Column<string>(type: "TEXT", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -107,19 +110,75 @@ namespace Esportify.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Tournaments_Users_CreatorId",
-                        column: x => x.CreatorId,
+                        name: "FK_Tournaments_Users_OrganizerId",
+                        column: x => x.OrganizerId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserGames",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "TEXT", nullable: false),
+                    GameId = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserGames", x => new { x.UserId, x.GameId });
+                    table.ForeignKey(
+                        name: "FK_UserGames_Games_GameId",
+                        column: x => x.GameId,
+                        principalTable: "Games",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserGames_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserProfiles",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "TEXT", nullable: false),
+                    DisplayName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    Bio = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    AvatarUrl = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    BannerUrl = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    Country = table.Column<string>(type: "TEXT", maxLength: 64, nullable: true),
+                    TwitchUrl = table.Column<string>(type: "TEXT", nullable: true),
+                    YouTubeUrl = table.Column<string>(type: "TEXT", nullable: true),
+                    TwitterUrl = table.Column<string>(type: "TEXT", nullable: true),
+                    DiscordUrl = table.Column<string>(type: "TEXT", nullable: true),
+                    Earnings = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    TotalMatchesPlayed = table.Column<int>(type: "INTEGER", nullable: false),
+                    TournamentsWon = table.Column<int>(type: "INTEGER", nullable: false),
+                    TournamentsJoined = table.Column<int>(type: "INTEGER", nullable: false),
+                    FavoriteGame = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
+                    FavoriteTeam = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserProfiles", x => x.UserId);
+                    table.ForeignKey(
+                        name: "FK_UserProfiles_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "TeamMembers",
                 columns: table => new
                 {
-                    TeamId = table.Column<int>(type: "INTEGER", nullable: false),
-                    UserId = table.Column<int>(type: "INTEGER", nullable: false),
+                    TeamId = table.Column<string>(type: "TEXT", nullable: false),
+                    UserId = table.Column<string>(type: "TEXT", nullable: false),
                     JoinedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
@@ -143,11 +202,11 @@ namespace Esportify.Migrations
                 name: "Registrations",
                 columns: table => new
                 {
-                    TeamId = table.Column<int>(type: "INTEGER", nullable: false),
-                    TournamentId = table.Column<int>(type: "INTEGER", nullable: false),
-                    RegistrationId = table.Column<int>(type: "INTEGER", nullable: false),
+                    TeamId = table.Column<string>(type: "TEXT", nullable: false),
+                    TournamentId = table.Column<string>(type: "TEXT", nullable: false),
+                    RegistrationId = table.Column<string>(type: "TEXT", nullable: true),
                     RegistrationDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UserId = table.Column<int>(type: "INTEGER", nullable: true)
+                    UserId = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -197,13 +256,18 @@ namespace Esportify.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tournaments_CreatorId",
-                table: "Tournaments",
-                column: "CreatorId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Tournaments_GameId",
                 table: "Tournaments",
+                column: "GameId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tournaments_OrganizerId",
+                table: "Tournaments",
+                column: "OrganizerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserGames_GameId",
+                table: "UserGames",
                 column: "GameId");
         }
 
@@ -215,6 +279,12 @@ namespace Esportify.Migrations
 
             migrationBuilder.DropTable(
                 name: "TeamMembers");
+
+            migrationBuilder.DropTable(
+                name: "UserGames");
+
+            migrationBuilder.DropTable(
+                name: "UserProfiles");
 
             migrationBuilder.DropTable(
                 name: "Tournaments");

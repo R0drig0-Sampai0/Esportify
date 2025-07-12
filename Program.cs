@@ -1,17 +1,17 @@
 using Esportify.Data;
+using Esportify.Data.Initializers;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<EsportifyContext>(options =>
     options.UseSqlite(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddControllersWithViews();
-
+builder.Services.AddSignalR();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -32,19 +32,16 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 var app = builder.Build();
 
-// Ensure the database is created and initialized before the app starts
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<EsportifyContext>();
     try
     {
-        context.Database.Migrate();
-        DbInitializer.Initialize(context);
+        await DbInitializer.InitializeAsync(context);
     }
     catch (Exception ex)
     {
-        // Log the exception (e.g., to console or a logging framework)
         Console.WriteLine($"An error occurred while initializing the database: {ex.Message}");
         throw;
     }
@@ -62,17 +59,19 @@ else
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseAntiforgery();
 app.UseRouting();
-
 app.UseSession();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=LandingPage}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
+    name: "profile",
+    pattern: "profile/{username}",
+    defaults: new { controller = "Profile", action = "Index" });
 
 app.Run();
