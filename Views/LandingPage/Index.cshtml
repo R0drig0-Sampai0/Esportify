@@ -12,7 +12,7 @@
                 <h1 class="hero-title">Compete. Vence. <span class="text-green">Esportify.</span></h1>
                 <p class="hero-subtitle">Junta-te à plataforma definitiva para torneios de esports e eleva o teu jogo ao próximo nível.</p>
                 <div class="cta-buttons">
-                    <a asp-controller="Account" asp-action="Register" class="btn btn-primary">Registar Grátis</a>
+                    <a asp-controller="Auth" asp-action="Register" class="btn btn-primary">Registar Grátis</a>
                     <a asp-controller="Tournaments" asp-action="Index" class="btn btn-outline">Explorar Torneios</a>
                 </div>
             </div>
@@ -86,7 +86,7 @@
                 <p class="cta-subtitle">Junta-te a <span class="stat-highlight">@Model.PlayerCount.ToString("N0")</span> jogadores que competem diariamente em <span class="stat-highlight">@Model.TournamentCount</span> torneios</p>
 
                 <div class="cta-button-group">
-                    <a asp-controller="Account" asp-action="Register" class="cta-button-primary">
+                    <a asp-controller="Auth" asp-action="Register" class="cta-button-primary">
                         <span class="button-content">
                             <span class="button-text">Começar Agora</span>
                         </span>

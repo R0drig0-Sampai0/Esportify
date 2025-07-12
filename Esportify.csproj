@@ -26,7 +26,7 @@
 
   <ItemGroup>
     <Folder Include="Data\Migrations\" />
-    <Folder Include="Views\Teams\" />
+    <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
 </Project>

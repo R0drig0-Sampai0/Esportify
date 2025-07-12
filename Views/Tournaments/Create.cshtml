@@ -1,6 +1,6 @@
 ﻿@model Tournament
 @{
-    ViewData["Title"] = "Create Tournament";
+    ViewData["Title"] = "Criar Torneio";
 }
 
 <div class="create-tournament-container">
@@ -8,62 +8,62 @@
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 <div class="create-tournament-card">
-                    <h1 class="create-tournament-title">Create New Tournament</h1>
-                    <p class="create-tournament-subtitle">Fill out the form below to organize your competitive event</p>
+                    <h1 class="create-tournament-title">Criar Novo Torneio</h1>
+                    <p class="create-tournament-subtitle">Preencha o formulário abaixo para organizar o seu evento competitivo</p>
 
                     <form asp-action="Create" enctype="multipart/form-data" class="tournament-form">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-                        <!-- Tournament Basics -->
+                        <!-- Informações Básicas -->
                         <div class="form-section">
-                            <h2 class="section-title">Tournament Basics</h2>
+                            <h2 class="section-title">Informações Básicas</h2>
                             <div class="form-group">
-                                <label asp-for="Name" class="control-label"></label>
-                                <input asp-for="Name" class="form-control" placeholder="Tournament Name" />
+                                <label asp-for="Name" class="control-label">Nome do Torneio</label>
+                                <input asp-for="Name" class="form-control" placeholder="Nome do Torneio" />
                                 <span asp-validation-for="Name" class="text-danger"></span>
                             </div>
 
                             <div class="form-group">
-                                <label asp-for="Description" class="control-label"></label>
-                                <textarea asp-for="Description" class="form-control" rows="4" placeholder="Describe your tournament..."></textarea>
+                                <label asp-for="Description" class="control-label">Descrição</label>
+                                <textarea asp-for="Description" class="form-control" rows="4" placeholder="Descreva o seu torneio..."></textarea>
                                 <span asp-validation-for="Description" class="text-danger"></span>
                             </div>
 
                             <div class="form-group">
-                                <label asp-for="GameId" class="control-label">Game</label>
+                                <label asp-for="GameId" class="control-label">Jogo</label>
                                 <select asp-for="GameId" class="form-control" asp-items="ViewBag.Games">
-                                    <option value="">-- Select Game --</option>
+                                    <option value="">-- Selecionar Jogo --</option>
                                 </select>
                                 <span asp-validation-for="GameId" class="text-danger"></span>
                             </div>
 
                             <div class="form-group">
-                                <label asp-for="ImageUrl" class="control-label">Tournament Image URL</label>
-                                <input asp-for="ImageUrl" class="form-control" placeholder="https://example.com/image.jpg" />
+                                <label asp-for="ImageUrl" class="control-label">URL da Imagem</label>
+                                <input asp-for="ImageUrl" class="form-control" placeholder="https://exemplo.com/imagem.jpg" />
                                 <span asp-validation-for="ImageUrl" class="text-danger"></span>
-                                <small class="form-text text-muted">Or upload an image below</small>
+                                <small class="form-text text-muted">Ou carregue uma imagem abaixo</small>
                             </div>
 
                             <div class="form-group">
-                                <label class="control-label">Upload Image</label>
+                                <label class="control-label">Carregar Imagem</label>
                                 <input type="file" name="imageFile" class="form-control-file" accept="image/*" />
                             </div>
                         </div>
 
-                        <!-- Schedule -->
+                        <!-- Calendário -->
                         <div class="form-section">
-                            <h2 class="section-title">Schedule</h2>
+                            <h2 class="section-title">Calendário</h2>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label asp-for="StartDate" class="control-label"></label>
+                                        <label asp-for="StartDate" class="control-label">Data de Início</label>
                                         <input asp-for="StartDate" class="form-control" type="datetime-local" />
                                         <span asp-validation-for="StartDate" class="text-danger"></span>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label asp-for="EndDate" class="control-label"></label>
+                                        <label asp-for="EndDate" class="control-label">Data de Fim</label>
                                         <input asp-for="EndDate" class="form-control" type="datetime-local" />
                                         <span asp-validation-for="EndDate" class="text-danger"></span>
                                     </div>
@@ -71,33 +71,33 @@
                             </div>
 
                             <div class="form-group">
-                                <label asp-for="RegistrationDeadline" class="control-label"></label>
+                                <label asp-for="RegistrationDeadline" class="control-label">Prazo de Inscrição</label>
                                 <input asp-for="RegistrationDeadline" class="form-control" type="datetime-local" />
                                 <span asp-validation-for="RegistrationDeadline" class="text-danger"></span>
                             </div>
                         </div>
 
-                        <!-- Team Settings -->
+                        <!-- Configurações de Equipas -->
                         <div class="form-section">
-                            <h2 class="section-title">Team Settings</h2>
+                            <h2 class="section-title">Configurações de Equipas</h2>
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label asp-for="MaxTeams" class="control-label"></label>
+                                        <label asp-for="MaxTeams" class="control-label">Máx. Equipas</label>
                                         <input asp-for="MaxTeams" class="form-control" min="2" value="16" />
                                         <span asp-validation-for="MaxTeams" class="text-danger"></span>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label asp-for="MinTeamSize" class="control-label"></label>
+                                        <label asp-for="MinTeamSize" class="control-label">Mín. Jogadores</label>
                                         <input asp-for="MinTeamSize" class="form-control" min="1" value="3" />
                                         <span asp-validation-for="MinTeamSize" class="text-danger"></span>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label asp-for="MaxTeamSize" class="control-label"></label>
+                                        <label asp-for="MaxTeamSize" class="control-label">Máx. Jogadores</label>
                                         <input asp-for="MaxTeamSize" class="form-control" min="1" value="5" />
                                         <span asp-validation-for="MaxTeamSize" class="text-danger"></span>
                                     </div>
@@ -105,14 +105,14 @@
                             </div>
                         </div>
 
-                        <!-- Prize Pool -->
+                        <!-- Prémios -->
                         <div class="form-section">
-                            <h2 class="section-title">Prize Pool</h2>
+                            <h2 class="section-title">Prémios</h2>
                             <div class="form-group">
-                                <label asp-for="PrizePool" class="control-label"></label>
+                                <label asp-for="PrizePool" class="control-label">Prémio Total</label>
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text">$</span>
+                                        <span class="input-group-text">€</span>
                                     </div>
                                     <input asp-for="PrizePool" class="form-control" min="0" value="1000" />
                                 </div>
@@ -120,28 +120,28 @@
                             </div>
                         </div>
 
-                        <!-- Rules & Format -->
+                        <!-- Regras & Formato -->
                         <div class="form-section">
-                            <h2 class="section-title">Rules & Format</h2>
+                            <h2 class="section-title">Regras & Formato</h2>
                             <div class="form-group">
-                                <label class="control-label">Tournament Format</label>
+                                <label class="control-label">Formato do Torneio</label>
                                 <select class="form-control">
-                                    <option>Single Elimination</option>
-                                    <option>Double Elimination</option>
-                                    <option>Round Robin</option>
-                                    <option>Swiss System</option>
+                                    <option>Eliminatória Simples</option>
+                                    <option>Eliminatória Dupla</option>
+                                    <option>Liga</option>
+                                    <option>Sistema Suíço</option>
                                 </select>
                             </div>
 
                             <div class="form-group">
-                                <label class="control-label">Rules</label>
-                                <textarea class="form-control" rows="4" placeholder="Add any specific rules..."></textarea>
+                                <label class="control-label">Regras</label>
+                                <textarea class="form-control" rows="4" placeholder="Adicione regras específicas..."></textarea>
                             </div>
                         </div>
 
                         <div class="form-actions">
-                            <button type="submit" class="btn btn-primary btn-lg">Create Tournament</button>
-                            <a asp-action="Index" class="btn btn-outline-secondary btn-lg">Cancel</a>
+                            <button type="submit" class="btn btn-primary btn-lg">Criar Torneio</button>
+                            <a asp-action="Index" class="btn btn-outline-secondary btn-lg">Cancelar</a>
                         </div>
                     </form>
                 </div>
@@ -304,7 +304,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Set default dates
             const now = new Date();
-            const startDate = new Date(now.getTime() + 24 * 60 * 60 * 1000); // Tomorrow
+            const startDate = new Date(now.getTime() + 24 * 60 * 60 * 1000); // Amanhã
 
             // Format for datetime-local input
             function toLocalISOString(date) {
@@ -313,15 +313,15 @@
                 return localISOTime.substring(0, 16);
             }
 
-            // Set default start date (tomorrow at 18:00)
+            // Set default start date (amanhã às 18:00)
             startDate.setHours(18, 0, 0, 0);
             document.getElementById('StartDate').value = toLocalISOString(startDate);
 
-            // Set default end date (start date + 3 hours)
+            // Set default end date (start date + 3 horas)
             const endDate = new Date(startDate.getTime() + 3 * 60 * 60 * 1000);
             document.getElementById('EndDate').value = toLocalISOString(endDate);
 
-            // Set default registration deadline (start date - 1 hour)
+            // Set default registration deadline (start date - 1 hora)
             const regDeadline = new Date(startDate.getTime() - 60 * 60 * 1000);
             document.getElementById('RegistrationDeadline').value = toLocalISOString(regDeadline);
 
@@ -331,13 +331,11 @@
 
             imageFileInput.addEventListener('change', function(e) {
                 if (e.target.files.length > 0) {
-                    // In a real app, you would upload to your server here
-                    // For now, we'll just show a placeholder message
-                    imageUrlInput.value = 'Uploading image...';
+                    imageUrlInput.value = 'A carregar imagem...';
 
                     // Simulate upload delay
                     setTimeout(() => {
-                        imageUrlInput.value = '/uploads/tournaments/' + e.target.files[0].name;
+                        imageUrlInput.value = '/uploads/torneios/' + e.target.files[0].name;
                     }, 1000);
                 }
             });

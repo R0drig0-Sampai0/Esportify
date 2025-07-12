@@ -7,20 +7,20 @@
         <div class="col-md-8 col-lg-6">
             <div class="register-container">
                 <div class="register-header text-center mb-5">
-                    <h1 class="text-gradient">JOIN TOURNAMENT PRO</h1>
-                    <p class="tagline">Ready to compete? Create your account</p>
+                    <h1 class="text-gradient">JUNTA-TE AO ESPORTIFY</h1>
+                    <p class="tagline">Pronto para competir? Cria a tua conta</p>
                 </div>
 
                 <div class="register-box">
                     <div class="register-form">
-                        <h2 class="section-title">PLAYER REGISTRATION</h2>
+                        <h2 class="section-title">REGISTO DE JOGADOR</h2>
                         <form id="register-form" asp-controller="Auth" asp-action="Register" method="post">
                             @Html.AntiForgeryToken()
                             <div class="form-group mb-4">
-                                <label class="form-label">Gamer Tag</label>
+                                <label class="form-label">Nome de Jogador</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-gamepad"></i></span>
-                                    <input type="text" id="username" name="username" class="form-control" placeholder="Enter your unique gamer tag" required />
+                                    <input type="text" id="username" name="username" class="form-control" placeholder="Insere o teu nome de jogador único" required />
                                 </div>
                                 <small id="username-feedback" class="form-text"></small>
                             </div>
@@ -28,41 +28,41 @@
                                 <label class="form-label">Email</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                                    <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email" required />
+                                    <input type="email" id="email" name="email" class="form-control" placeholder="Insere o teu email" required />
                                 </div>
                             </div>
                             <div class="form-group mb-4">
-                                <label class="form-label">Password</label>
+                                <label class="form-label">Palavra-passe</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                                    <input type="password" id="password" name="password" class="form-control" placeholder="Create a strong password" required />
+                                    <input type="password" id="password" name="password" class="form-control" placeholder="Cria uma palavra-passe forte" required />
                                 </div>
                                 <div class="password-strength mt-2">
                                     <div class="strength-bar"></div>
-                                    <small class="text-light-grey">Password strength: <span id="strength-text">Weak</span></small>
+                                    <small class="text-light-grey">Força da palavra-passe: <span id="strength-text">Fraca</span></small>
                                 </div>
                             </div>
                             <div class="form-group mb-4">
-                                <label class="form-label">Confirm Password</label>
+                                <label class="form-label">Confirmar Palavra-passe</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                                    <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" placeholder="Confirm your password" required />
+                                    <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" placeholder="Confirma a tua palavra-passe" required />
                                 </div>
                                 <small id="confirm-password-feedback" class="form-text"></small>
                             </div>
                             <div class="form-check mb-4">
                                 <input class="form-check-input" type="checkbox" id="termsCheck" required>
                                 <label class="form-check-label" for="termsCheck">
-                                    I agree to the <a asp-controller="Home" asp-action="Terms" class="text-green">Terms of Service</a> and <a asp-controller="Home" asp-action="Privacy" class="text-green">Privacy Policy</a>
+                                    Concordo com os <a asp-controller="Home" asp-action="Terms" class="text-green">Termos de Serviço</a> e a <a asp-controller="Home" asp-action="Privacy" class="text-green">Política de Privacidade</a>
                                 </label>
                             </div>
                             <button type="submit" class="btn btn-green btn-lg w-100 mb-3">
-                                <span>CREATE ACCOUNT</span>
+                                <span>CRIAR CONTA</span>
                                 <i class="fas fa-user-plus ms-2"></i>
                             </button>
                             <div class="text-center">
-                                <span class="text-light-grey">Already have an account?</span>
-                                <a asp-controller="Auth" asp-action="Login" class="ms-2 text-green">Sign In</a>
+                                <span class="text-light-grey">Já tens uma conta?</span>
+                                <a asp-controller="Auth" asp-action="Login" class="ms-2 text-green">Iniciar Sessão</a>
                             </div>
                         </form>
                     </div>
@@ -293,28 +293,28 @@
             const registerButton = document.querySelector('button[type="submit"]');
             let usernameCheckTimeout;
 
-            // Real-time username availability check
+            // Verificação em tempo real da disponibilidade do nome de utilizador
             usernameInput.addEventListener('input', function () {
                 clearTimeout(usernameCheckTimeout);
 
                 const username = this.value.trim();
                 if (username.length < 3) {
-                    usernameFeedback.textContent = 'Username must be at least 3 characters';
+                    usernameFeedback.textContent = 'O nome de utilizador deve ter pelo menos 3 caracteres';
                     usernameFeedback.style.color = 'var(--error)';
                     registerButton.disabled = true;
                     return;
                 }
 
-                usernameFeedback.textContent = 'Checking...';
+                usernameFeedback.textContent = 'A verificar...';
                 usernameFeedback.style.color = 'var(--light-grey)';
 
                 usernameCheckTimeout = setTimeout(async () => {
                     try {
                         const token = document.querySelector('[name="__RequestVerificationToken"]')?.value;
                         if (!token) {
-                            usernameFeedback.textContent = 'Error: CSRF token missing';
+                            usernameFeedback.textContent = 'Erro: Token CSRF ausente';
                             usernameFeedback.style.color = 'var(--error)';
-                            console.error('CSRF token not found');
+                            console.error('Token CSRF não encontrado');
                             return;
                         }
 
@@ -327,22 +327,22 @@
                             body: JSON.stringify({ username })
                         });
 
-                        if (!response.ok) throw new Error('Network error');
+                        if (!response.ok) throw new Error('Erro de rede');
 
                         const data = await response.json();
-                        usernameFeedback.textContent = data.message || (data.available ? 'Username available' : 'Username taken');
+                        usernameFeedback.textContent = data.message || (data.available ? 'Nome de utilizador disponível' : 'Nome de utilizador já em uso');
                         usernameFeedback.style.color = data.available ? 'var(--green)' : 'var(--error)';
                         registerButton.disabled = !data.available;
 
                     } catch (error) {
-                        usernameFeedback.textContent = 'Error checking username';
+                        usernameFeedback.textContent = 'Erro ao verificar o nome de utilizador';
                         usernameFeedback.style.color = 'var(--error)';
-                        console.error('Username check failed:', error);
+                        console.error('Falha na verificação do nome de utilizador:', error);
                     }
-                }, 500); // 500ms debounce delay
+                }, 500);
             });
 
-            // Password validation
+            // Validação da palavra-passe
             passwordInput.addEventListener('input', async function () {
                 const password = this.value;
                 const clientStrength = calculatePasswordStrength(password);
@@ -360,41 +360,41 @@
                         if (response.ok) {
                             const serverValidation = await response.json();
                             if (!serverValidation.isValid) {
-                                strengthText.textContent += " (Server: Too weak)";
+                                strengthText.textContent += " (Servidor: Demasiado fraca)";
                                 strengthText.style.color = 'var(--error)';
                                 registerButton.disabled = true;
                             } else {
                                 registerButton.disabled = confirmPasswordInput.value !== password;
                             }
                         } else {
-                            strengthText.textContent = 'Error validating password';
+                            strengthText.textContent = 'Erro ao validar a palavra-passe';
                             strengthText.style.color = 'var(--error)';
                             registerButton.disabled = true;
                         }
                     } catch (error) {
-                        strengthText.textContent = 'Error validating password';
+                        strengthText.textContent = 'Erro ao validar a palavra-passe';
                         strengthText.style.color = 'var(--error)';
-                        console.error('Password validation failed:', error);
+                        console.error('Falha na validação da palavra-passe:', error);
                     }
                 }, 500);
             });
 
-            // Confirm password validation
+            // Validação da confirmação da palavra-passe
             confirmPasswordInput.addEventListener('input', function () {
                 const password = passwordInput.value;
                 const confirmPassword = this.value;
                 if (password !== confirmPassword) {
-                    confirmPasswordFeedback.textContent = 'Passwords do not match';
+                    confirmPasswordFeedback.textContent = 'As palavras-passe não coincidem';
                     confirmPasswordFeedback.style.color = 'var(--error)';
                     registerButton.disabled = true;
                 } else {
-                    confirmPasswordFeedback.textContent = 'Passwords match';
+                    confirmPasswordFeedback.textContent = 'As palavras-passe coincidem';
                     confirmPasswordFeedback.style.color = 'var(--green)';
                     registerButton.disabled = false;
                 }
             });
 
-            // Form submission
+            // Submissão do formulário
             document.querySelector('#register-form').addEventListener('submit', async function (e) {
                 e.preventDefault();
 
@@ -408,8 +408,8 @@
                 try {
                     const token = document.querySelector('[name="__RequestVerificationToken"]')?.value;
                     if (!token) {
-                        alert('Error: CSRF token missing');
-                        console.error('CSRF token not found');
+                        alert('Erro: Token CSRF ausente');
+                        console.error('Token CSRF não encontrado');
                         return;
                     }
 
@@ -420,17 +420,17 @@
                             'X-CSRF-TOKEN': token
                         },
                         body: JSON.stringify(formData)
-                    });
+                        });
 
                     if (response.ok) {
                         window.location.href = '/';
                     } else {
                         const error = await response.json();
-                        alert(error.error || 'Registration failed');
+                        alert(error.error || 'Falha no registo');
                     }
                 } catch (error) {
-                    alert('Registration failed. Please try again later.');
-                    console.error('Registration error:', error);
+                    alert('Falha no registo. Tenta novamente mais tarde.');
+                    console.error('Erro de registo:', error);
                 }
             });
 
@@ -452,11 +452,11 @@
                 strength = Math.min(strength, 100);
 
                 if (strength < 30) {
-                    return { percentage: strength, color: 'var(--error)', text: 'Weak' };
+                    return { percentage: strength, color: 'var(--error)', text: 'Fraca' };
                 } else if (strength < 70) {
-                    return { percentage: strength, color: 'var(--light-grey)', text: 'Medium' };
+                    return { percentage: strength, color: 'var(--light-grey)', text: 'Média' };
                 } else {
-                    return { percentage: strength, color: 'var(--green)', text: 'Strong' };
+                    return { percentage: strength, color: 'var(--green)', text: 'Forte' };
                 }
             }
         });

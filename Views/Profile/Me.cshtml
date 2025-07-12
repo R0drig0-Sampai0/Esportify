@@ -1,7 +1,7 @@
 ﻿@model Esportify.Models.User
 
 @{
-    ViewData["Title"] = "My Profile";
+    ViewData["Title"] = "O Meu Perfil";
 }
 
 <div class="profile-container">
@@ -20,30 +20,30 @@
 
     <div class="profile-content">
         <div class="profile-bio">
-            <h3>About</h3>
+            <h3>Sobre</h3> 
             <p>@Model.Profile?.Bio</p>
         </div>
 
         <div class="profile-stats">
-            <h3>Stats</h3>
+            <h3>Estatísticas</h3> 
             <div class="stats-grid">
                 <div>
                     <span class="stat-number">@Model.Profile?.TotalMatchesPlayed</span>
-                    <span class="stat-label">Matches Played</span>
+                    <span class="stat-label">Partidas Jogadas</span>  
                 </div>
                 <div>
                     <span class="stat-number">@Model.Profile?.TournamentsJoined</span>
-                    <span class="stat-label">Tournaments</span>
+                    <span class="stat-label">Torneios</span>
                 </div>
                 <div>
                     <span class="stat-number">@Model.Profile?.TournamentsWon</span>
-                    <span class="stat-label">Wins</span>
+                    <span class="stat-label">Vitórias</span> 
                 </div>
             </div>
         </div>
 
         <div class="profile-social">
-            <h3>Social Links</h3>
+            <h3>Redes Sociais</h3>  
             <div class="social-links">
                 @if (!string.IsNullOrEmpty(Model.Profile?.TwitchUrl))
                 {
@@ -51,19 +51,168 @@
                 }
                 @if (!string.IsNullOrEmpty(Model.Profile?.YouTubeUrl))
                 {
-                    <a href="@Model.Profile.YouTubeUrl" target="_blank">YouTube</a>
+                    <a href="@Model.Profile.YouTubeUrl" target="_blank">YouTube</a> 
                 }
                 @if (!string.IsNullOrEmpty(Model.Profile?.TwitterUrl))
                 {
-                    <a href="@Model.Profile.TwitterUrl" target="_blank">Twitter</a>
+                    <a href="@Model.Profile.TwitterUrl" target="_blank">Twitter</a> 
                 }
                 @if (!string.IsNullOrEmpty(Model.Profile?.DiscordUrl))
                 {
-                    <a href="@Model.Profile.DiscordUrl" target="_blank">Discord</a>
+                    <a href="@Model.Profile.DiscordUrl" target="_blank">Discord</a>  
                 }
             </div>
         </div>
     </div>
 
-    <a asp-action="Edit" class="btn btn-primary">Edit Profile</a>
+    <div class="text-center mt-4">
+        <a asp-action="Edit" class="btn btn-green">Editar Perfil</a>  
+    </div>
 </div>
+
+@section Styles {
+    <style>
+        :root {
+            --black: #0a0a0a;
+            --dark-grey: #1a1a1a;
+            --medium-grey: #2a2a2a;
+            --light-grey: #3a3a3a;
+            --green: #00ff88;
+            --dark-green: #00cc6a;
+            --text: #ffffff;
+            --error: #ff4655;
+        }
+
+        .profile-container {
+            padding: 2rem 0;
+            background-color: var(--black);
+        }
+
+        .profile-banner {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 8px 8px 0 0;
+            border: 1px solid var(--medium-grey);
+        }
+
+        .profile-header {
+            text-align: center;
+            margin: -50px 0 2rem;
+            padding: 1.5rem;
+            background: var(--dark-grey);
+            border-radius: 8px;
+            border: 1px solid var(--medium-grey);
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid var(--green);
+            object-fit: cover;
+            margin-bottom: 1rem;
+        }
+
+        .profile-header h1 {
+            font-size: 2rem;
+            color: var(--green);
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-header p {
+            color: var(--text);
+            font-size: 1rem;
+            margin: 0.25rem 0;
+        }
+
+        .profile-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: var(--dark-grey);
+            border: 1px solid var(--medium-grey);
+            border-radius: 8px;
+        }
+
+        .profile-bio, .profile-stats, .profile-social {
+            margin-bottom: 2rem;
+        }
+
+        h3 {
+            color: var(--green);
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        .profile-bio p {
+            color: var(--text);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--green);
+        }
+
+        .stat-label {
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+            .social-links a {
+                background: var(--medium-grey);
+                color: var(--green);
+                padding: 0.5rem 1.25rem;
+                border-radius: 50px;
+                text-decoration: none;
+                font-weight: 600;
+                transition: all 0.3s ease;
+            }
+
+                .social-links a:hover {
+                    background: var(--green);
+                    color: var(--black);
+                }
+
+        /* Estilo para o botão de edição */
+        .btn-green {
+            background-color: var(--green);
+            border-color: var(--green);
+            color: var(--black);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0.5rem 1.5rem;
+            transition: all 0.3s;
+        }
+
+            .btn-green:hover {
+                background-color: var(--dark-green);
+                border-color: var(--dark-green);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0, 255, 136, 0.3);
+            }
+    </style>
+}

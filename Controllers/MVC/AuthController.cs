@@ -19,39 +19,39 @@ namespace Esportify.Controllers.MVC
             _context = context;
         }
 
-        // GET: /Auth/Register
+        // GET: /Auth/Registar
         [HttpGet]
         public IActionResult Register()
         {
             return View();
         }
 
-        // POST: /Auth/Register
+        // POST: /Auth/Registar
         [HttpPost]
         public async Task<IActionResult> Register(RegisterModel model)
         {
-            // Validate model
+            // Validação do modelo
             if (!ModelState.IsValid)
             {
                 ModelState.AddModelError("", "Dados inválidos. Verifique os campos.");
                 return View(model);
             }
 
-            // Validate username (min 3 characters)
+            // Validação do nome de utilizador (mínimo 3 caracteres)
             if (string.IsNullOrWhiteSpace(model.Username) || model.Username.Length < 3)
             {
                 ModelState.AddModelError("Username", "O nome de utilizador deve ter pelo menos 3 caracteres");
                 return View(model);
             }
 
-            // Validate email
+            // Validação do email
             if (string.IsNullOrWhiteSpace(model.Email) || !model.Email.Contains("@"))
             {
                 ModelState.AddModelError("Email", "O email deve ser válido");
                 return View(model);
             }
 
-            // Validate password (min 8 chars, uppercase, digit, special char)
+            // Validação da palavra-passe (mínimo 8 caracteres, maiúscula, número, caractere especial)
             if (string.IsNullOrWhiteSpace(model.Password) || model.Password.Length < 8 ||
                 !System.Text.RegularExpressions.Regex.IsMatch(model.Password, @"[A-Z]") ||
                 !System.Text.RegularExpressions.Regex.IsMatch(model.Password, @"[0-9]") ||
@@ -61,22 +61,22 @@ namespace Esportify.Controllers.MVC
                 return View(model);
             }
 
-            // Check password confirmation
+            // Confirmação da palavra-passe
             if (model.Password != model.ConfirmPassword)
             {
                 ModelState.AddModelError("ConfirmPassword", "As palavras-passe não coincidem");
                 return View(model);
             }
 
-            // Check for existing user
-            if (await _context.Users.AnyAsync(u => u.UserName == model.Username))
+            // Verificar utilizador existente
+            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.UserName == model.Username || u.Email == model.Email);
+
+            if (existingUser != null)
             {
-                ModelState.AddModelError("Username", "O nome de utilizador já está em uso");
-                return View(model);
-            }
-            if (await _context.Users.AnyAsync(u => u.Email == model.Email))
-            {
-                ModelState.AddModelError("Email", "O email já está em uso");
+                if (existingUser.UserName == model.Username)
+                    ModelState.AddModelError("Username", "O nome de utilizador já está em uso");
+                if (existingUser.Email == model.Email)
+                    ModelState.AddModelError("Email", "O email já está em uso");
                 return View(model);
             }
 
@@ -86,7 +86,7 @@ namespace Esportify.Controllers.MVC
                 UserName = model.Username,
                 Email = model.Email,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password),
-                IsAdmin = model.Email.EndsWith("@admin.esportify.com") || model.Username == "admin" // Flexible admin assignment
+                IsAdmin = model.Email.EndsWith("@admin.esportify.com") || model.Username == "admin"
             };
 
             var userProfile = new UserProfile
@@ -104,7 +104,7 @@ namespace Esportify.Controllers.MVC
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", $"Erro ao salvar utilizador: {ex.Message}");
+                ModelState.AddModelError("", $"Erro ao guardar utilizador: {ex.Message}");
                 return View(model);
             }
 
@@ -123,14 +123,14 @@ namespace Esportify.Controllers.MVC
             return RedirectToAction("Index", "LandingPage");
         }
 
-        // GET: /Auth/Login
+        // GET: /Auth/IniciarSessao
         [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
 
-        // POST: /Auth/Login
+        // POST: /Auth/IniciarSessao
         [HttpPost]
         public async Task<IActionResult> Login(string username, string password)
         {
@@ -159,13 +159,13 @@ namespace Esportify.Controllers.MVC
             var principal = new ClaimsPrincipal(identity);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
-            Console.WriteLine($"User {user.UserName} signed in, IsAdmin: {user.IsAdmin}");
+            Console.WriteLine($"Utilizador {user.UserName} autenticado, IsAdmin: {user.IsAdmin}");
 
             HttpContext.Session.SetString("UserId", user.Id);
             return RedirectToAction("Index", "LandingPage");
         }
 
-        // POST: /Auth/Logout
+        // POST: /Auth/TerminarSessao
         [HttpPost]
         public async Task<IActionResult> Logout()
         {

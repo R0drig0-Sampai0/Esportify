@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = "Início de Sessão";
 }
 
 <div class="container">
@@ -8,36 +8,36 @@
             <div class="login-container">
                 <div class="login-header text-center mb-5">
                     <h1 class="text-gradient">TOURNAMENT PRO</h1>
-                    <p class="tagline">Compete. Win. Rise.</p>
+                    <p class="tagline">Competir. Vencer. Ascender.</p>
                 </div>
 
                 <div class="login-box">
                     <div class="login-form">
-                        <h2 class="section-title">PLAYER LOGIN</h2>
+                        <h2 class="section-title">INÍCIO DE SESSÃO</h2> 
                         <form id="login-form" asp-controller="Auth" asp-action="Login" method="post">
                             @Html.AntiForgeryToken()
                             <div class="form-group mb-4">
-                                <label class="form-label">Gamer Tag</label>
+                                <label class="form-label">Gamer Tag</label> 
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                    <input type="text" id="username" name="username" class="form-control" placeholder="Enter your gamer tag" required />
+                                    <input type="text" id="username" name="username" class="form-control" placeholder="Introduza o seu gamer tag" required />  <!-- PT-PT -->
                                 </div>
                                 <small id="username-feedback" class="form-text"></small>
                             </div>
                             <div class="form-group mb-4">
-                                <label class="form-label">Password</label>
+                                <label class="form-label">Palavra-passe</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-lock"></i></span>
                                     <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required />
                                 </div>
                             </div>
                             <button type="submit" class="btn btn-green btn-lg w-100 mb-3">
-                                <span>LOG IN</span>
+                                <span>INICIAR SESSÃO</span>
                                 <i class="fas fa-arrow-right ms-2"></i>
                             </button>
                             <div class="login-options d-flex justify-content-between">
-                                <a asp-controller="Auth" asp-action="ForgotPassword" class="text-green">Forgot password?</a>
-                                <a asp-controller="Auth" asp-action="Register" class="text-green">Create account</a>
+                                <a asp-controller="Auth" asp-action="ForgotPassword" class="text-green">Recuperar palavra-passe</a>
+                                <a asp-controller="Auth" asp-action="Register" class="text-green">Criar conta</a>
                             </div>
                         </form>
                     </div>
@@ -86,7 +86,7 @@
             background: linear-gradient(to right, var(--green), var(--dark-green));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            color: var(--green); /* Fallback for non-WebKit browsers */
+            color: var(--green);
         }
 
         .tagline {

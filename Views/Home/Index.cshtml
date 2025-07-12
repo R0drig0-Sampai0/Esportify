@@ -1,15 +1,16 @@
-﻿@{
-    ViewData["Title"] = "Home | Esportify";
+﻿@model List<Game>
+@{
+    ViewData["Title"] = "Início | Esportify";
 }
 
 <div class="homepage-container">
     <div class="row">
-        <!-- Left Sidebar - Favorite Games -->
+        <!-- Barra Lateral Esquerda - Jogos Favoritos -->
         <div class="col-lg-3 sidebar">
             <div class="sidebar-card">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h3 class="sidebar-title">My Games</h3>
-                    <a asp-controller="Games" asp-action="Index" class="btn btn-sm btn-outline-success">Add More</a>
+                    <h3 class="sidebar-title">Os Meus Jogos</h3>
+                    <a asp-controller="Games" asp-action="Index" class="btn btn-sm btn-outline-success">Adicionar Mais</a>
                 </div>
 
                 @if (User.Identity.IsAuthenticated && ViewData["FavoriteGames"] is List<Game> favoriteGames && favoriteGames.Any())
@@ -28,20 +29,20 @@
                 {
                     <div class="empty-state">
                         <i class="fas fa-gamepad text-success"></i>
-                        <p>No favorite games yet</p>
-                        <a asp-controller="Games" asp-action="Index" class="btn btn-success btn-sm">Browse Games</a>
+                        <p>Ainda sem jogos favoritos</p>
+                        <a asp-controller="Games" asp-action="Index" class="btn btn-success btn-sm">Explorar Jogos</a>
                     </div>
                 }
             </div>
         </div>
 
-        <!-- Main Content -->
+        <!-- Conteúdo Principal -->
         <div class="col-lg-9 main-content">
-            <!-- Upcoming Tournaments Section -->
+            <!-- Secção de Torneios Futuros -->
             <section class="mb-5">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2 class="section-title">Upcoming Tournaments</h2>
-                    <a asp-controller="Tournaments" asp-action="Index" class="btn btn-sm btn-outline-success">View All</a>
+                    <h2 class="section-title">Torneios Futuros</h2>
+                    <a asp-controller="Tournaments" asp-action="Index" class="btn btn-sm btn-outline-success">Ver Todos</a>
                 </div>
 
                 <div class="row">
@@ -62,14 +63,14 @@
                                             </div>
                                             <div class="detail-item">
                                                 <i class="fas fa-users text-success"></i>
-                                                <span>@tournament.Registrations.Count participants</span>
+                                                <span>@tournament.Registrations.Count participantes</span>
                                             </div>
                                             <div class="detail-item">
                                                 <i class="fas fa-trophy text-success"></i>
-                                                <span>@tournament.PrizePool Prize Pool</span>
+                                                <span>@tournament.PrizePool Prémio</span>
                                             </div>
                                         </div>
-                                        <a asp-controller="Tournaments" asp-action="Details" asp-route-id="@tournament.Id" class="btn btn-outline-success w-100 mt-3">View Details</a>
+                                        <a asp-controller="Tournaments" asp-action="Details" asp-route-id="@tournament.Id" class="btn btn-outline-success w-100 mt-3">Ver Detalhes</a>
                                     </div>
                                 </div>
                             </div>
@@ -78,11 +79,11 @@
                 </div>
             </section>
 
-            <!-- Browse Games Section -->
+            <!-- Secção de Explorar Jogos -->
             <section class="mb-5">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2 class="section-title">Browse Games</h2>
-                    <a asp-controller="Games" asp-action="Index" class="btn btn-sm btn-outline-success">View All</a>
+                    <h2 class="section-title">Explorar Jogos</h2>
+                    <a asp-controller="Games" asp-action="Index" class="btn btn-sm btn-outline-success">Ver Todos</a>
                 </div>
 
                 <div class="row">
@@ -96,7 +97,7 @@
                                         <img src="@game.ImageUrl" alt="@game.Name" class="game-image">
                                         <div class="game-overlay">
                                             <h3 class="game-title">@game.Name</h3>
-                                            <span class="game-tournaments">@game.Tournaments.Count tournaments</span>
+                                            <span class="game-tournaments">@game.Tournaments.Count torneios</span>
                                         </div>
                                     </a>
                                 </div>
@@ -106,58 +107,29 @@
                 </div>
             </section>
 
-            <!-- Create Team CTA -->
+            <!-- Chamada à Ação para Criar Equipa -->
             @if (User.Identity.IsAuthenticated)
             {
                 <section class="mb-5">
                     <div class="create-team-cta">
                         <div class="row align-items-center">
                             <div class="col-md-8">
-                                <h2>Ready to build your dream team?</h2>
-                                <p>Create or join a team to compete in tournaments together</p>
+                                <h2>Pronto para criar a tua equipa de sonho?</h2>
+                                <p>Cria ou junta-te a uma equipa para competir em torneios juntos</p>
                             </div>
                             <div class="col-md-4 text-md-end">
-                                <a asp-controller="Teams" asp-action="Create" class="btn btn-success btn-lg">Create Team</a>
+                                <a asp-controller="Teams" asp-action="Create" class="btn btn-success btn-lg">Criar Equipa</a>
                             </div>
                         </div>
                     </div>
                 </section>
             }
 
-            <!-- Popular Tournaments (Most Registrations) -->
+            <!-- Torneios com Grandes Prémios -->
             <section class="mb-5">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2 class="section-title">Popular Tournaments</h2>
-                    <a asp-controller="Tournaments" asp-action="Index" class="btn btn-sm btn-outline-success">View All</a>
-                </div>
-
-                <div class="popular-tournaments">
-                    @if (ViewData["PopularTournaments"] is List<Tournament> popularTournaments)
-                    {
-                        @foreach (var tournament in popularTournaments)
-                        {
-                            <div class="popular-tournament-card">
-                                <img src="@tournament.ImageUrl" alt="@tournament.Name" class="popular-tournament-image">
-                                <div class="popular-tournament-content">
-                                    <span class="game-badge">@tournament.Game.Name</span>
-                                    <h3>@tournament.Name</h3>
-                                    <div class="stats">
-                                        <span><i class="fas fa-users text-success"></i> @tournament.Registrations.Count Registered</span>
-                                        <span><i class="fas fa-trophy text-success"></i> @tournament.PrizePool</span>
-                                    </div>
-                                    <a asp-controller="Tournaments" asp-action="Details" asp-route-id="@tournament.Id" class="btn btn-success">Register Now</a>
-                                </div>
-                            </div>
-                        }
-                    }
-                </div>
-            </section>
-
-            <!-- High Prize Tournaments -->
-            <section class="mb-5">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2 class="section-title">Big Prize Tournaments</h2>
-                    <a asp-controller="Tournaments" asp-action="Index" class="btn btn-sm btn-outline-success">View All</a>
+                    <h2 class="section-title">Torneios com Grandes Prémios</h2>
+                    <a asp-controller="Tournaments" asp-action="Index" class="btn btn-sm btn-outline-success">Ver Todos</a>
                 </div>
 
                 <div class="row">
@@ -176,7 +148,7 @@
                                             <span><i class="fas fa-calendar-alt text-success"></i> @tournament.StartDate.ToString("MMM dd")</span>
                                             <span><i class="fas fa-users text-success"></i> @tournament.Registrations.Count</span>
                                         </div>
-                                        <a asp-controller="Tournaments" asp-action="Details" asp-route-id="@tournament.Id" class="btn btn-success w-100 mt-3">Details</a>
+                                        <a asp-controller="Tournaments" asp-action="Details" asp-route-id="@tournament.Id" class="btn btn-success w-100 mt-3">Detalhes</a>
                                     </div>
                                 </div>
                             </div>
@@ -191,11 +163,11 @@
 @section Styles {
     <style>
         :root {
-            --bs-primary: #28a745; /* Green */
-            --bs-dark: #121212; /* Dark background */
-            --bs-light: #f8f9fa; /* Light text */
-            --accent: #1e1e1e; /* Slightly lighter dark for accents */
-            --highlight: #218838; /* Darker green for highlights */
+            --bs-primary: #28a745;
+            --bs-dark: #121212;
+            --bs-light: #f8f9fa;
+            --accent: #1e1e1e;
+            --highlight: #218838;
         }
 
         body {
@@ -203,12 +175,10 @@
             color: var(--bs-light);
         }
 
-        /* Base Layout */
         .homepage-container {
             padding: 2rem 0;
         }
 
-        /* Sidebar Styles */
         .sidebar {
             position: sticky;
             top: 20px;
@@ -275,7 +245,6 @@
                 opacity: 0.8;
             }
 
-        /* Tournament Cards */
         .tournament-card {
             background: var(--accent);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -326,7 +295,6 @@
                 text-align: center;
             }
 
-        /* Game Cards */
         .game-card {
             position: relative;
             border-radius: 8px;
@@ -376,9 +344,8 @@
             opacity: 0.8;
         }
 
-        /* Create Team CTA */
         .create-team-cta {
-            background: linear-gradient(rgba(18, 18, 18, 0.9), url('/images/team-bg.jpg') no-repeat center center;
+            background: linear-gradient(rgba(18, 18, 18, 0.9));
             background-size: cover;
             padding: 2rem;
             border-radius: 8px;
@@ -397,7 +364,6 @@
                 margin-bottom: 0;
             }
 
-        /* Popular Tournaments */
         .popular-tournaments {
             display: grid;
             gap: 1.5rem;
@@ -449,7 +415,6 @@
                         margin-right: 5px;
                     }
 
-        /* Prize Tournaments */
         .prize-tournament-card {
             background: var(--accent);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -501,7 +466,6 @@
                     margin-right: 5px;
                 }
 
-        /* Section Titles */
         .section-title {
             font-size: 1.75rem;
             font-weight: 700;
@@ -509,7 +473,6 @@
             color: var(--bs-primary);
         }
 
-        /* Buttons */
         .btn-success {
             background-color: var(--bs-primary);
             border-color: var(--bs-primary);
@@ -530,7 +493,6 @@
                 color: white;
             }
 
-        /* Responsive Adjustments */
         @@media (max-width: 992px) {
             .sidebar {
                 position: static;
@@ -568,7 +530,6 @@
 
 @section Scripts {
     <script>
-        // Simple animation for cards on scroll
         document.addEventListener('DOMContentLoaded', function() {
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {

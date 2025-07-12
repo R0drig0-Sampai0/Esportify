@@ -1,39 +1,38 @@
 ﻿@model List<Game>
-
 @{
-    ViewData["Title"] = "Games";
+    ViewData["Title"] = "Jogos";
 }
 
-<!-- Hero Section -->
+<!-- Secção Hero -->
 <section class="games-hero">
     <div class="container">
         <div class="hero-content">
-            <h1 class="hero-title">Explore <span class="text-gradient">Competitive Games</span></h1>
-            <p class="hero-subtitle">Discover all supported titles for tournaments and ranked play</p>
+            <h1 class="hero-title">Explora <span class="text-gradient">Jogos Competitivos</span></h1>
+            <p class="hero-subtitle">Descobre todos os títulos suportados para torneios e jogos classificados</p>
             <div class="search-container">
                 <div class="search-input">
                     <i class="fas fa-search"></i>
-                    <input type="text" id="gameSearch" placeholder="Search games...">
+                    <input type="text" id="gameSearch" placeholder="Pesquisar jogos...">
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Main Content -->
+<!-- Conteúdo Principal -->
 <div class="games-container">
     <div class="container">
-        <!-- Filter Bar -->
+        <!-- Barra de Filtros -->
         <div class="filter-bar">
             <div class="filter-group">
-                <span class="filter-label">Filter by:</span>
+                <span class="filter-label">Filtrar por:</span>
                 <div class="filter-options">
-                    <button class="filter-btn active" data-filter="all">All Games</button>
+                    <button class="filter-btn active" data-filter="all">Todos os Jogos</button>
                     <button class="filter-btn" data-filter="fps">FPS</button>
                     <button class="filter-btn" data-filter="moba">MOBA</button>
                     <button class="filter-btn" data-filter="battle-royale">Battle Royale</button>
-                    <button class="filter-btn" data-filter="strategy">Strategy</button>
-                    <button class="filter-btn" data-filter="sports">Sports</button>
+                    <button class="filter-btn" data-filter="strategy">Estratégia</button>
+                    <button class="filter-btn" data-filter="sports">Desporto</button>
                 </div>
             </div>
         </div>
@@ -41,12 +40,12 @@
         {
             <div class="admin-actions">
                 <a asp-action="AddGame" class="btn btn-add-game">
-                    <i class="fas fa-plus"></i> Add New Game
+                    <i class="fas fa-plus"></i> Adicionar Novo Jogo
                 </a>
             </div>
         }
 
-        <!-- Games Grid -->
+        <!-- Grelha de Jogos -->
         <div class="games-grid" id="gameContainer">
             @foreach (var game in Model)
             {
@@ -57,21 +56,21 @@
                                  onerror="this.onerror=null;this.src='/images/default-game.jpg';">
                             <div class="game-badge">@game.Genre</div>
                             <div class="game-overlay">
-                                <span class="tournament-count">@game.Tournaments?.Count Active Tournaments</span>
+                                <span class="tournament-count">@game.Tournaments?.Count Torneios Ativos</span>
                             </div>
                         </div>
                         <div class="game-info">
                             <h3 class="game-title">@game.Name</h3>
-                                <a asp-action="Details" asp-route-id="@game.Id" class="view-btn">
-                                    View Details <i class="fas fa-arrow-right"></i>
-                                </a>
+                            <a asp-action="Details" asp-route-id="@game.Id" class="view-btn">
+                                Ver Detalhes <i class="fas fa-arrow-right"></i>
+                            </a>
                         </div>
                     </div>
                 </div>
             }
         </div>
 
-        <!-- Pagination -->
+        <!-- Paginação -->
         @if (ViewBag.TotalPages > 1)
         {
             <div class="pagination-container">
@@ -448,19 +447,19 @@
 @section Scripts {
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Filter functionality
+            // Funcionalidade de filtro
             const filterBtns = document.querySelectorAll('.filter-btn');
             const gameCards = document.querySelectorAll('.game-card');
 
             filterBtns.forEach(btn => {
                 btn.addEventListener('click', function() {
-                    // Update active state
+                    // Atualizar estado ativo
                     filterBtns.forEach(b => b.classList.remove('active'));
                     this.classList.add('active');
 
                     const filterValue = this.dataset.filter;
 
-                    // Filter games
+                    // Filtrar jogos
                     gameCards.forEach(card => {
                         if (filterValue === 'all' || card.dataset.genre === filterValue) {
                             card.style.display = 'block';
@@ -471,7 +470,7 @@
                 });
             });
 
-            // Search functionality
+            // Funcionalidade de pesquisa
             gameSearch.addEventListener('input', function () {
                 const searchTerm = this.value.trim().toLowerCase();
                 gameCards.forEach(card => {
@@ -485,18 +484,16 @@
                 });
             });
 
-
-
-            // Sort functionality
+            // Funcionalidade de ordenação
             const sortSelect = document.querySelector('.sort-select');
             sortSelect.addEventListener('change', function() {
-                // In a real implementation, this would likely make an API call
-                // to your backend with the sort parameter
-                console.log('Sort by:', this.value);
-                // You would then re-render the games with the new sort order
+                // Numa implementação real, isto provavelmente faria uma chamada à API
+                // para o backend com o parâmetro de ordenação
+                console.log('Ordenar por:', this.value);
+                // Posteriormente, os jogos seriam re-renderizados com a nova ordem
             });
 
-            // Animation for game cards
+            // Animação para cartões de jogos
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {

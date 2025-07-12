@@ -2,19 +2,19 @@
 @using Esportify.Models
 
 @{
-    ViewData["Title"] = "Tournaments";
+    ViewData["Title"] = "Torneios";
 }
 
 <!-- Hero Section -->
 <section class="games-hero">
     <div class="container">
         <div class="hero-content">
-            <h1 class="hero-title">Current <span class="text-gradient">Tournaments</span></h1>
-            <p class="hero-subtitle">Compete against the best and prove your skills</p>
+            <h1 class="hero-title">Torneios <span class="text-gradient">Disponíveis</span></h1>
+            <p class="hero-subtitle">Competes contra os melhores e prova as tuas habilidades</p>
             <div class="search-container">
                 <div class="search-input">
                     <i class="fas fa-search"></i>
-                    <input type="text" id="tournamentSearch" placeholder="Search tournaments...">
+                    <input type="text" id="tournamentSearch" placeholder="Pesquisar torneios...">
                 </div>
             </div>
         </div>
@@ -27,23 +27,23 @@
         <!-- Filter Bar -->
         <div class="filter-bar">
             <div class="filter-group">
-                <span class="filter-label">Filter by:</span>
+                <span class="filter-label">Filtrar por:</span>
                 <div class="filter-options">
-                    <button class="filter-btn active" data-filter="all">All Tournaments</button>
+                    <button class="filter-btn active" data-filter="all">Todos</button>
                     <button class="filter-btn" data-filter="fps">FPS</button>
                     <button class="filter-btn" data-filter="moba">MOBA</button>
                     <button class="filter-btn" data-filter="battle-royale">Battle Royale</button>
-                    <button class="filter-btn" data-filter="strategy">Strategy</button>
-                    <button class="filter-btn" data-filter="sports">Sports</button>
+                    <button class="filter-btn" data-filter="strategy">Estratégia</button>
+                    <button class="filter-btn" data-filter="sports">Desporto</button>
                 </div>
             </div>
             <div class="sort-group">
-                <span class="sort-label">Sort by:</span>
+                <span class="sort-label">Ordenar por:</span>
                 <select class="sort-select">
-                    <option value="popular">Most Popular</option>
-                    <option value="prize">Highest Prize</option>
-                    <option value="newest">Newest</option>
-                    <option value="soonest">Starting Soonest</option>
+                    <option value="popular">Mais Populares</option>
+                    <option value="prize">Maior Prémio</option>
+                    <option value="newest">Mais Recentes</option>
+                    <option value="soonest">A Começar Brevemente</option>
                 </select>
             </div>
         </div>
@@ -52,7 +52,7 @@
         {
             <div class="admin-actions">
                 <a asp-controller="Tournaments" asp-action="Create" class="btn btn-add-game">
-                    <i class="fas fa-plus"></i> Create Tournament
+                    <i class="fas fa-plus"></i> Criar Torneio
                 </a>
             </div>
         }
@@ -68,7 +68,7 @@
                                  onerror="this.onerror=null;this.src='/images/default-tournament.jpg';">
                             <div class="game-badge">@tournament.Game.Genre</div>
                             <div class="game-overlay">
-                                <span class="tournament-count">@tournament.PrizePool.ToString("C0") Prize Pool</span>
+                                <span class="tournament-count">Prémio @tournament.PrizePool.ToString("C0")</span>
                             </div>
                         </div>
                         <div class="game-info">
@@ -80,15 +80,15 @@
                                 </div>
                                 <div class="stat">
                                     <i class="fas fa-users"></i>
-                                    <span>@tournament.Registrations.Count/@tournament.MaxTeams Teams</span>
+                                    <span>@tournament.Registrations.Count/@tournament.MaxTeams Equipas</span>
                                 </div>
                             </div>
                             @{
                                 var status = tournament.StartDate > DateTime.Now
-                                ? "Registering"
+                                ? "Inscrições Abertas"
                                 : tournament.EndDate > DateTime.Now
-                                ? "Ongoing"
-                                : "Completed";
+                                ? "A Decorrer"
+                                : "Concluído";
                                 var statusClass = tournament.StartDate > DateTime.Now
                                 ? "status-registering"
                                 : tournament.EndDate > DateTime.Now
@@ -97,7 +97,7 @@
                             }
                             <div class="tournament-status @statusClass">@status</div>
                             <a asp-controller="Tournaments" asp-action="Details" asp-route-id="@tournament.Id" class="view-btn">
-                                View Details <i class="fas fa-arrow-right"></i>
+                                Ver Detalhes <i class="fas fa-arrow-right"></i>
                             </a>
                         </div>
                     </div>
@@ -110,12 +110,12 @@
         {
             <div class="empty-state">
                 <i class="fas fa-trophy"></i>
-                <h3>No tournaments available</h3>
-                <p>Check back later or create your own tournament</p>
+                <h3>Não há torneios disponíveis</h3>
+                <p>Volta mais tarde ou cria o teu próprio torneio</p>
                 @if (User.Identity.IsAuthenticated)
                 {
                     <a asp-controller="Tournaments" asp-action="Create" class="btn btn-primary">
-                        <i class="fas fa-plus"></i> Create Tournament
+                        <i class="fas fa-plus"></i> Criar Torneio
                     </a>
                 }
             </div>
@@ -589,7 +589,7 @@
             const sortSelect = document.querySelector('.sort-select');
             sortSelect.addEventListener('change', function() {
                 // In a real implementation, this would make an API call
-                console.log('Sort by:', this.value);
+                console.log('Ordenar por:', this.value);
             });
 
             // Animation for tournament cards

@@ -1,62 +1,47 @@
 ﻿@model Game
-
 @{
-    ViewData["Title"] = "Add New Game";
+    ViewData["Title"] = "Adicionar Novo Jogo";
 }
 
 <div class="create-game-container">
     <div class="container">
-        <h1 class="page-title">Add New Game</h1>
+        <h1 class="page-title">Adicionar Novo Jogo</h1>
 
         <form asp-action="AddGame" method="post" enctype="multipart/form-data" class="game-form">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="form-group">
-                <label asp-for="Name" class="form-label"></label>
+                <label asp-for="Name" class="form-label">Nome</label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="Genre" class="form-label"></label>
+                <label asp-for="Genre" class="form-label">Género</label>
                 <select asp-for="Genre" class="form-control">
-                    <option value="">Select Genre</option>
+                    <option value="">Selecione o Género</option>
                     <option value="FPS">FPS</option>
                     <option value="MOBA">MOBA</option>
                     <option value="Battle Royale">Battle Royale</option>
-                    <option value="Strategy">Strategy</option>
-                    <option value="Sports">Sports</option>
-                    <option value="Fighting">Fighting</option>
-                    <option value="Racing">Racing</option>
+                    <option value="Strategy">Estratégia</option>
+                    <option value="Sports">Desporto</option>
+                    <option value="Fighting">Luta</option>
+                    <option value="Racing">Corrida</option>
                     <option value="MMORPG">MMORPG</option>
                 </select>
                 <span asp-validation-for="Genre" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="OfficialWebsite" class="form-label"></label>
+                <label asp-for="OfficialWebsite" class="form-label">Website Oficial</label>
                 <input asp-for="OfficialWebsite" class="form-control" />
                 <span asp-validation-for="OfficialWebsite" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label class="form-label">Game Image</label>
-                <div class="image-upload">
-                    <input type="file" name="imageFile" id="imageFile" class="upload-input" accept="image/*" />
-                    <label for="imageFile" class="upload-label">
-                        <i class="fas fa-cloud-upload-alt"></i>
-                        <span>Choose an image...</span>
-                    </label>
-                    <div class="image-preview" id="imagePreview">
-                        <img id="previewImage" src="#" alt="Preview" style="display: none;" />
-                        <span id="noImageText">No image selected</span>
-                    </div>
-                </div>
-            </div>
 
             <div class="form-actions">
-                <a asp-action="Index" class="btn btn-cancel">Cancel</a>
-                <button type="submit" class="btn btn-submit">Create Game</button>
+                <a asp-action="Index" class="btn btn-cancel">Cancelar</a>
+                <button type="submit" class="btn btn-submit">Criar Jogo</button>
             </div>
         </form>
     </div>
@@ -202,7 +187,7 @@
 
 @section Scripts {
     <script>
-        // Image preview functionality
+        // Funcionalidade de pré-visualização da imagem
         document.getElementById('imageFile').addEventListener('change', function(event) {
             const [file] = event.target.files;
             const preview = document.getElementById('previewImage');

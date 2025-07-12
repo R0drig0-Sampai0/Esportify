@@ -7,11 +7,13 @@ namespace Esportify.Models
         /// <summary>
         /// Identificador único do jogo.
         /// </summary>
+        [Key]
         public string Id { get; set; }
 
         /// <summary>
         /// Nome do jogo.
         /// </summary>
+        [Required(ErrorMessage = "O nome do jogo é obrigatório.")]
         [StringLength(100)]
         public string Name { get; set; } = string.Empty;
 

@@ -1,0 +1,213 @@
+﻿@model Esportify.Models.Team
+@using System.Security.Claims
+
+@{
+    ViewData["Title"] = "Criar Equipa";
+}
+
+<div class="container mt-4">
+    <h1 class="text-gradient">@ViewData["Title"]</h1>
+    <hr class="border-green" />
+
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="create-team-box">
+                <form asp-action="Create" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                    <div class="form-group mb-4">
+                        <label asp-for="TeamName" class="form-label">Nome da Equipa</label>
+                        <input asp-for="TeamName" class="form-control input-dark" />
+                        <span asp-validation-for="TeamName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label asp-for="Tag" class="form-label">Tag</label>
+                        <div class="input-group">
+                            <span class="input-group-text">#</span>
+                            <input asp-for="Tag" class="form-control input-dark" maxlength="4" />
+                        </div>
+                        <span asp-validation-for="Tag" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label asp-for="LogoUrl" class="form-label">Logótipo</label>
+                        <div class="file-upload-wrapper">
+                            <input type="file" name="logoFile" class="form-control input-dark file-upload" accept="image/*" />
+                            <div class="file-upload-preview mt-2">
+                                <img id="logoPreview" src="#" alt="Pré-visualização do logótipo" style="display:none; max-height: 100px;" />
+                            </div>
+                        </div>
+                        <span asp-validation-for="LogoUrl" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group form-switch mb-4">
+                        <input class="form-check-input" type="checkbox" role="switch" asp-for="IsOpenForMembers" />
+                        <label class="form-check-label" asp-for="IsOpenForMembers">Aberta a novos membros</label>
+                    </div>
+
+                    <input type="hidden" asp-for="LeaderId" value="@User.FindFirstValue(ClaimTypes.NameIdentifier)" />
+
+                    <div class="form-group d-flex justify-content-between mt-5">
+                        <a asp-action="Index" class="btn btn-outline-green">
+                            <i class="fas fa-arrow-left me-2"></i>Voltar
+                        </a>
+                        <button type="submit" class="btn btn-green">
+                            <i class="fas fa-plus me-2"></i>Criar Equipa
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        :root {
+            --black: #0a0a0a;
+            --dark-grey: #1a1a1a;
+            --medium-grey: #2a2a2a;
+            --light-grey: #3a3a3a;
+            --green: #00ff88;
+            --dark-green: #00cc6a;
+            --text: #ffffff;
+            --error: #ff4655;
+        }
+
+        .text-gradient {
+            background: linear-gradient(to right, var(--green), var(--dark-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: var(--green);
+        }
+
+        .border-green {
+            border-color: rgba(0, 255, 136, 0.3) !important;
+        }
+
+        .create-team-box {
+            background: var(--dark-grey);
+            border: 1px solid var(--medium-grey);
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .form-label {
+            color: var(--text);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .input-dark {
+            background-color: var(--medium-grey);
+            border: 1px solid var(--light-grey);
+            color: var(--text);
+            padding: 0.75rem 1rem;
+        }
+
+            .input-dark:focus {
+                background-color: var(--medium-grey);
+                border-color: var(--green);
+                box-shadow: 0 0 0 0.25rem rgba(0, 255, 136, 0.25);
+                color: var(--text);
+            }
+
+        .input-group-text {
+            background-color: var(--medium-grey);
+            border: 1px solid var(--light-grey);
+            color: var(--green);
+        }
+
+        .form-switch .form-check-input {
+            background-color: var(--medium-grey);
+            border-color: var(--light-grey);
+            width: 2.5em;
+            height: 1.5em;
+        }
+
+            .form-switch .form-check-input:checked {
+                background-color: var(--green);
+                border-color: var(--green);
+            }
+
+        .btn-green {
+            background-color: var(--green);
+            border-color: var(--green);
+            color: var(--black);
+            font-weight: 600;
+            padding: 0.5rem 1.5rem;
+            transition: all 0.3s;
+        }
+
+            .btn-green:hover {
+                background-color: var(--dark-green);
+                border-color: var(--dark-green);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0, 255, 136, 0.3);
+            }
+
+        .btn-outline-green {
+            border: 2px solid var(--green);
+            color: var(--green);
+            background-color: transparent;
+            font-weight: 600;
+            padding: 0.5rem 1.5rem;
+            transition: all 0.3s;
+        }
+
+            .btn-outline-green:hover {
+                background-color: var(--green);
+                color: var(--black);
+            }
+
+        .file-upload-wrapper {
+            position: relative;
+        }
+
+        .file-upload-preview {
+            text-align: center;
+        }
+
+        .alert-danger {
+            background-color: rgba(255, 70, 85, 0.1);
+            border-color: var(--error);
+            color: var(--error);
+            padding: 1rem;
+            border-radius: 4px;
+        }
+    </style>
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // Image preview functionality
+        document.querySelector('input[type="file"]').addEventListener('change', function(e) {
+            const preview = document.getElementById('logoPreview');
+            const file = e.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                preview.style.display = 'block';
+                preview.src = e.target.result;
+            }
+
+            if (file) {
+                reader.readAsDataURL(file);
+            } else {
+                preview.style.display = 'none';
+                preview.src = '#';
+            }
+        });
+
+        // Tag input uppercase conversion
+        document.getElementById('Tag').addEventListener('input', function(e) {
+            this.value = this.value.toUpperCase();
+        });
+    </script>
+}
