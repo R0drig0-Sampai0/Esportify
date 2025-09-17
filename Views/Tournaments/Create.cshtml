@@ -3,6 +3,152 @@
     ViewData["Title"] = "Criar Torneio";
 }
 
+@section Styles {
+    <style>
+        .create-tournament-container {
+            padding: 3rem 0;
+            background-color: #121212;
+            min-height: 100vh;
+        }
+
+        .create-tournament-card {
+            background: rgba(26, 26, 26, 0.9);
+            border-radius: 8px;
+            padding: 2.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(40, 167, 69, 0.3);
+        }
+
+        .create-tournament-title {
+            font-family: 'Oxanium', sans-serif;
+            font-weight: 700;
+            color: var(--green);
+            margin-bottom: 0.5rem;
+            font-size: 2.2rem;
+        }
+
+        .create-tournament-subtitle {
+            color: #b3b3b3;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .form-section {
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section-title {
+            color: var(--green);
+            font-size: 1.4rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            position: relative;
+            padding-left: 1rem;
+        }
+
+            .section-title::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 0;
+                height: 100%;
+                width: 4px;
+                background: var(--green);
+                border-radius: 4px;
+            }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+            .form-group label {
+                color: #e0e0e0;
+                font-weight: 500;
+                margin-bottom: 0.5rem;
+                display: block;
+            }
+
+        .form-control {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+            .form-control:focus {
+                background-color: rgba(255, 255, 255, 0.08);
+                border-color: var(--green);
+                color: white;
+                box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+            }
+
+            .form-control::placeholder {
+                color: #666;
+            }
+
+        textarea.form-control {
+            min-height: 120px;
+        }
+
+        .input-group-text {
+            background-color: rgba(40, 167, 69, 0.2);
+            border: 1px solid rgba(40, 167, 69, 0.3);
+            color: var(--green);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            justify-content: flex-end;
+        }
+
+        .btn-primary {
+            background-color: var(--green);
+            border-color: var(--green);
+            color: #121212;
+            font-weight: 600;
+            padding: 0.75rem 2rem;
+        }
+
+        .btn-outline-secondary {
+            border-color: #666;
+            color: #b3b3b3;
+            font-weight: 600;
+            padding: 0.75rem 2rem;
+        }
+
+            .btn-outline-secondary:hover {
+                background-color: #333;
+                color: white;
+            }
+
+        .text-danger {
+            color: #ff6b6b !important;
+        }
+
+        /* Responsive adjustments */
+        @@media (max-width: 768px) {
+            .create-tournament-card {
+                padding: 1.5rem;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn-primary, .btn-outline-secondary {
+                width: 100%;
+            }
+        }
+    </style>
+}
+
+
 <div class="create-tournament-container">
     <div class="container">
         <div class="row justify-content-center">
@@ -149,151 +295,6 @@
         </div>
     </div>
 </div>
-
-@section Styles {
-    <style>
-        .create-tournament-container {
-            padding: 3rem 0;
-            background-color: #121212;
-            min-height: 100vh;
-        }
-
-        .create-tournament-card {
-            background: rgba(26, 26, 26, 0.9);
-            border-radius: 8px;
-            padding: 2.5rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(40, 167, 69, 0.3);
-        }
-
-        .create-tournament-title {
-            font-family: 'Oxanium', sans-serif;
-            font-weight: 700;
-            color: var(--green);
-            margin-bottom: 0.5rem;
-            font-size: 2.2rem;
-        }
-
-        .create-tournament-subtitle {
-            color: #b3b3b3;
-            margin-bottom: 2rem;
-            font-size: 1.1rem;
-        }
-
-        .form-section {
-            margin-bottom: 2.5rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .section-title {
-            color: var(--green);
-            font-size: 1.4rem;
-            margin-bottom: 1.5rem;
-            font-weight: 600;
-            position: relative;
-            padding-left: 1rem;
-        }
-
-            .section-title::before {
-                content: '';
-                position: absolute;
-                left: 0;
-                top: 0;
-                height: 100%;
-                width: 4px;
-                background: var(--green);
-                border-radius: 4px;
-            }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-            .form-group label {
-                color: #e0e0e0;
-                font-weight: 500;
-                margin-bottom: 0.5rem;
-                display: block;
-            }
-
-        .form-control {
-            background-color: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: white;
-            padding: 0.75rem 1rem;
-            border-radius: 6px;
-            transition: all 0.3s ease;
-        }
-
-            .form-control:focus {
-                background-color: rgba(255, 255, 255, 0.08);
-                border-color: var(--green);
-                color: white;
-                box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
-            }
-
-            .form-control::placeholder {
-                color: #666;
-            }
-
-        textarea.form-control {
-            min-height: 120px;
-        }
-
-        .input-group-text {
-            background-color: rgba(40, 167, 69, 0.2);
-            border: 1px solid rgba(40, 167, 69, 0.3);
-            color: var(--green);
-        }
-
-        .form-actions {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-            justify-content: flex-end;
-        }
-
-        .btn-primary {
-            background-color: var(--green);
-            border-color: var(--green);
-            color: #121212;
-            font-weight: 600;
-            padding: 0.75rem 2rem;
-        }
-
-        .btn-outline-secondary {
-            border-color: #666;
-            color: #b3b3b3;
-            font-weight: 600;
-            padding: 0.75rem 2rem;
-        }
-
-            .btn-outline-secondary:hover {
-                background-color: #333;
-                color: white;
-            }
-
-        .text-danger {
-            color: #ff6b6b !important;
-        }
-
-        /* Responsive adjustments */
-        @@media (max-width: 768px) {
-            .create-tournament-card {
-                padding: 1.5rem;
-            }
-
-            .form-actions {
-                flex-direction: column;
-            }
-
-            .btn-primary, .btn-outline-secondary {
-                width: 100%;
-            }
-        }
-    </style>
-}
 
 @section Scripts {
     @{

@@ -16,257 +16,6 @@
         .ToListAsync();
 }
 
-<!-- Hero Section -->
-<section class="tournament-hero" style="background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('@Model.ImageUrl') no-repeat center center; background-size: cover;">
-    <div class="container">
-        <div class="hero-content">
-            <div class="tournament-badge">@Model.Game.Name</div>
-            <h1 class="hero-title">@Model.Name</h1>
-            <div class="tournament-status">
-                @if (Model.StartDate > DateTime.Now)
-                {
-                    <span class="badge bg-success">Inscrições Abertas</span>
-                    <span>Começa em @((Model.StartDate - DateTime.Now).Days) dias</span>
-                }
-                else if (Model.EndDate > DateTime.Now)
-                {
-                    <span class="badge bg-warning">A Decorrer</span>
-                    <span>Termina em @((Model.EndDate - DateTime.Now).Days) dias</span>
-                }
-                else
-                {
-                    <span class="badge bg-secondary">Concluído</span>
-                }
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Main Content -->
-<div class="tournament-container">
-    <div class="container">
-        <div class="row">
-            <!-- Detalhes do Torneio -->
-            <div class="col-lg-8">
-                <div class="tournament-card">
-                    <div class="card-header">
-                        <h2>Detalhes do Torneio</h2>
-                        @if (isAdmin)
-                        {
-                            <div class="admin-actions">
-                                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-edit">
-                                    <i class="fas fa-edit"></i> Editar
-                                </a>
-                                <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-sm btn-danger">
-                                    <i class="fas fa-trash"></i> Eliminar
-                                </a>
-                            </div>
-                        }
-                    </div>
-                    <div class="card-body">
-                        <div class="tournament-description">
-                            <h3>Descrição</h3>
-                            <p>@Model.Description</p>
-                        </div>
-
-                        <div class="tournament-info-grid">
-                            <div class="info-item">
-                                <i class="fas fa-calendar-alt"></i>
-                                <div>
-                                    <h4>Datas</h4>
-                                    <p>@Model.StartDate.ToString("MMM dd, yyyy") - @Model.EndDate.ToString("MMM dd, yyyy")</p>
-                                </div>
-                            </div>
-                            <div class="info-item">
-                                <i class="fas fa-clock"></i>
-                                <div>
-                                    <h4>Prazo de Inscrição</h4>
-                                    <p>@Model.RegistrationDeadline.ToString("MMM dd, yyyy")</p>
-                                </div>
-                            </div>
-                            <div class="info-item">
-                                <i class="fas fa-trophy"></i>
-                                <div>
-                                    <h4>Prémio Total</h4>
-                                    <p>@Model.PrizePool.ToString("C0")</p>
-                                </div>
-                            </div>
-                            <div class="info-item">
-                                <i class="fas fa-users"></i>
-                                <div>
-                                    <h4>Tamanho da Equipa</h4>
-                                    <p>@Model.MinTeamSize-@Model.MaxTeamSize jogadores</p>
-                                </div>
-                            </div>
-                            <div class="info-item">
-                                <i class="fas fa-gamepad"></i>
-                                <div>
-                                    <h4>Jogo</h4>
-                                    <p>@Model.Game.Name</p>
-                                </div>
-                            </div>
-                            <div class="info-item">
-                                <i class="fas fa-user-tie"></i>
-                                <div>
-                                    <h4>Organizador</h4>
-                                    <p>@Model.Organizer.UserName</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Equipas Inscritas -->
-                <div class="tournament-card mt-4">
-                    <div class="card-header">
-                        <h2>Equipas Inscritas (@Model.Registrations.Count/@Model.MaxTeams)</h2>
-                    </div>
-                    <div class="card-body">
-                        @if (Model.Registrations.Any())
-                        {
-                            <div class="teams-grid">
-                                @foreach (var registration in Model.Registrations)
-                                {
-                                    <div class="team-card">
-                                        <div class="team-header">
-                                            <h3>@registration.Team.TeamName</h3>
-                                            <span class="members-count">@registration.Team.TeamMembers.Count membros</span>
-                                        </div>
-                                        <div class="team-members">
-                                            @foreach (var member in registration.Team.TeamMembers.Take(3))
-                                            {
-                                                <img src="@member.User.Profile.AvatarUrl" alt="@member.User.UserName"
-                                                     title="@member.User.UserName" class="member-avatar">
-                                            }
-                                            @if (registration.Team.TeamMembers.Count > 3)
-                                            {
-                                                <span class="more-members">+@(registration.Team.TeamMembers.Count - 3) mais</span>
-                                            }
-                                        </div>
-                                        <div class="team-footer">
-                                            <span>Inscrito em @registration.RegistrationDate.ToString("MMM dd")</span>
-                                        </div>
-                                    </div>
-                                }
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="empty-state">
-                                <i class="fas fa-users-slash"></i>
-                                <p>Ainda não há equipas inscritas</p>
-                            </div>
-                        }
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sidebar -->
-            <div class="col-lg-4">
-                <!-- Painel de Inscrição -->
-                @if (Model.StartDate > DateTime.Now)
-                {
-                    <div class="sidebar-card">
-                        <h3>Inscrição</h3>
-
-                        @if (isRegistered)
-                        {
-                            <div class="alert alert-success">
-                                <i class="fas fa-check-circle"></i> Já estás inscrito neste torneio
-                            </div>
-                        }
-                        else if (User.Identity.IsAuthenticated)
-                        {
-                            if (userTeams.Any())
-                            {
-                                <form id="registerForm" method="post"
-                                      asp-controller="Tournaments" asp-action="Register"
-                                      asp-route-tournamentId="@Model.Id">
-                                    <div class="form-group">
-                                        <label>Selecionar Equipa</label>
-                                        <select name="teamId" class="form-select" required>
-                                            @foreach (var team in userTeams)
-                                            {
-                                                <option value="@team.Id">@team.TeamName (@team.TeamMembers.Count membros)</option>
-                                            }
-                                        </select>
-                                    </div>
-                                    <button type="submit" class="btn btn-register w-100">
-                                        <i class="fas fa-user-plus"></i> Inscrever Equipa
-                                    </button>
-                                </form>
-                            }
-                            else
-                            {
-                                <div class="alert alert-warning">
-                                    <p>Precisas de pertencer a uma equipa para te inscreveres</p>
-                                    <a asp-controller="Teams" asp-action="Create" class="btn btn-sm btn-success">
-                                        <i class="fas fa-plus"></i> Criar Equipa
-                                    </a>
-                                </div>
-                            }
-                        }
-                        else
-                        {
-                            <div class="alert alert-info">
-                                <p>Inicia sessão para te inscreveres neste torneio</p>
-                                <a asp-controller="Auth" asp-action="Login" class="btn btn-sm btn-primary">
-                                    <i class="fas fa-sign-in-alt"></i> Iniciar Sessão
-                                </a>
-                            </div>
-                        }
-
-                        <div class="registration-meta">
-                            <div class="meta-item">
-                                <i class="fas fa-users"></i>
-                                <span>@Model.Registrations.Count/@Model.MaxTeams equipas inscritas</span>
-                            </div>
-                            <div class="meta-item">
-                                <i class="fas fa-clock"></i>
-                                <span>Inscrições fecham @Model.RegistrationDeadline.ToString("MMM dd")</span>
-                            </div>
-                        </div>
-                    </div>
-                }
-
-                <!-- Regras do Torneio -->
-                <div class="sidebar-card">
-                    <h3>Regras do Torneio</h3>
-                    <ul class="rules-list">
-                        <li>As equipas devem ter entre @Model.MinTeamSize e @Model.MaxTeamSize jogadores</li>
-                        <li>Todos os jogos serão realizados nos servidores oficiais</li>
-                        <li>Aplicam-se as regras competitivas padrão</li>
-                        <li>Check-in obrigatório 30 minutos antes do jogo</li>
-                        <li>Qualquer fraude resultará em desqualificação</li>
-                    </ul>
-                </div>
-
-                <!-- Distribuição de Prémios -->
-                @if (Model.PrizePool > 0)
-                {
-                    <div class="sidebar-card">
-                        <h3>Distribuição de Prémios</h3>
-                        <div class="prize-distribution">
-                            <div class="prize-item">
-                                <span class="position">1º Lugar</span>
-                                <span class="prize-amount">@((Model.PrizePool * 0.5m).ToString("C0"))</span>
-                            </div>
-                            <div class="prize-item">
-                                <span class="position">2º Lugar</span>
-                                <span class="prize-amount">@((Model.PrizePool * 0.3m).ToString("C0"))</span>
-                            </div>
-                            <div class="prize-item">
-                                <span class="position">3º Lugar</span>
-                                <span class="prize-amount">@((Model.PrizePool * 0.2m).ToString("C0"))</span>
-                            </div>
-                        </div>
-                    </div>
-                }
-            </div>
-        </div>
-    </div>
-</div>
-
 @section Styles {
     <style>
         /* Tournament Hero */
@@ -588,6 +337,257 @@
         }
     </style>
 }
+
+<!-- Hero Section -->
+<section class="tournament-hero" style="background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('@Model.ImageUrl') no-repeat center center; background-size: cover;">
+    <div class="container">
+        <div class="hero-content">
+            <div class="tournament-badge">@Model.Game.Name</div>
+            <h1 class="hero-title">@Model.Name</h1>
+            <div class="tournament-status">
+                @if (Model.StartDate > DateTime.Now)
+                {
+                    <span class="badge bg-success">Inscrições Abertas</span>
+                    <span>Começa em @((Model.StartDate - DateTime.Now).Days) dias</span>
+                }
+                else if (Model.EndDate > DateTime.Now)
+                {
+                    <span class="badge bg-warning">A Decorrer</span>
+                    <span>Termina em @((Model.EndDate - DateTime.Now).Days) dias</span>
+                }
+                else
+                {
+                    <span class="badge bg-secondary">Concluído</span>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main Content -->
+<div class="tournament-container">
+    <div class="container">
+        <div class="row">
+            <!-- Detalhes do Torneio -->
+            <div class="col-lg-8">
+                <div class="tournament-card">
+                    <div class="card-header">
+                        <h2>Detalhes do Torneio</h2>
+                        @if (isAdmin)
+                        {
+                            <div class="admin-actions">
+                                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-edit">
+                                    <i class="fas fa-edit"></i> Editar
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-sm btn-danger">
+                                    <i class="fas fa-trash"></i> Eliminar
+                                </a>
+                            </div>
+                        }
+                    </div>
+                    <div class="card-body">
+                        <div class="tournament-description">
+                            <h3>Descrição</h3>
+                            <p>@Model.Description</p>
+                        </div>
+
+                        <div class="tournament-info-grid">
+                            <div class="info-item">
+                                <i class="fas fa-calendar-alt"></i>
+                                <div>
+                                    <h4>Datas</h4>
+                                    <p>@Model.StartDate.ToString("MMM dd, yyyy") - @Model.EndDate.ToString("MMM dd, yyyy")</p>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                <div>
+                                    <h4>Prazo de Inscrição</h4>
+                                    <p>@Model.RegistrationDeadline.ToString("MMM dd, yyyy")</p>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-trophy"></i>
+                                <div>
+                                    <h4>Prémio Total</h4>
+                                    <p>@Model.PrizePool.ToString("C0")</p>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-users"></i>
+                                <div>
+                                    <h4>Tamanho da Equipa</h4>
+                                    <p>@Model.MinTeamSize-@Model.MaxTeamSize jogadores</p>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-gamepad"></i>
+                                <div>
+                                    <h4>Jogo</h4>
+                                    <p>@Model.Game.Name</p>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-user-tie"></i>
+                                <div>
+                                    <h4>Organizador</h4>
+                                    <p>@Model.Organizer.UserName</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Equipas Inscritas -->
+                <div class="tournament-card mt-4">
+                    <div class="card-header">
+                        <h2>Equipas Inscritas (@Model.Registrations.Count/@Model.MaxTeams)</h2>
+                    </div>
+                    <div class="card-body">
+                        @if (Model.Registrations.Any())
+                        {
+                            <div class="teams-grid">
+                                @foreach (var registration in Model.Registrations)
+                                {
+                                    <div class="team-card">
+                                        <div class="team-header">
+                                            <h3>@registration.Team.TeamName</h3>
+                                            <span class="members-count">@registration.Team.TeamMembers.Count membros</span>
+                                        </div>
+                                        <div class="team-members">
+                                            @foreach (var member in registration.Team.TeamMembers.Take(3))
+                                            {
+                                                <img src="@member.User.Profile.AvatarUrl" alt="@member.User.UserName"
+                                                     title="@member.User.UserName" class="member-avatar">
+                                            }
+                                            @if (registration.Team.TeamMembers.Count > 3)
+                                            {
+                                                <span class="more-members">+@(registration.Team.TeamMembers.Count - 3) mais</span>
+                                            }
+                                        </div>
+                                        <div class="team-footer">
+                                            <span>Inscrito em @registration.RegistrationDate.ToString("MMM dd")</span>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="empty-state">
+                                <i class="fas fa-users-slash"></i>
+                                <p>Ainda não há equipas inscritas</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Painel de Inscrição -->
+                @if (Model.StartDate > DateTime.Now)
+                {
+                    <div class="sidebar-card">
+                        <h3>Inscrição</h3>
+
+                        @if (isRegistered)
+                        {
+                            <div class="alert alert-success">
+                                <i class="fas fa-check-circle"></i> Já estás inscrito neste torneio
+                            </div>
+                        }
+                        else if (User.Identity.IsAuthenticated)
+                        {
+                            if (userTeams.Any())
+                            {
+                                <form id="registerForm" method="post"
+                                      asp-controller="Tournaments" asp-action="Register"
+                                      asp-route-tournamentId="@Model.Id">
+                                    <div class="form-group">
+                                        <label>Selecionar Equipa</label>
+                                        <select name="teamId" class="form-select" required>
+                                            @foreach (var team in userTeams)
+                                            {
+                                                <option value="@team.Id">@team.TeamName (@team.TeamMembers.Count membros)</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-register w-100">
+                                        <i class="fas fa-user-plus"></i> Inscrever Equipa
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <div class="alert alert-warning">
+                                    <p>Precisas de pertencer a uma equipa para te inscreveres</p>
+                                    <a asp-controller="Teams" asp-action="Create" class="btn btn-sm btn-success">
+                                        <i class="fas fa-plus"></i> Criar Equipa
+                                    </a>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="alert alert-info">
+                                <p>Inicia sessão para te inscreveres neste torneio</p>
+                                <a asp-controller="Auth" asp-action="Login" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-sign-in-alt"></i> Iniciar Sessão
+                                </a>
+                            </div>
+                        }
+
+                        <div class="registration-meta">
+                            <div class="meta-item">
+                                <i class="fas fa-users"></i>
+                                <span>@Model.Registrations.Count/@Model.MaxTeams equipas inscritas</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-clock"></i>
+                                <span>Inscrições fecham @Model.RegistrationDeadline.ToString("MMM dd")</span>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <!-- Regras do Torneio -->
+                <div class="sidebar-card">
+                    <h3>Regras do Torneio</h3>
+                    <ul class="rules-list">
+                        <li>As equipas devem ter entre @Model.MinTeamSize e @Model.MaxTeamSize jogadores</li>
+                        <li>Todos os jogos serão realizados nos servidores oficiais</li>
+                        <li>Aplicam-se as regras competitivas padrão</li>
+                        <li>Check-in obrigatório 30 minutos antes do jogo</li>
+                        <li>Qualquer fraude resultará em desqualificação</li>
+                    </ul>
+                </div>
+
+                <!-- Distribuição de Prémios -->
+                @if (Model.PrizePool > 0)
+                {
+                    <div class="sidebar-card">
+                        <h3>Distribuição de Prémios</h3>
+                        <div class="prize-distribution">
+                            <div class="prize-item">
+                                <span class="position">1º Lugar</span>
+                                <span class="prize-amount">@((Model.PrizePool * 0.5m).ToString("C0"))</span>
+                            </div>
+                            <div class="prize-item">
+                                <span class="position">2º Lugar</span>
+                                <span class="prize-amount">@((Model.PrizePool * 0.3m).ToString("C0"))</span>
+                            </div>
+                            <div class="prize-item">
+                                <span class="position">3º Lugar</span>
+                                <span class="prize-amount">@((Model.PrizePool * 0.2m).ToString("C0"))</span>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <script>

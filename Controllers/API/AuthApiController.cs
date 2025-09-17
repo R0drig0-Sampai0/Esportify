@@ -147,4 +147,4 @@ namespace Esportify.Controllers.API
             return Ok(new { isValid, message = isValid ? "Palavra-passe forte" : "A palavra-passe deve ter pelo menos 8 caracteres, incluindo uma maiúscula, um número e um caractere especial" });
         }
     }
-}   
+}

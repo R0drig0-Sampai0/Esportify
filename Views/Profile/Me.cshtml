@@ -4,72 +4,6 @@
     ViewData["Title"] = "O Meu Perfil";
 }
 
-<div class="profile-container">
-    <div class="profile-banner" style="background-image: url('@Model.Profile?.BannerUrl')"></div>
-
-    <div class="profile-header">
-        <img src="@Model.Profile?.AvatarUrl" alt="Avatar" class="profile-avatar" />
-        <h1>@Model.Profile?.DisplayName</h1>
-        <p>@@@Model.UserName</p>
-
-        @if (!string.IsNullOrEmpty(Model.Profile?.Country))
-        {
-            <p>📍 @Model.Profile.Country</p>
-        }
-    </div>
-
-    <div class="profile-content">
-        <div class="profile-bio">
-            <h3>Sobre</h3> 
-            <p>@Model.Profile?.Bio</p>
-        </div>
-
-        <div class="profile-stats">
-            <h3>Estatísticas</h3> 
-            <div class="stats-grid">
-                <div>
-                    <span class="stat-number">@Model.Profile?.TotalMatchesPlayed</span>
-                    <span class="stat-label">Partidas Jogadas</span>  
-                </div>
-                <div>
-                    <span class="stat-number">@Model.Profile?.TournamentsJoined</span>
-                    <span class="stat-label">Torneios</span>
-                </div>
-                <div>
-                    <span class="stat-number">@Model.Profile?.TournamentsWon</span>
-                    <span class="stat-label">Vitórias</span> 
-                </div>
-            </div>
-        </div>
-
-        <div class="profile-social">
-            <h3>Redes Sociais</h3>  
-            <div class="social-links">
-                @if (!string.IsNullOrEmpty(Model.Profile?.TwitchUrl))
-                {
-                    <a href="@Model.Profile.TwitchUrl" target="_blank">Twitch</a>
-                }
-                @if (!string.IsNullOrEmpty(Model.Profile?.YouTubeUrl))
-                {
-                    <a href="@Model.Profile.YouTubeUrl" target="_blank">YouTube</a> 
-                }
-                @if (!string.IsNullOrEmpty(Model.Profile?.TwitterUrl))
-                {
-                    <a href="@Model.Profile.TwitterUrl" target="_blank">Twitter</a> 
-                }
-                @if (!string.IsNullOrEmpty(Model.Profile?.DiscordUrl))
-                {
-                    <a href="@Model.Profile.DiscordUrl" target="_blank">Discord</a>  
-                }
-            </div>
-        </div>
-    </div>
-
-    <div class="text-center mt-4">
-        <a asp-action="Edit" class="btn btn-green">Editar Perfil</a>  
-    </div>
-</div>
-
 @section Styles {
     <style>
         :root {
@@ -216,3 +150,69 @@
             }
     </style>
 }
+
+<div class="profile-container">
+    <div class="profile-banner" style="background-image: url('@Model.Profile?.BannerUrl')"></div>
+
+    <div class="profile-header">
+        <img src="@Model.Profile?.AvatarUrl" alt="Avatar" class="profile-avatar" />
+        <h1>@Model.Profile?.DisplayName</h1>
+        <p>@@@Model.UserName</p>
+
+        @if (!string.IsNullOrEmpty(Model.Profile?.Country))
+        {
+            <p>📍 @Model.Profile.Country</p>
+        }
+    </div>
+
+    <div class="profile-content">
+        <div class="profile-bio">
+            <h3>Sobre</h3> 
+            <p>@Model.Profile?.Bio</p>
+        </div>
+
+        <div class="profile-stats">
+            <h3>Estatísticas</h3> 
+            <div class="stats-grid">
+                <div>
+                    <span class="stat-number">@Model.Profile?.TotalMatchesPlayed</span>
+                    <span class="stat-label">Partidas Jogadas</span>  
+                </div>
+                <div>
+                    <span class="stat-number">@Model.Profile?.TournamentsJoined</span>
+                    <span class="stat-label">Torneios</span>
+                </div>
+                <div>
+                    <span class="stat-number">@Model.Profile?.TournamentsWon</span>
+                    <span class="stat-label">Vitórias</span> 
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-social">
+            <h3>Redes Sociais</h3>  
+            <div class="social-links">
+                @if (!string.IsNullOrEmpty(Model.Profile?.TwitchUrl))
+                {
+                    <a href="@Model.Profile.TwitchUrl" target="_blank">Twitch</a>
+                }
+                @if (!string.IsNullOrEmpty(Model.Profile?.YouTubeUrl))
+                {
+                    <a href="@Model.Profile.YouTubeUrl" target="_blank">YouTube</a> 
+                }
+                @if (!string.IsNullOrEmpty(Model.Profile?.TwitterUrl))
+                {
+                    <a href="@Model.Profile.TwitterUrl" target="_blank">Twitter</a> 
+                }
+                @if (!string.IsNullOrEmpty(Model.Profile?.DiscordUrl))
+                {
+                    <a href="@Model.Profile.DiscordUrl" target="_blank">Discord</a>  
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <a asp-action="Edit" class="btn btn-green">Editar Perfil</a>  
+    </div>
+</div>

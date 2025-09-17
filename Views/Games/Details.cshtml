@@ -4,93 +4,6 @@
     bool isLiked = ViewData["IsLiked"] as bool? ?? false;
 }
 
-<div class="game-detail-container">
-    <div class="game-header">
-        <div class="game-cover">
-            <img src="@Model.ImageUrl" alt="@Model.Name" class="cover-image">
-        </div>
-        <div class="game-info">
-            <h1>@Model.Name</h1>
-            <span class="game-genre">@Model.Genre</span>
-
-            <!-- Botão de Gosto -->
-            <div class="like-section">
-                @if (User.Identity.IsAuthenticated)
-                {
-                    <button class="like-btn @(isLiked ? "liked" : "")" data-game-id="@Model.Id">
-                        <i class="fas fa-heart"></i>
-                        <span>@(isLiked ? "Gostado" : "Gostar")</span>
-                    </button>
-                    @Html.AntiForgeryToken()
-                }
-                else
-                {
-                    <a asp-controller="Auth" asp-action="Login" class="like-btn">
-                        <i class="fas fa-heart"></i>
-                        <span>Gostar</span>
-                    </a>
-                }
-                <span class="like-count">@Model.LikedByUsers.Count gostos</span>
-            </div>
-
-            <div class="game-stats">
-                <div class="stat">
-                    <i class="fas fa-trophy"></i>
-                    <span>@Model.Tournaments.Count torneios</span>
-                </div>
-                @if (!string.IsNullOrEmpty(Model.OfficialWebsite))
-                {
-                    <div class="stat">
-                        <i class="fas fa-globe"></i>
-                        <a href="@Model.OfficialWebsite" target="_blank" class="official-website">Website Oficial</a>
-                    </div>
-                }
-            </div>
-        </div>
-    </div>
-
-    <div class="game-content">
-        <div class="tournaments-section">
-            <h2>Torneios Futuros</h2>
-            @if (Model.Tournaments.Any())
-            {
-                <div class="tournaments-grid">
-                    @foreach (var tournament in Model.Tournaments)
-                    {
-                        <div class="tournament-card">
-                            <div class="tournament-image">
-                                <img src="@tournament.ImageUrl" alt="@tournament.Name">
-                            </div>
-                            <div class="tournament-info">
-                                <h3>@tournament.Name</h3>
-                                <div class="tournament-meta">
-                                    <span><i class="fas fa-calendar-alt"></i> @tournament.StartDate.ToString("MMM dd")</span>
-                                    <span><i class="fas fa-trophy"></i> @tournament.PrizePool.ToString("C0")</span>
-                                </div>
-                                <a asp-controller="Tournaments" asp-action="Details" asp-route-id="@tournament.Id" class="btn btn-green">
-                                    Ver Torneio
-                                </a>
-                            </div>
-                        </div>
-                    }
-                </div>
-            }
-            else
-            {
-                <div class="no-tournaments">
-                    <p>Ainda não há torneios futuros para este jogo.</p>
-                    @if (User.Identity.IsAuthenticated)
-                    {
-                        <a asp-controller="Tournaments" asp-action="Create" asp-route-gameId="@Model.Id" class="btn btn-green">
-                            Criar Torneio
-                        </a>
-                    }
-                </div>
-            }
-        </div>
-    </div>
-</div>
-
 @section Styles {
     <style>
         :root {
@@ -101,6 +14,8 @@
             --green: #00ff88;
             --dark-green: #00cc6a;
             --text: #ffffff;
+            --red: #b02e25;
+            --dark-red: #520f0b;
             --error: #ff4655;
         }
 
@@ -190,6 +105,36 @@
             color: var(--text);
             font-size: 0.9rem;
         }
+
+        .delete-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--medium-grey);
+            border: 1px solid var(--light-grey);
+            color: var(--text);
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+            .delete-btn:hover {
+                background: var(--red);
+                border-color: var(--error);
+                transform: translateY(-2px);
+            }
+
+            .delete-btn i {
+                color: var(--text);
+                transition: all 0.3s ease;
+            }
+            
+            .delete-btn:hover i {
+                color: var(--dark-red);
+            }
 
         .game-stats {
             display: flex;
@@ -285,9 +230,175 @@
             gap: 0.5rem;
         }
 
+        .modal-content {
+            background-color: var(--dark-grey);
+            border: 1px solid var(--medium-grey);
+            color: var(--text);
+            border-radius: 8px;
         }
-    </style>
+
+        .modal-header,
+        .modal-footer {
+            border: none;
+        }
+
+        .modal-title {
+            color: var(--green);
+            font-weight: 700;
+        }
+
+        .btn-close {
+            filter: invert(1);
+            opacity: 0.8;
+            transition: opacity 0.2s ease;
+        }
+
+            .btn-close:hover {
+                opacity: 1;
+            }
+
+        .btn-secondary {
+            background-color: var(--medium-grey);
+            border: 1px solid var(--light-grey);
+            color: var(--text);
+            transition: all 0.3s ease;
+        }
+
+            .btn-secondary:hover {
+                background-color: var(--light-grey);
+                border-color: var(--green);
+            }
+
+        .btn-danger {
+            background-color: var(--red);
+            border: 1px solid var(--error);
+            color: var(--text);
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+            .btn-danger:hover {
+                background-color: var(--dark-red);
+                border-color: var(--error);
+                transform: translateY(-2px);
+            }
+
+
+    }
+</style>
 }
+
+<div class="game-detail-container">
+    <div class="game-header">
+        <div class="game-cover">
+            <img src="@Model.ImageUrl" alt="@Model.Name" class="cover-image">
+        </div>
+        <div class="game-info">
+            <h1>@Model.Name</h1>
+            <span class="game-genre">@Model.Genre</span>
+
+            <div class="like-section">
+                <!-- Botão de Gosto -->
+                    <button class="like-btn @(isLiked ? "liked" : "")" data-game-id="@Model.Id">
+                        <i class="fas fa-heart"></i>
+                        <span>@(isLiked ? "Gostado" : "Gostar")</span>
+                    </button>
+                    @Html.AntiForgeryToken()
+
+                <span class="like-count">@Model.LikedByUsers.Count gostos</span>
+
+                <!-- Botão de Eliminar (Trigger do Modal) -->
+                <button type="button" class="delete-btn" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-@Model.Id">
+                    <i class="fa-solid fa-trash"></i>
+                    <span>Delete</span>
+                </button>
+
+                <!-- Modal de Confirmação -->
+                <div class="modal fade" id="confirmDeleteModal-@Model.Id" tabindex="-1" aria-labelledby="confirmDeleteLabel-@Model.Id" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="confirmDeleteLabel-@Model.Id">Confirm Delete</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+
+                            <div class="modal-body">
+                                Are you sure you want to delete the game <strong>@Model.Name</strong>?
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+
+                                <!-- Actual delete form -->
+                                <form asp-action="DeleteGame" asp-route-id="@Model.Id" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>        
+
+            <div class="game-stats">
+                <div class="stat">
+                    <i class="fas fa-trophy"></i>
+                    <span>@Model.Tournaments.Count torneios</span>
+                </div>
+                @if (!string.IsNullOrEmpty(Model.OfficialWebsite))
+                {
+                    <div class="stat">
+                        <i class="fas fa-globe"></i>
+                        <a href="@Model.OfficialWebsite" target="_blank" class="official-website">Website Oficial</a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="game-content">
+        <div class="tournaments-section">
+            <h2>Torneios Futuros</h2>
+            @if (Model.Tournaments.Any())
+            {
+                <div class="tournaments-grid">
+                    @foreach (var tournament in Model.Tournaments)
+                    {
+                        <div class="tournament-card">
+                            <div class="tournament-image">
+                                <img src="@tournament.ImageUrl" alt="@tournament.Name">
+                            </div>
+                            <div class="tournament-info">
+                                <h3>@tournament.Name</h3>
+                                <div class="tournament-meta">
+                                    <span><i class="fas fa-calendar-alt"></i> @tournament.StartDate.ToString("MMM dd")</span>
+                                    <span><i class="fas fa-trophy"></i> @tournament.PrizePool.ToString("C0")</span>
+                                </div>
+                                <a asp-controller="Tournaments" asp-action="Details" asp-route-id="@tournament.Id" class="btn btn-green">
+                                    Ver Torneio
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="no-tournaments">
+                    <p>Ainda não há torneios futuros para este jogo.</p>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <a asp-controller="Tournaments" asp-action="Create" asp-route-gameId="@Model.Id" class="btn btn-green">
+                            Criar Torneio
+                        </a>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <script>
@@ -325,7 +436,7 @@
                         const isLiked = data.isLiked;
                         const likeCount = data.likeCount;
 
-                        // Atualizar interface
+                        
                         this.classList.toggle('liked', isLiked);
                         this.querySelector('span').textContent = isLiked ? 'Gostado' : 'Gostar';
                         const heart = this.querySelector('i');

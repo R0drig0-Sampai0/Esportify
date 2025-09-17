@@ -3,98 +3,6 @@
     Layout = "_Layout";
 }
 
-<div class="container developers-container">
-    <!-- Cabeçalho da página com título e descrição -->
-    <div class="developers-header text-center mb-5">
-        <h1 class="text-gradient">INFORMAÇÃO DO PROJETO</h1>
-        <p class="tagline">Detalhes sobre o desenvolvimento do Esportify</p>
-    </div>
-
-    <!-- Seção de informações do curso -->
-    <div class="card mb-4">
-        <div class="card-header">
-            <h2 class="section-title">Informação do Curso</h2>
-        </div>
-        <div class="card-body">
-            <ul class="dev-list list-group list-group-flush">
-                <li class="dev-list-item list-group-item"><strong>Curso:</strong> Engenharia Informática</li>
-                <li class="dev-list-item list-group-item"><strong>Disciplina:</strong> Desenvolvimento Web</li>
-                <li class="dev-list-item list-group-item"><strong>Ano Letivo:</strong> 2024/2025</li>
-            </ul>
-        </div>
-    </div>
-
-    <!-- Seção da equipa de desenvolvimento -->
-    <div class="card mb-4">
-        <div class="card-header">
-            <h2 class="section-title">Equipa de Desenvolvimento</h2>
-        </div>
-        <div class="card-body">
-            <ul class="dev-list list-group list-group-flush">
-                <li class="dev-list-item list-group-item">
-                    <strong>Rodrigo Sampaio:</strong> Número 24882
-                </li>
-            </ul>
-        </div>
-    </div>
-
-    <!-- Seção de tecnologias utilizadas -->
-    <div class="card mb-4">
-        <div class="card-header">
-            <h2 class="section-title">Tecnologias Utilizadas</h2>
-        </div>
-        <div class="card-body">
-            <h5 class="section-subtitle">Tecnologias Principais:</h5>
-            <ul class="dev-list">
-                <li class="dev-list-item">ASP.NET Core MVC 7.0</li>
-                <li class="dev-list-item">Entity Framework Core 7.0</li>
-                <li class="dev-list-item">SQLite</li>
-                <li class="dev-list-item">SignalR</li>
-                <li class="dev-list-item">Bootstrap 5.3</li>
-                <li class="dev-list-item">Font Awesome 6.4</li>
-            </ul>
-
-            <h5 class="section-subtitle mt-3">Pacotes NuGet:</h5>
-            <ul class="dev-list">
-                <li class="dev-list-item">Microsoft.AspNetCore.SignalR</li>
-                <li class="dev-list-item">Microsoft.EntityFrameworkCore.Sqlite</li>
-                <li class="dev-list-item">Microsoft.EntityFrameworkCore.Design</li>
-                <li class="dev-list-item">BCrypt.Net-Next</li>
-            </ul>
-        </div>
-    </div>
-
-    <!-- Seção de credenciais de teste -->
-    <div class="card mb-4">
-        <div class="card-header">
-            <h2 class="section-title">Credenciais de Teste</h2>
-        </div>
-        <div class="card-body">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Papel</th>
-                        <th>Nome de Utilizador</th>
-                        <th>Palavra-passe</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Administrador</td>
-                        <td>admin@esportify.com</td>
-                        <td>Admin@123</td>
-                    </tr>
-                    <tr>
-                        <td>Utilizador Regular</td>
-                        <td>user@esportify.com</td>
-                        <td>User@123</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
 @section Styles {
     <style>
         :root {
@@ -121,7 +29,7 @@
             background: linear-gradient(to right, var(--green), var(--dark-green));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            color: var(--green); 
+            color: var(--green);
         }
 
         .tagline {
@@ -225,7 +133,7 @@
         .card-body {
             padding: 1.5rem;
         }
-            
+
         .section-title {
             font-size: 1.3rem;
         }
@@ -234,6 +142,98 @@
             font-size: 0.9rem;
         }
 
-        }
-    </style>
+    }
+</style>
 }
+
+<div class="container developers-container">
+    <!-- Cabeçalho da página com título e descrição -->
+    <div class="developers-header text-center mb-5">
+        <h1 class="text-gradient">INFORMAÇÃO DO PROJETO</h1>
+        <p class="tagline">Detalhes sobre o desenvolvimento do Esportify</p>
+    </div>
+
+    <!-- Seção de informações do curso -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h2 class="section-title">Informação do Curso</h2>
+        </div>
+        <div class="card-body">
+            <ul class="dev-list list-group list-group-flush">
+                <li class="dev-list-item list-group-item"><strong>Curso:</strong> Engenharia Informática</li>
+                <li class="dev-list-item list-group-item"><strong>Disciplina:</strong> Desenvolvimento Web</li>
+                <li class="dev-list-item list-group-item"><strong>Ano Letivo:</strong> 2024/2025</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Seção da equipa de desenvolvimento -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h2 class="section-title">Equipa de Desenvolvimento</h2>
+        </div>
+        <div class="card-body">
+            <ul class="dev-list list-group list-group-flush">
+                <li class="dev-list-item list-group-item">
+                    <strong>Rodrigo Sampaio:</strong> Número 24882
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Seção de tecnologias utilizadas -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h2 class="section-title">Tecnologias Utilizadas</h2>
+        </div>
+        <div class="card-body">
+            <h5 class="section-subtitle">Tecnologias Principais:</h5>
+            <ul class="dev-list">
+                <li class="dev-list-item">ASP.NET Core MVC 7.0</li>
+                <li class="dev-list-item">Entity Framework Core 7.0</li>
+                <li class="dev-list-item">SQLite</li>
+                <li class="dev-list-item">SignalR</li>
+                <li class="dev-list-item">Bootstrap 5.3</li>
+                <li class="dev-list-item">Font Awesome 6.4</li>
+            </ul>
+
+            <h5 class="section-subtitle mt-3">Pacotes NuGet:</h5>
+            <ul class="dev-list">
+                <li class="dev-list-item">Microsoft.AspNetCore.SignalR</li>
+                <li class="dev-list-item">Microsoft.EntityFrameworkCore.Sqlite</li>
+                <li class="dev-list-item">Microsoft.EntityFrameworkCore.Design</li>
+                <li class="dev-list-item">BCrypt.Net-Next</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Seção de credenciais de teste -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h2 class="section-title">Credenciais de Teste</h2>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Papel</th>
+                        <th>Nome de Utilizador</th>
+                        <th>Palavra-passe</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Administrador</td>
+                        <td>admin@esportify.com</td>
+                        <td>Admin@123</td>
+                    </tr>
+                    <tr>
+                        <td>Utilizador Regular</td>
+                        <td>user@esportify.com</td>
+                        <td>User@123</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

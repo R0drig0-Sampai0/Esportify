@@ -3,163 +3,6 @@
     ViewData["Title"] = "Início | Esportify";
 }
 
-<div class="homepage-container">
-    <div class="row">
-        <!-- Barra Lateral Esquerda - Jogos Favoritos -->
-        <div class="col-lg-3 sidebar">
-            <div class="sidebar-card">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h3 class="sidebar-title">Os Meus Jogos</h3>
-                    <a asp-controller="Games" asp-action="Index" class="btn btn-sm btn-outline-success">Adicionar Mais</a>
-                </div>
-
-                @if (User.Identity.IsAuthenticated && ViewData["FavoriteGames"] is List<Game> favoriteGames && favoriteGames.Any())
-                {
-                    <ul class="favorite-games-list">
-                        @foreach (var game in favoriteGames)
-                        {
-                            <li class="favorite-game-item">
-                                <img src="@game.ImageUrl" alt="@game.Name" class="game-icon">
-                                <span>@game.Name</span>
-                            </li>
-                        }
-                    </ul>
-                }
-                else
-                {
-                    <div class="empty-state">
-                        <i class="fas fa-gamepad text-success"></i>
-                        <p>Ainda sem jogos favoritos</p>
-                        <a asp-controller="Games" asp-action="Index" class="btn btn-success btn-sm">Explorar Jogos</a>
-                    </div>
-                }
-            </div>
-        </div>
-
-        <!-- Conteúdo Principal -->
-        <div class="col-lg-9 main-content">
-            <!-- Secção de Torneios Futuros -->
-            <section class="mb-5">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2 class="section-title">Torneios Futuros</h2>
-                    <a asp-controller="Tournaments" asp-action="Index" class="btn btn-sm btn-outline-success">Ver Todos</a>
-                </div>
-
-                <div class="row">
-                    @if (ViewData["UpcomingTournaments"] is List<Tournament> upcomingTournaments)
-                    {
-                        @foreach (var tournament in upcomingTournaments)
-                        {
-                            <div class="col-md-4 mb-4">
-                                <div class="tournament-card">
-                                    <div class="game-badge">@tournament.Game.Name</div>
-                                    <img src="@tournament.ImageUrl" class="card-img-top" alt="@tournament.Name">
-                                    <div class="card-body">
-                                        <h3 class="tournament-title">@tournament.Name</h3>
-                                        <div class="tournament-details">
-                                            <div class="detail-item">
-                                                <i class="fas fa-calendar-alt text-success"></i>
-                                                <span>@tournament.StartDate.ToString("MMM dd") - @tournament.EndDate.ToString("MMM dd, yyyy")</span>
-                                            </div>
-                                            <div class="detail-item">
-                                                <i class="fas fa-users text-success"></i>
-                                                <span>@tournament.Registrations.Count participantes</span>
-                                            </div>
-                                            <div class="detail-item">
-                                                <i class="fas fa-trophy text-success"></i>
-                                                <span>@tournament.PrizePool Prémio</span>
-                                            </div>
-                                        </div>
-                                        <a asp-controller="Tournaments" asp-action="Details" asp-route-id="@tournament.Id" class="btn btn-outline-success w-100 mt-3">Ver Detalhes</a>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                    }
-                </div>
-            </section>
-
-            <!-- Secção de Explorar Jogos -->
-            <section class="mb-5">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2 class="section-title">Explorar Jogos</h2>
-                    <a asp-controller="Games" asp-action="Index" class="btn btn-sm btn-outline-success">Ver Todos</a>
-                </div>
-
-                <div class="row">
-                    @if (ViewData["PopularGames"] is List<Game> popularGames)
-                    {
-                        @foreach (var game in popularGames)
-                        {
-                            <div class="col-6 col-md-3 mb-4">
-                                <div class="game-card">
-                                    <a asp-controller="Games" asp-action="Details" asp-route-id="@game.Id">
-                                        <img src="@game.ImageUrl" alt="@game.Name" class="game-image">
-                                        <div class="game-overlay">
-                                            <h3 class="game-title">@game.Name</h3>
-                                            <span class="game-tournaments">@game.Tournaments.Count torneios</span>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                        }
-                    }
-                </div>
-            </section>
-
-            <!-- Chamada à Ação para Criar Equipa -->
-            @if (User.Identity.IsAuthenticated)
-            {
-                <section class="mb-5">
-                    <div class="create-team-cta">
-                        <div class="row align-items-center">
-                            <div class="col-md-8">
-                                <h2>Pronto para criar a tua equipa de sonho?</h2>
-                                <p>Cria ou junta-te a uma equipa para competir em torneios juntos</p>
-                            </div>
-                            <div class="col-md-4 text-md-end">
-                                <a asp-controller="Teams" asp-action="Create" class="btn btn-success btn-lg">Criar Equipa</a>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            }
-
-            <!-- Torneios com Grandes Prémios -->
-            <section class="mb-5">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2 class="section-title">Torneios com Grandes Prémios</h2>
-                    <a asp-controller="Tournaments" asp-action="Index" class="btn btn-sm btn-outline-success">Ver Todos</a>
-                </div>
-
-                <div class="row">
-                    @if (ViewData["HighPrizeTournaments"] is List<Tournament> highPrizeTournaments)
-                    {
-                        @foreach (var tournament in highPrizeTournaments)
-                        {
-                            <div class="col-md-4 mb-4">
-                                <div class="prize-tournament-card">
-                                    <div class="prize-badge">@tournament.PrizePool</div>
-                                    <img src="@tournament.ImageUrl" alt="@tournament.Name" class="card-img-top">
-                                    <div class="card-body">
-                                        <span class="game-tag">@tournament.Game.Name</span>
-                                        <h3 class="tournament-title">@tournament.Name</h3>
-                                        <div class="tournament-meta">
-                                            <span><i class="fas fa-calendar-alt text-success"></i> @tournament.StartDate.ToString("MMM dd")</span>
-                                            <span><i class="fas fa-users text-success"></i> @tournament.Registrations.Count</span>
-                                        </div>
-                                        <a asp-controller="Tournaments" asp-action="Details" asp-route-id="@tournament.Id" class="btn btn-success w-100 mt-3">Detalhes</a>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                    }
-                </div>
-            </section>
-        </div>
-    </div>
-</div>
-
 @section Styles {
     <style>
         :root {
@@ -527,6 +370,132 @@
         }
     </style>
 }
+
+<div class="homepage-container">
+    <div class="row">
+        <!-- Barra Lateral Esquerda - Jogos Favoritos -->
+        <div class="col-lg-3 sidebar">
+            <div class="sidebar-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="sidebar-title">Os Meus Jogos</h3>
+                    <a asp-controller="Games" asp-action="Index" class="btn btn-sm btn-outline-success">Adicionar Mais</a>
+                </div>
+
+                @if (User.Identity.IsAuthenticated && ViewData["FavoriteGames"] is List<Game> favoriteGames && favoriteGames.Any())
+                {
+                    <ul class="favorite-games-list">
+                        @foreach (var game in favoriteGames)
+                        {
+                            <li class="favorite-game-item">
+                                <img src="@game.ImageUrl" alt="@game.Name" class="game-icon">
+                                <span>@game.Name</span>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <i class="fas fa-gamepad text-success"></i>
+                        <p>Ainda sem jogos favoritos</p>
+                        <a asp-controller="Games" asp-action="Index" class="btn btn-success btn-sm">Explorar Jogos</a>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Conteúdo Principal -->
+        <div class="col-lg-9 main-content">
+            <!-- Secção de Torneios Futuros -->
+            <section class="mb-5">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="section-title">Torneios Futuros</h2>
+                    <a asp-controller="Tournaments" asp-action="Index" class="btn btn-sm btn-outline-success">Ver Todos</a>
+                </div>
+
+                
+            </section>
+
+            <!-- Secção de Explorar Jogos -->
+            <section class="mb-5">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="section-title">Explorar Jogos</h2>
+                    <a asp-controller="Games" asp-action="Index" class="btn btn-sm btn-outline-success">Ver Todos</a>
+                </div>
+
+                <div class="row">
+                    @if (ViewData["PopularGames"] is List<Game> popularGames)
+                    {
+                        @foreach (var game in popularGames)
+                        {
+                            <div class="col-6 col-md-3 mb-4">
+                                <div class="game-card">
+                                    <a asp-controller="Games" asp-action="Details" asp-route-id="@game.Id">
+                                        <img src="@game.ImageUrl" alt="@game.Name" class="game-image">
+                                        <div class="game-overlay">
+                                            <h3 class="game-title">@game.Name</h3>
+                                            <span class="game-tournaments">@game.Tournaments.Count torneios</span>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </section>
+
+            <!-- Chamada à Ação para Criar Equipa -->
+            @if (User.Identity.IsAuthenticated)
+            {
+                <section class="mb-5">
+                    <div class="create-team-cta">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h2>Pronto para criar a tua equipa de sonho?</h2>
+                                <p>Cria ou junta-te a uma equipa para competir em torneios juntos</p>
+                            </div>
+                            <div class="col-md-4 text-md-end">
+                                <a asp-controller="Teams" asp-action="Create" class="btn btn-success btn-lg">Criar Equipa</a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            }
+
+            <!-- Torneios com Grandes Prémios -->
+            <section class="mb-5">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="section-title">Torneios com Grandes Prémios</h2>
+                    <a asp-controller="Tournaments" asp-action="Index" class="btn btn-sm btn-outline-success">Ver Todos</a>
+                </div>
+
+                <div class="row">
+                    @if (ViewData["HighPrizeTournaments"] is List<Tournament> highPrizeTournaments)
+                    {
+                        @foreach (var tournament in highPrizeTournaments)
+                        {
+                            <div class="col-md-4 mb-4">
+                                <div class="prize-tournament-card">
+                                    <div class="prize-badge">@tournament.PrizePool</div>
+                                    <img src="@tournament.ImageUrl" alt="@tournament.Name" class="card-img-top">
+                                    <div class="card-body">
+                                        <span class="game-tag">@tournament.Game.Name</span>
+                                        <h3 class="tournament-title">@tournament.Name</h3>
+                                        <div class="tournament-meta">
+                                            <span><i class="fas fa-calendar-alt text-success"></i> @tournament.StartDate.ToString("MMM dd")</span>
+                                            <span><i class="fas fa-users text-success"></i> @tournament.Registrations.Count</span>
+                                        </div>
+                                        <a asp-controller="Tournaments" asp-action="Details" asp-route-id="@tournament.Id" class="btn btn-success w-100 mt-3">Detalhes</a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <script>

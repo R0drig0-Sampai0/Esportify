@@ -3,101 +3,6 @@
     ViewData["Title"] = "Jogos";
 }
 
-<!-- Secção Hero -->
-<section class="games-hero">
-    <div class="container">
-        <div class="hero-content">
-            <h1 class="hero-title">Explora <span class="text-gradient">Jogos Competitivos</span></h1>
-            <p class="hero-subtitle">Descobre todos os títulos suportados para torneios e jogos classificados</p>
-            <div class="search-container">
-                <div class="search-input">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="gameSearch" placeholder="Pesquisar jogos...">
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Conteúdo Principal -->
-<div class="games-container">
-    <div class="container">
-        <!-- Barra de Filtros -->
-        <div class="filter-bar">
-            <div class="filter-group">
-                <span class="filter-label">Filtrar por:</span>
-                <div class="filter-options">
-                    <button class="filter-btn active" data-filter="all">Todos os Jogos</button>
-                    <button class="filter-btn" data-filter="fps">FPS</button>
-                    <button class="filter-btn" data-filter="moba">MOBA</button>
-                    <button class="filter-btn" data-filter="battle-royale">Battle Royale</button>
-                    <button class="filter-btn" data-filter="strategy">Estratégia</button>
-                    <button class="filter-btn" data-filter="sports">Desporto</button>
-                </div>
-            </div>
-        </div>
-        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
-        {
-            <div class="admin-actions">
-                <a asp-action="AddGame" class="btn btn-add-game">
-                    <i class="fas fa-plus"></i> Adicionar Novo Jogo
-                </a>
-            </div>
-        }
-
-        <!-- Grelha de Jogos -->
-        <div class="games-grid" id="gameContainer">
-            @foreach (var game in Model)
-            {
-                <div class="game-card" data-genre="@game.Genre?.ToLower()" data-popularity="high">
-                    <div class="game-card-inner">
-                        <div class="game-image">
-                            <img src="@game.ImageUrl" alt="@game.Name"
-                                 onerror="this.onerror=null;this.src='/images/default-game.jpg';">
-                            <div class="game-badge">@game.Genre</div>
-                            <div class="game-overlay">
-                                <span class="tournament-count">@game.Tournaments?.Count Torneios Ativos</span>
-                            </div>
-                        </div>
-                        <div class="game-info">
-                            <h3 class="game-title">@game.Name</h3>
-                            <a asp-action="Details" asp-route-id="@game.Id" class="view-btn">
-                                Ver Detalhes <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
-
-        <!-- Paginação -->
-        @if (ViewBag.TotalPages > 1)
-        {
-            <div class="pagination-container">
-                <nav class="pagination">
-                    <a asp-action="Index" asp-route-page="@(ViewBag.CurrentPage > 1 ? ViewBag.CurrentPage - 1 : 1)"
-                       class="page-nav @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
-                        <i class="fas fa-chevron-left"></i>
-                    </a>
-
-                    @for (int i = 1; i <= ViewBag.TotalPages; i++)
-                    {
-                        <a asp-action="Index" asp-route-page="@i"
-                           class="page-number @(i == ViewBag.CurrentPage ? "active" : "")">
-                            @i
-                        </a>
-                    }
-
-                    <a asp-action="Index" asp-route-page="@(ViewBag.CurrentPage < ViewBag.TotalPages ? ViewBag.CurrentPage + 1 : ViewBag.TotalPages)"
-                       class="page-nav @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
-                        <i class="fas fa-chevron-right"></i>
-                    </a>
-                </nav>
-            </div>
-        }
-    </div>
-</div>
-
 @section Styles {
     <style>
         /* Games Page Styles */
@@ -443,6 +348,101 @@
 
     </style>
 }
+
+<!-- Secção Hero -->
+<section class="games-hero">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title">Explora <span class="text-gradient">Jogos Competitivos</span></h1>
+            <p class="hero-subtitle">Descobre todos os títulos suportados para torneios e jogos classificados</p>
+            <div class="search-container">
+                <div class="search-input">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="gameSearch" placeholder="Pesquisar jogos...">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Conteúdo Principal -->
+<div class="games-container">
+    <div class="container">
+        <!-- Barra de Filtros -->
+        <div class="filter-bar">
+            <div class="filter-group">
+                <span class="filter-label">Filtrar por:</span>
+                <div class="filter-options">
+                    <button class="filter-btn active" data-filter="all">Todos os Jogos</button>
+                    <button class="filter-btn" data-filter="fps">FPS</button>
+                    <button class="filter-btn" data-filter="moba">MOBA</button>
+                    <button class="filter-btn" data-filter="battle-royale">Battle Royale</button>
+                    <button class="filter-btn" data-filter="strategy">Estratégia</button>
+                    <button class="filter-btn" data-filter="sports">Desporto</button>
+                </div>
+            </div>
+        </div>
+        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+        {
+            <div class="admin-actions">
+                <a asp-action="AddGame" class="btn btn-add-game">
+                    <i class="fas fa-plus"></i> Adicionar Novo Jogo
+                </a>
+            </div>
+        }
+
+        <!-- Grelha de Jogos -->
+        <div class="games-grid" id="gameContainer">
+            @foreach (var game in Model)
+            {
+                <div class="game-card" data-genre="@game.Genre?.ToLower()" data-popularity="high">
+                    <div class="game-card-inner">
+                        <div class="game-image">
+                            <img src="@game.ImageUrl" alt="@game.Name"
+                                 onerror="this.onerror=null;this.src='/images/default-game.jpg';">
+                            <div class="game-badge">@game.Genre</div>
+                            <div class="game-overlay">
+                                <span class="tournament-count">@game.Tournaments?.Count Torneios Ativos</span>
+                            </div>
+                        </div>
+                        <div class="game-info">
+                            <h3 class="game-title">@game.Name</h3>
+                            <a asp-action="Details" asp-route-id="@game.Id" class="view-btn">
+                                Ver Detalhes <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Paginação -->
+        @if (ViewBag.TotalPages > 1)
+        {
+            <div class="pagination-container">
+                <nav class="pagination">
+                    <a asp-action="Index" asp-route-page="@(ViewBag.CurrentPage > 1 ? ViewBag.CurrentPage - 1 : 1)"
+                       class="page-nav @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+
+                    @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                    {
+                        <a asp-action="Index" asp-route-page="@i"
+                           class="page-number @(i == ViewBag.CurrentPage ? "active" : "")">
+                            @i
+                        </a>
+                    }
+
+                    <a asp-action="Index" asp-route-page="@(ViewBag.CurrentPage < ViewBag.TotalPages ? ViewBag.CurrentPage + 1 : ViewBag.TotalPages)"
+                       class="page-nav @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </nav>
+            </div>
+        }
+    </div>
+</div>
 
 @section Scripts {
     <script>

@@ -2,64 +2,6 @@
     ViewData["Title"] = "Início de Sessão";
 }
 
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="login-container">
-                <div class="login-header text-center mb-5">
-                    <h1 class="text-gradient">TOURNAMENT PRO</h1>
-                    <p class="tagline">Competir. Vencer. Ascender.</p>
-                </div>
-
-                <div class="login-box">
-                    <div class="login-form">
-                        <h2 class="section-title">INÍCIO DE SESSÃO</h2> 
-                        <form id="login-form" asp-controller="Auth" asp-action="Login" method="post">
-                            @Html.AntiForgeryToken()
-                            <div class="form-group mb-4">
-                                <label class="form-label">Gamer Tag</label> 
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                    <input type="text" id="username" name="username" class="form-control" placeholder="Introduza o seu gamer tag" required />  <!-- PT-PT -->
-                                </div>
-                                <small id="username-feedback" class="form-text"></small>
-                            </div>
-                            <div class="form-group mb-4">
-                                <label class="form-label">Palavra-passe</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                                    <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required />
-                                </div>
-                            </div>
-                            <button type="submit" class="btn btn-green btn-lg w-100 mb-3">
-                                <span>INICIAR SESSÃO</span>
-                                <i class="fas fa-arrow-right ms-2"></i>
-                            </button>
-                            <div class="login-options d-flex justify-content-between">
-                                <a asp-controller="Auth" asp-action="ForgotPassword" class="text-green">Recuperar palavra-passe</a>
-                                <a asp-controller="Auth" asp-action="Register" class="text-green">Criar conta</a>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                @if (ViewData.ModelState.ErrorCount > 0)
-                {
-                    <div class="error-messages mt-4">
-                        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-                        {
-                            <div class="alert alert-danger d-flex align-items-center">
-                                <i class="fas fa-exclamation-circle me-2"></i>
-                                @error.ErrorMessage
-                            </div>
-                        }
-                    </div>
-                }
-            </div>
-        </div>
-    </div>
-</div>
-
 @section Styles {
     <style>
         :root {
@@ -233,6 +175,64 @@
             gap: 1rem;
         }
 
-        }
-    </style>
+    }
+</style>
 }
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="login-container">
+                <div class="login-header text-center mb-5">
+                    <h1 class="text-gradient">TOURNAMENT PRO</h1>
+                    <p class="tagline">Competir. Vencer. Ascender.</p>
+                </div>
+
+                <div class="login-box">
+                    <div class="login-form">
+                        <h2 class="section-title">INÍCIO DE SESSÃO</h2> 
+                        <form id="login-form" asp-controller="Auth" asp-action="Login" method="post">
+                            @Html.AntiForgeryToken()
+                            <div class="form-group mb-4">
+                                <label class="form-label">Gamer Tag</label> 
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                    <input type="text" id="username" name="username" class="form-control" placeholder="Introduza o seu gamer tag" required />  <!-- PT-PT -->
+                                </div>
+                                <small id="username-feedback" class="form-text"></small>
+                            </div>
+                            <div class="form-group mb-4">
+                                <label class="form-label">Palavra-passe</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                    <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required />
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-green btn-lg w-100 mb-3">
+                                <span>INICIAR SESSÃO</span>
+                                <i class="fas fa-arrow-right ms-2"></i>
+                            </button>
+                            <div class="login-options d-flex justify-content-between">
+                                <a asp-controller="Auth" asp-action="ForgotPassword" class="text-green">Recuperar palavra-passe</a>
+                                <a asp-controller="Auth" asp-action="Register" class="text-green">Criar conta</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                @if (ViewData.ModelState.ErrorCount > 0)
+                {
+                    <div class="error-messages mt-4">
+                        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                        {
+                            <div class="alert alert-danger d-flex align-items-center">
+                                <i class="fas fa-exclamation-circle me-2"></i>
+                                @error.ErrorMessage
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

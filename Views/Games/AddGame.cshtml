@@ -3,50 +3,6 @@
     ViewData["Title"] = "Adicionar Novo Jogo";
 }
 
-<div class="create-game-container">
-    <div class="container">
-        <h1 class="page-title">Adicionar Novo Jogo</h1>
-
-        <form asp-action="AddGame" method="post" enctype="multipart/form-data" class="game-form">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-            <div class="form-group">
-                <label asp-for="Name" class="form-label">Nome</label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Genre" class="form-label">Género</label>
-                <select asp-for="Genre" class="form-control">
-                    <option value="">Selecione o Género</option>
-                    <option value="FPS">FPS</option>
-                    <option value="MOBA">MOBA</option>
-                    <option value="Battle Royale">Battle Royale</option>
-                    <option value="Strategy">Estratégia</option>
-                    <option value="Sports">Desporto</option>
-                    <option value="Fighting">Luta</option>
-                    <option value="Racing">Corrida</option>
-                    <option value="MMORPG">MMORPG</option>
-                </select>
-                <span asp-validation-for="Genre" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="OfficialWebsite" class="form-label">Website Oficial</label>
-                <input asp-for="OfficialWebsite" class="form-control" />
-                <span asp-validation-for="OfficialWebsite" class="text-danger"></span>
-            </div>
-
-
-            <div class="form-actions">
-                <a asp-action="Index" class="btn btn-cancel">Cancelar</a>
-                <button type="submit" class="btn btn-submit">Criar Jogo</button>
-            </div>
-        </form>
-    </div>
-</div>
-
 @section Styles {
     <style>
         .create-game-container {
@@ -184,6 +140,62 @@
             }
     </style>
 }
+
+<div class="create-game-container">
+    <div class="container">
+        <h1 class="page-title">Adicionar Novo Jogo</h1>
+
+        <form asp-action="AddGame" method="post" enctype="multipart/form-data" class="game-form">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="Name" class="form-label">Nome</label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Genre" class="form-label">Género</label>
+                <select asp-for="Genre" class="form-control">
+                    <option value="">Selecione o Género</option>
+                    <option value="FPS">FPS</option>
+                    <option value="MOBA">MOBA</option>
+                    <option value="Battle Royale">Battle Royale</option>
+                    <option value="Strategy">Estratégia</option>
+                    <option value="Sports">Desporto</option>
+                    <option value="Fighting">Luta</option>
+                    <option value="Racing">Corrida</option>
+                    <option value="MMORPG">MMORPG</option>
+                </select>
+                <span asp-validation-for="Genre" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="OfficialWebsite" class="form-label">Website Oficial</label>
+                <input asp-for="OfficialWebsite" class="form-control" />
+                <span asp-validation-for="OfficialWebsite" class="text-danger"></span>
+            </div>
+
+            <div class="form-group image-upload">
+                <label for="imageFile" class="form-label">Imagem do Jogo</label>
+                <input type="file" id="imageFile" name="ImageFile" accept="image/*" class="upload-input" />
+                <label for="imageFile" class="upload-label">
+                    <span>Selecionar Imagem</span>
+                </label>
+                <div class="image-preview">
+                    <img id="previewImage" src="#" alt="Pré-visualização" style="display:none;" />
+                    <span id="noImageText">Nenhuma imagem selecionada</span>
+                </div>
+                <span class="text-danger"></span>
+            </div>
+
+            <div class="form-actions">
+                <a asp-action="Index" class="btn btn-cancel">Cancelar</a>
+                <button type="submit" class="btn btn-submit">Criar Jogo</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 @section Scripts {
     <script>

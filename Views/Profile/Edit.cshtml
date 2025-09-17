@@ -7,110 +7,6 @@
     };
 }
 
-<div class="edit-profile-container">
-    <div class="container">
-        <h2 class="page-title">Editar Perfil</h2>
-
-        <form asp-action="Edit" enctype="multipart/form-data" class="profile-form">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label asp-for="Profile.DisplayName" class="form-label">Nome de Exibição</label>
-                        <input asp-for="Profile.DisplayName" class="form-control" />
-                        <span asp-validation-for="Profile.DisplayName" class="text-danger"></span>
-                    </div>
-
-                    <div class="form-group">
-                        <label asp-for="Profile.Bio" class="form-label">Biografia</label>
-                        <textarea asp-for="Profile.Bio" class="form-control" rows="4"></textarea>
-                        <span asp-validation-for="Profile.Bio" class="text-danger"></span>
-                    </div>
-
-                    <div class="form-group">
-                        <label asp-for="Profile.Country" class="form-label">País</label>
-                        <select asp-for="Profile.Country" class="form-control">
-                            <option value="">Selecione o País</option>
-                            @foreach (var c in countries)
-                            {
-                                <option value="@c" selected="@(Model.Profile?.Country == c)">
-                                    @c
-                                </option>
-                            }
-                        </select>
-                        <span asp-validation-for="Profile.Country" class="text-danger"></span>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Avatar</label>
-                        <input type="file" name="avatarFile" class="form-control" accept="image/*" onchange="previewImage(this, 'avatarPreview')" />
-                        @if (!string.IsNullOrEmpty(Model.Profile?.AvatarUrl))
-                        {
-                            <div class="mt-2">
-                                <img src="@Model.Profile.AvatarUrl" id="avatarPreview" style="max-height: 150px;" />
-                            </div>
-                        }
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Banner</label>
-                        <input type="file" name="bannerFile" class="form-control" accept="image/*" onchange="previewImage(this, 'bannerPreview')" />
-                        @if (!string.IsNullOrEmpty(Model.Profile?.BannerUrl))
-                        {
-                            <div class="mt-2">
-                                <img src="@Model.Profile.BannerUrl" id="bannerPreview" style="max-height: 100px; width: 100%;" />
-                            </div>
-                        }
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <h4 class="section-title">Links Sociais</h4>
-                    <div class="form-group">
-                        <label asp-for="Profile.TwitchUrl" class="form-label">Twitch</label>
-                        <input asp-for="Profile.TwitchUrl" class="form-control" />
-                        <span asp-validation-for="Profile.TwitchUrl" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Profile.YouTubeUrl" class="form-label">YouTube</label>
-                        <input asp-for="Profile.YouTubeUrl" class="form-control" />
-                        <span asp-validation-for="Profile.YouTubeUrl" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Profile.TwitterUrl" class="form-label">Twitter</label>
-                        <input asp-for="Profile.TwitterUrl" class="form-control" />
-                        <span asp-validation-for="Profile.TwitterUrl" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Profile.DiscordUrl" class="form-label">Discord</label>
-                        <input asp-for="Profile.DiscordUrl" class="form-control" />
-                        <span asp-validation-for="Profile.DiscordUrl" class="text-danger"></span>
-                    </div>
-
-                    <h4 class="section-title">Preferências</h4>
-                    <div class="form-group">
-                        <label asp-for="Profile.FavoriteGame" class="form-label">Jogo Favorito</label>
-                        <input asp-for="Profile.FavoriteGame" class="form-control" />
-                        <span asp-validation-for="Profile.FavoriteGame" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Profile.FavoriteTeam" class="form-label">Equipa Favorita</label>
-                        <input asp-for="Profile.FavoriteTeam" class="form-control" />
-                        <span asp-validation-for="Profile.FavoriteTeam" class="text-danger"></span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group mt-3 form-actions">
-                <input type="submit" value="Guardar" class="btn btn-primary" />
-                <a asp-action="Me" class="btn btn-secondary">Cancelar</a>
-            </div>
-        </form>
-    </div>
-</div>
-
 @section Styles {
     <style>
         :root {
@@ -238,6 +134,110 @@
         }
     </style>
 }
+
+<div class="edit-profile-container">
+    <div class="container">
+        <h2 class="page-title">Editar Perfil</h2>
+
+        <form asp-action="Edit" enctype="multipart/form-data" class="profile-form">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Profile.DisplayName" class="form-label">Nome de Exibição</label>
+                        <input asp-for="Profile.DisplayName" class="form-control" />
+                        <span asp-validation-for="Profile.DisplayName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Profile.Bio" class="form-label">Biografia</label>
+                        <textarea asp-for="Profile.Bio" class="form-control" rows="4"></textarea>
+                        <span asp-validation-for="Profile.Bio" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Profile.Country" class="form-label">País</label>
+                        <select asp-for="Profile.Country" class="form-control">
+                            <option value="">Selecione o País</option>
+                            @foreach (var c in countries)
+                            {
+                                <option value="@c" selected="@(Model.Profile?.Country == c)">
+                                    @c
+                                </option>
+                            }
+                        </select>
+                        <span asp-validation-for="Profile.Country" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Avatar</label>
+                        <input type="file" name="avatarFile" class="form-control" accept="image/*" onchange="previewImage(this, 'avatarPreview')" />
+                        @if (!string.IsNullOrEmpty(Model.Profile?.AvatarUrl))
+                        {
+                            <div class="mt-2">
+                                <img src="@Model.Profile.AvatarUrl" id="avatarPreview" style="max-height: 150px;" />
+                            </div>
+                        }
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Banner</label>
+                        <input type="file" name="bannerFile" class="form-control" accept="image/*" onchange="previewImage(this, 'bannerPreview')" />
+                        @if (!string.IsNullOrEmpty(Model.Profile?.BannerUrl))
+                        {
+                            <div class="mt-2">
+                                <img src="@Model.Profile.BannerUrl" id="bannerPreview" style="max-height: 100px; width: 100%;" />
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <h4 class="section-title">Links Sociais</h4>
+                    <div class="form-group">
+                        <label asp-for="Profile.TwitchUrl" class="form-label">Twitch</label>
+                        <input asp-for="Profile.TwitchUrl" class="form-control" />
+                        <span asp-validation-for="Profile.TwitchUrl" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Profile.YouTubeUrl" class="form-label">YouTube</label>
+                        <input asp-for="Profile.YouTubeUrl" class="form-control" />
+                        <span asp-validation-for="Profile.YouTubeUrl" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Profile.TwitterUrl" class="form-label">Twitter</label>
+                        <input asp-for="Profile.TwitterUrl" class="form-control" />
+                        <span asp-validation-for="Profile.TwitterUrl" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Profile.DiscordUrl" class="form-label">Discord</label>
+                        <input asp-for="Profile.DiscordUrl" class="form-control" />
+                        <span asp-validation-for="Profile.DiscordUrl" class="text-danger"></span>
+                    </div>
+
+                    <h4 class="section-title">Preferências</h4>
+                    <div class="form-group">
+                        <label asp-for="Profile.FavoriteGame" class="form-label">Jogo Favorito</label>
+                        <input asp-for="Profile.FavoriteGame" class="form-control" />
+                        <span asp-validation-for="Profile.FavoriteGame" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Profile.FavoriteTeam" class="form-label">Equipa Favorita</label>
+                        <input asp-for="Profile.FavoriteTeam" class="form-control" />
+                        <span asp-validation-for="Profile.FavoriteTeam" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group mt-3 form-actions">
+                <input type="submit" value="Guardar" class="btn btn-primary" />
+                <a asp-action="Me" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
 
 @section Scripts {
     <script>

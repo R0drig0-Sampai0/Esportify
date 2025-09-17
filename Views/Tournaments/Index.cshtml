@@ -5,150 +5,6 @@
     ViewData["Title"] = "Torneios";
 }
 
-<!-- Hero Section -->
-<section class="games-hero">
-    <div class="container">
-        <div class="hero-content">
-            <h1 class="hero-title">Torneios <span class="text-gradient">Disponíveis</span></h1>
-            <p class="hero-subtitle">Competes contra os melhores e prova as tuas habilidades</p>
-            <div class="search-container">
-                <div class="search-input">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="tournamentSearch" placeholder="Pesquisar torneios...">
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Main Content -->
-<div class="games-container">
-    <div class="container">
-        <!-- Filter Bar -->
-        <div class="filter-bar">
-            <div class="filter-group">
-                <span class="filter-label">Filtrar por:</span>
-                <div class="filter-options">
-                    <button class="filter-btn active" data-filter="all">Todos</button>
-                    <button class="filter-btn" data-filter="fps">FPS</button>
-                    <button class="filter-btn" data-filter="moba">MOBA</button>
-                    <button class="filter-btn" data-filter="battle-royale">Battle Royale</button>
-                    <button class="filter-btn" data-filter="strategy">Estratégia</button>
-                    <button class="filter-btn" data-filter="sports">Desporto</button>
-                </div>
-            </div>
-            <div class="sort-group">
-                <span class="sort-label">Ordenar por:</span>
-                <select class="sort-select">
-                    <option value="popular">Mais Populares</option>
-                    <option value="prize">Maior Prémio</option>
-                    <option value="newest">Mais Recentes</option>
-                    <option value="soonest">A Começar Brevemente</option>
-                </select>
-            </div>
-        </div>
-
-        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
-        {
-            <div class="admin-actions">
-                <a asp-controller="Tournaments" asp-action="Create" class="btn btn-add-game">
-                    <i class="fas fa-plus"></i> Criar Torneio
-                </a>
-            </div>
-        }
-
-        <!-- Tournaments Grid -->
-        <div class="games-grid" id="tournamentContainer">
-            @foreach (var tournament in Model)
-            {
-                <div class="game-card" data-genre="@tournament.Game.Genre?.ToLower()">
-                    <div class="game-card-inner">
-                        <div class="game-image">
-                            <img src="@tournament.ImageUrl" alt="@tournament.Name"
-                                 onerror="this.onerror=null;this.src='/images/default-tournament.jpg';">
-                            <div class="game-badge">@tournament.Game.Genre</div>
-                            <div class="game-overlay">
-                                <span class="tournament-count">Prémio @tournament.PrizePool.ToString("C0")</span>
-                            </div>
-                        </div>
-                        <div class="game-info">
-                            <h3 class="game-title">@tournament.Name</h3>
-                            <div class="game-stats">
-                                <div class="stat">
-                                    <i class="fas fa-calendar-alt"></i>
-                                    <span>@tournament.StartDate.ToString("MMM dd")</span>
-                                </div>
-                                <div class="stat">
-                                    <i class="fas fa-users"></i>
-                                    <span>@tournament.Registrations.Count/@tournament.MaxTeams Equipas</span>
-                                </div>
-                            </div>
-                            @{
-                                var status = tournament.StartDate > DateTime.Now
-                                ? "Inscrições Abertas"
-                                : tournament.EndDate > DateTime.Now
-                                ? "A Decorrer"
-                                : "Concluído";
-                                var statusClass = tournament.StartDate > DateTime.Now
-                                ? "status-registering"
-                                : tournament.EndDate > DateTime.Now
-                                ? "status-ongoing"
-                                : "status-completed";
-                            }
-                            <div class="tournament-status @statusClass">@status</div>
-                            <a asp-controller="Tournaments" asp-action="Details" asp-route-id="@tournament.Id" class="view-btn">
-                                Ver Detalhes <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
-
-        <!-- Empty State -->
-        @if (!Model.Any())
-        {
-            <div class="empty-state">
-                <i class="fas fa-trophy"></i>
-                <h3>Não há torneios disponíveis</h3>
-                <p>Volta mais tarde ou cria o teu próprio torneio</p>
-                @if (User.Identity.IsAuthenticated)
-                {
-                    <a asp-controller="Tournaments" asp-action="Create" class="btn btn-primary">
-                        <i class="fas fa-plus"></i> Criar Torneio
-                    </a>
-                }
-            </div>
-        }
-
-        <!-- Pagination -->
-        @if (ViewBag.TotalPages > 1)
-        {
-            <div class="pagination-container">
-                <nav class="pagination">
-                    <a asp-action="Index" asp-route-page="@(ViewBag.CurrentPage > 1 ? ViewBag.CurrentPage - 1 : 1)"
-                       class="page-nav @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
-                        <i class="fas fa-chevron-left"></i>
-                    </a>
-
-                    @for (int i = 1; i <= ViewBag.TotalPages; i++)
-                    {
-                        <a asp-action="Index" asp-route-page="@i"
-                           class="page-number @(i == ViewBag.CurrentPage ? "active" : "")">
-                            @i
-                        </a>
-                    }
-
-                    <a asp-action="Index" asp-route-page="@(ViewBag.CurrentPage < ViewBag.TotalPages ? ViewBag.CurrentPage + 1 : ViewBag.TotalPages)"
-                       class="page-nav @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
-                        <i class="fas fa-chevron-right"></i>
-                    </a>
-                </nav>
-            </div>
-        }
-    </div>
-</div>
-
 @section Styles {
     <style>
         /* Games Page Styles */
@@ -544,6 +400,150 @@
         }
     </style>
 }
+
+<!-- Hero Section -->
+<section class="games-hero">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title">Torneios <span class="text-gradient">Disponíveis</span></h1>
+            <p class="hero-subtitle">Competes contra os melhores e prova as tuas habilidades</p>
+            <div class="search-container">
+                <div class="search-input">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="tournamentSearch" placeholder="Pesquisar torneios...">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main Content -->
+<div class="games-container">
+    <div class="container">
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <div class="filter-group">
+                <span class="filter-label">Filtrar por:</span>
+                <div class="filter-options">
+                    <button class="filter-btn active" data-filter="all">Todos</button>
+                    <button class="filter-btn" data-filter="fps">FPS</button>
+                    <button class="filter-btn" data-filter="moba">MOBA</button>
+                    <button class="filter-btn" data-filter="battle-royale">Battle Royale</button>
+                    <button class="filter-btn" data-filter="strategy">Estratégia</button>
+                    <button class="filter-btn" data-filter="sports">Desporto</button>
+                </div>
+            </div>
+            <div class="sort-group">
+                <span class="sort-label">Ordenar por:</span>
+                <select class="sort-select">
+                    <option value="popular">Mais Populares</option>
+                    <option value="prize">Maior Prémio</option>
+                    <option value="newest">Mais Recentes</option>
+                    <option value="soonest">A Começar Brevemente</option>
+                </select>
+            </div>
+        </div>
+
+        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+        {
+            <div class="admin-actions">
+                <a asp-controller="Tournaments" asp-action="Create" class="btn btn-add-game">
+                    <i class="fas fa-plus"></i> Criar Torneio
+                </a>
+            </div>
+        }
+
+        <!-- Tournaments Grid -->
+        <div class="games-grid" id="tournamentContainer">
+            @foreach (var tournament in Model)
+            {
+                <div class="game-card" data-genre="@tournament.Game.Genre?.ToLower()">
+                    <div class="game-card-inner">
+                        <div class="game-image">
+                            <img src="@tournament.ImageUrl" alt="@tournament.Name"
+                                 onerror="this.onerror=null;this.src='/images/default-tournament.jpg';">
+                            <div class="game-badge">@tournament.Game.Genre</div>
+                            <div class="game-overlay">
+                                <span class="tournament-count">Prémio @tournament.PrizePool.ToString("C0")</span>
+                            </div>
+                        </div>
+                        <div class="game-info">
+                            <h3 class="game-title">@tournament.Name</h3>
+                            <div class="game-stats">
+                                <div class="stat">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <span>@tournament.StartDate.ToString("MMM dd")</span>
+                                </div>
+                                <div class="stat">
+                                    <i class="fas fa-users"></i>
+                                    <span>@tournament.Registrations.Count/@tournament.MaxTeams Equipas</span>
+                                </div>
+                            </div>
+                            @{
+                                var status = tournament.StartDate > DateTime.Now
+                                ? "Inscrições Abertas"
+                                : tournament.EndDate > DateTime.Now
+                                ? "A Decorrer"
+                                : "Concluído";
+                                var statusClass = tournament.StartDate > DateTime.Now
+                                ? "status-registering"
+                                : tournament.EndDate > DateTime.Now
+                                ? "status-ongoing"
+                                : "status-completed";
+                            }
+                            <div class="tournament-status @statusClass">@status</div>
+                            <a asp-controller="Tournaments" asp-action="Details" asp-route-id="@tournament.Id" class="view-btn">
+                                Ver Detalhes <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Empty State -->
+        @if (!Model.Any())
+        {
+            <div class="empty-state">
+                <i class="fas fa-trophy"></i>
+                <h3>Não há torneios disponíveis</h3>
+                <p>Volta mais tarde ou cria o teu próprio torneio</p>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <a asp-controller="Tournaments" asp-action="Create" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Criar Torneio
+                    </a>
+                }
+            </div>
+        }
+
+        <!-- Pagination -->
+        @if (ViewBag.TotalPages > 1)
+        {
+            <div class="pagination-container">
+                <nav class="pagination">
+                    <a asp-action="Index" asp-route-page="@(ViewBag.CurrentPage > 1 ? ViewBag.CurrentPage - 1 : 1)"
+                       class="page-nav @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+
+                    @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                    {
+                        <a asp-action="Index" asp-route-page="@i"
+                           class="page-number @(i == ViewBag.CurrentPage ? "active" : "")">
+                            @i
+                        </a>
+                    }
+
+                    <a asp-action="Index" asp-route-page="@(ViewBag.CurrentPage < ViewBag.TotalPages ? ViewBag.CurrentPage + 1 : ViewBag.TotalPages)"
+                       class="page-nav @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </nav>
+            </div>
+        }
+    </div>
+</div>
 
 @section Scripts {
     <script>

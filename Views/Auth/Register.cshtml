@@ -2,89 +2,6 @@
     ViewData["Title"] = "Register";
 }
 
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="register-container">
-                <div class="register-header text-center mb-5">
-                    <h1 class="text-gradient">JUNTA-TE AO ESPORTIFY</h1>
-                    <p class="tagline">Pronto para competir? Cria a tua conta</p>
-                </div>
-
-                <div class="register-box">
-                    <div class="register-form">
-                        <h2 class="section-title">REGISTO DE JOGADOR</h2>
-                        <form id="register-form" asp-controller="Auth" asp-action="Register" method="post">
-                            @Html.AntiForgeryToken()
-                            <div class="form-group mb-4">
-                                <label class="form-label">Nome de Jogador</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-gamepad"></i></span>
-                                    <input type="text" id="username" name="username" class="form-control" placeholder="Insere o teu nome de jogador único" required />
-                                </div>
-                                <small id="username-feedback" class="form-text"></small>
-                            </div>
-                            <div class="form-group mb-4">
-                                <label class="form-label">Email</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                                    <input type="email" id="email" name="email" class="form-control" placeholder="Insere o teu email" required />
-                                </div>
-                            </div>
-                            <div class="form-group mb-4">
-                                <label class="form-label">Palavra-passe</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                                    <input type="password" id="password" name="password" class="form-control" placeholder="Cria uma palavra-passe forte" required />
-                                </div>
-                                <div class="password-strength mt-2">
-                                    <div class="strength-bar"></div>
-                                    <small class="text-light-grey">Força da palavra-passe: <span id="strength-text">Fraca</span></small>
-                                </div>
-                            </div>
-                            <div class="form-group mb-4">
-                                <label class="form-label">Confirmar Palavra-passe</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                                    <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" placeholder="Confirma a tua palavra-passe" required />
-                                </div>
-                                <small id="confirm-password-feedback" class="form-text"></small>
-                            </div>
-                            <div class="form-check mb-4">
-                                <input class="form-check-input" type="checkbox" id="termsCheck" required>
-                                <label class="form-check-label" for="termsCheck">
-                                    Concordo com os <a asp-controller="Home" asp-action="Terms" class="text-green">Termos de Serviço</a> e a <a asp-controller="Home" asp-action="Privacy" class="text-green">Política de Privacidade</a>
-                                </label>
-                            </div>
-                            <button type="submit" class="btn btn-green btn-lg w-100 mb-3">
-                                <span>CRIAR CONTA</span>
-                                <i class="fas fa-user-plus ms-2"></i>
-                            </button>
-                            <div class="text-center">
-                                <span class="text-light-grey">Já tens uma conta?</span>
-                                <a asp-controller="Auth" asp-action="Login" class="ms-2 text-green">Iniciar Sessão</a>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                @if (ViewData.ModelState.ErrorCount > 0)
-                {
-                    <div class="error-messages mt-4">
-                        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-                        {
-                            <div class="alert alert-danger d-flex align-items-center">
-                                <i class="fas fa-exclamation-circle me-2"></i>
-                                @error.ErrorMessage
-                            </div>
-                        }
-                    </div>
-                }
-            </div>
-        </div>
-    </div>
-</div>
-
 @section Styles {
     <style>
         :root {
@@ -94,8 +11,8 @@
             --light-grey: #3a3a3a;
             --green: #00ff88;
             --dark-green: #00cc6a;
-            --text: #ffffff;var(--light-grey)
-            --error: #ff4655;
+            --text: #ffffff;
+            var(--light-grey) --error: #ff4655;
         }
 
         .register-container {
@@ -275,9 +192,92 @@
             gap: 1rem;
         }
 
-        }
-    </style>
+    }
+</style>
 }
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="register-container">
+                <div class="register-header text-center mb-5">
+                    <h1 class="text-gradient">JUNTA-TE AO ESPORTIFY</h1>
+                    <p class="tagline">Pronto para competir? Cria a tua conta</p>
+                </div>
+
+                <div class="register-box">
+                    <div class="register-form">
+                        <h2 class="section-title">REGISTO DE JOGADOR</h2>
+                        <form id="register-form" asp-controller="Auth" asp-action="Register" method="post">
+                            @Html.AntiForgeryToken()
+                            <div class="form-group mb-4">
+                                <label class="form-label">Nome de Jogador</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-gamepad"></i></span>
+                                    <input type="text" id="username" name="username" class="form-control" placeholder="Insere o teu nome de jogador único" required />
+                                </div>
+                                <small id="username-feedback" class="form-text"></small>
+                            </div>
+                            <div class="form-group mb-4">
+                                <label class="form-label">Email</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                    <input type="email" id="email" name="email" class="form-control" placeholder="Insere o teu email" required />
+                                </div>
+                            </div>
+                            <div class="form-group mb-4">
+                                <label class="form-label">Palavra-passe</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                    <input type="password" id="password" name="password" class="form-control" placeholder="Cria uma palavra-passe forte" required />
+                                </div>
+                                <div class="password-strength mt-2">
+                                    <div class="strength-bar"></div>
+                                    <small class="text-light-grey">Força da palavra-passe: <span id="strength-text">Fraca</span></small>
+                                </div>
+                            </div>
+                            <div class="form-group mb-4">
+                                <label class="form-label">Confirmar Palavra-passe</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                    <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" placeholder="Confirma a tua palavra-passe" required />
+                                </div>
+                                <small id="confirm-password-feedback" class="form-text"></small>
+                            </div>
+                            <div class="form-check mb-4">
+                                <input class="form-check-input" type="checkbox" id="termsCheck" required>
+                                <label class="form-check-label" for="termsCheck">
+                                    Concordo com os <a asp-controller="Home" asp-action="Terms" class="text-green">Termos de Serviço</a> e a <a asp-controller="Home" asp-action="Privacy" class="text-green">Política de Privacidade</a>
+                                </label>
+                            </div>
+                            <button type="submit" class="btn btn-green btn-lg w-100 mb-3">
+                                <span>CRIAR CONTA</span>
+                                <i class="fas fa-user-plus ms-2"></i>
+                            </button>
+                            <div class="text-center">
+                                <span class="text-light-grey">Já tens uma conta?</span>
+                                <a asp-controller="Auth" asp-action="Login" class="ms-2 text-green">Iniciar Sessão</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                @if (ViewData.ModelState.ErrorCount > 0)
+                {
+                    <div class="error-messages mt-4">
+                        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                        {
+                            <div class="alert alert-danger d-flex align-items-center">
+                                <i class="fas fa-exclamation-circle me-2"></i>
+                                @error.ErrorMessage
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

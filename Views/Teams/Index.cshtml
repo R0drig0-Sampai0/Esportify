@@ -5,75 +5,6 @@
     ViewData["Title"] = "Equipas";
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="text-gradient">@ViewData["Title"]</h1>
-        <a asp-action="Create" class="btn btn-green">
-            <i class="fas fa-plus me-2"></i>Criar Equipa
-        </a>
-    </div>
-
-    @if (!Model.Any())
-    {
-        <div class="alert alert-dark text-center">
-            <i class="fas fa-users-slash me-2"></i>Não foram encontradas equipas
-        </div>
-    }
-    else
-    {
-        <div class="row">
-            @foreach (var team in Model)
-            {
-                <div class="col-md-4 mb-4">
-                    <div class="team-card">
-                        <div class="team-header">
-                            <div class="team-title">
-                                <h5>@team.TeamName</h5>
-                                @if (!string.IsNullOrEmpty(team.Tag))
-                                {
-                                    <span class="team-tag">@team.Tag</span>
-                                }
-                            </div>
-                            @if (!string.IsNullOrEmpty(team.LogoUrl))
-                            {
-                                <div class="team-logo-container">
-                                    <img src="@team.LogoUrl" class="team-logo" alt="Logótipo @team.TeamName">
-                                </div>
-                            }
-                        </div>
-
-                        <div class="team-body">
-                            <div class="team-info">
-                                <p><i class="fas fa-crown me-2"></i><strong>Líder:</strong> @team.Leader?.UserName</p>
-                                <p><i class="fas fa-calendar-alt me-2"></i><strong>Criada em:</strong> @team.CreatedAt.ToString("dd/MM/yyyy")</p>
-                                <p>
-                                    <i class="fas fa-door-@(team.IsOpenForMembers ? "open" : "closed") me-2"></i>
-                                    <strong>Estado:</strong>
-                                    <span class="team-status @(team.IsOpenForMembers ? "text-success" : "text-danger")">
-                                        @(team.IsOpenForMembers ? "Aberta a membros" : "Fechada")
-                                    </span>
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="team-footer">
-                            <a asp-action="Details" asp-route-id="@team.Id" class="btn btn-outline-green btn-sm">
-                                <i class="fas fa-info-circle me-1"></i>Detalhes
-                            </a>
-                            @if (User.Identity.IsAuthenticated && User.FindFirstValue(ClaimTypes.NameIdentifier) == team.LeaderId)
-                            {
-                                <a asp-action="Edit" asp-route-id="@team.Id" class="btn btn-outline-secondary btn-sm">
-                                    <i class="fas fa-edit me-1"></i>Editar
-                                </a>
-                            }
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
-    }
-</div>
-
 @section Styles {
     <style>
         :root {
@@ -217,3 +148,72 @@
         }
     </style>
 }
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="text-gradient">@ViewData["Title"]</h1>
+        <a asp-action="Create" class="btn btn-green">
+            <i class="fas fa-plus me-2"></i>Criar Equipa
+        </a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-dark text-center">
+            <i class="fas fa-users-slash me-2"></i>Não foram encontradas equipas
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var team in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="team-card">
+                        <div class="team-header">
+                            <div class="team-title">
+                                <h5>@team.TeamName</h5>
+                                @if (!string.IsNullOrEmpty(team.Tag))
+                                {
+                                    <span class="team-tag">@team.Tag</span>
+                                }
+                            </div>
+                            @if (!string.IsNullOrEmpty(team.LogoUrl))
+                            {
+                                <div class="team-logo-container">
+                                    <img src="@team.LogoUrl" class="team-logo" alt="Logótipo @team.TeamName">
+                                </div>
+                            }
+                        </div>
+
+                        <div class="team-body">
+                            <div class="team-info">
+                                <p><i class="fas fa-crown me-2"></i><strong>Líder:</strong> @team.Leader?.UserName</p>
+                                <p><i class="fas fa-calendar-alt me-2"></i><strong>Criada em:</strong> @team.CreatedAt.ToString("dd/MM/yyyy")</p>
+                                <p>
+                                    <i class="fas fa-door-@(team.IsOpenForMembers ? "open" : "closed") me-2"></i>
+                                    <strong>Estado:</strong>
+                                    <span class="team-status @(team.IsOpenForMembers ? "text-success" : "text-danger")">
+                                        @(team.IsOpenForMembers ? "Aberta a membros" : "Fechada")
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="team-footer">
+                            <a asp-action="Details" asp-route-id="@team.Id" class="btn btn-outline-green btn-sm">
+                                <i class="fas fa-info-circle me-1"></i>Detalhes
+                            </a>
+                            @if (User.Identity.IsAuthenticated && User.FindFirstValue(ClaimTypes.NameIdentifier) == team.LeaderId)
+                            {
+                                <a asp-action="Edit" asp-route-id="@team.Id" class="btn btn-outline-secondary btn-sm">
+                                    <i class="fas fa-edit me-1"></i>Editar
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

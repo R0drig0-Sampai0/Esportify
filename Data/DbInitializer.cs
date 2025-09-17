@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
+using static System.Net.WebRequestMethods;
 
 namespace Esportify.Data.Initializers
 {
@@ -128,14 +129,6 @@ namespace Esportify.Data.Initializers
                 var random = new Random();
                 var games = await context.Games.ToListAsync();
                 var adminId = "10000000-0000-0000-0000-000000000001";
-                var tournamentImages = new[]
-                {
-        "https://cdn2.steamgriddb.com/thumb/5f5d472067f77d5a5300b10e9dc7f4a4.jpg", // Tournament 1
-        "https://cdn2.steamgriddb.com/thumb/4d4c6d6e2e4e2e4e2e4e2e4e2e4e2e4e.jpg", // Tournament 2
-        "https://cdn2.steamgriddb.com/thumb/3d3d6d6e2e4e2e4e2e4e2e4e2e4e2e4e.jpg", // Tournament 3
-        "https://cdn2.steamgriddb.com/thumb/2d2d6d6e2e4e2e4e2e4e2e4e2e4e2e4e.jpg", // Tournament 4
-        "https://cdn2.steamgriddb.com/thumb/1d1d6d6e2e4e2e4e2e4e2e4e2e4e2e4e.jpg"  // Tournament 5
-    };
 
                 var tournaments = new[]
                 {
@@ -153,7 +146,7 @@ namespace Esportify.Data.Initializers
             MinTeamSize = 5,
             MaxTeamSize = 5,
             PrizePool = 2000000,
-            ImageUrl = tournamentImages[0],
+            ImageUrl = "https://cdn2.steamgriddb.com/thumb/5fa68a32c8ce2feebc132fa808d1ec0a.jpg",
             OrganizerId = adminId,
             CreatedDate = DateTime.Now
         },
@@ -170,7 +163,7 @@ namespace Esportify.Data.Initializers
             MinTeamSize = 5,
             MaxTeamSize = 5,
             PrizePool = 3000000,
-            ImageUrl = tournamentImages[1],
+            ImageUrl = "https://cdn2.steamgriddb.com/thumb/ea7c72fb7e9e2b6c0fdbc61050023187.jpg",
             OrganizerId = adminId,
             CreatedDate = DateTime.Now
         },
@@ -189,7 +182,7 @@ namespace Esportify.Data.Initializers
             MinTeamSize = 5,
             MaxTeamSize = 5,
             PrizePool = 1000000,
-            ImageUrl = tournamentImages[2],
+            ImageUrl = "https://cdn2.steamgriddb.com/thumb/b46469c5851be7facec604ceeef9aaaf.jpg",
             OrganizerId = adminId,
             CreatedDate = DateTime.Now
         },
@@ -206,7 +199,7 @@ namespace Esportify.Data.Initializers
             MinTeamSize = 5,
             MaxTeamSize = 5,
             PrizePool = 1500000,
-            ImageUrl = tournamentImages[3],
+            ImageUrl = "https://cdn2.steamgriddb.com/thumb/8baf0b49e5213e010109d31bdf591fd6.jpg",
             OrganizerId = adminId,
             CreatedDate = DateTime.Now
         },
@@ -223,7 +216,7 @@ namespace Esportify.Data.Initializers
             MinTeamSize = 5,
             MaxTeamSize = 5,
             PrizePool = 750000,
-            ImageUrl = tournamentImages[4],
+            ImageUrl = "https://cdn2.steamgriddb.com/thumb/20e29904d611f1e9dd8728bcae233854.jpg",
             OrganizerId = adminId,
             CreatedDate = DateTime.Now
         },
@@ -242,7 +235,7 @@ namespace Esportify.Data.Initializers
             MinTeamSize = 1,
             MaxTeamSize = 2,
             PrizePool = 3000000,
-            ImageUrl = tournamentImages[0],
+            ImageUrl = "https://cdn2.steamgriddb.com/thumb/6b41f181551b67d57d104272001e13cb.jpg",
             OrganizerId = adminId,
             CreatedDate = DateTime.Now
         },
@@ -259,7 +252,7 @@ namespace Esportify.Data.Initializers
             MinTeamSize = 3,
             MaxTeamSize = 3,
             PrizePool = 1000000,
-            ImageUrl = tournamentImages[1],
+            ImageUrl = "https://cdn2.steamgriddb.com/thumb/f40b4ef340a1e7f56c744ed2287c77c1.jpg",
             OrganizerId = adminId,
             CreatedDate = DateTime.Now
         },
@@ -278,7 +271,7 @@ namespace Esportify.Data.Initializers
             MinTeamSize = 3,
             MaxTeamSize = 3,
             PrizePool = 500000,
-            ImageUrl = tournamentImages[2],
+            ImageUrl = "https://cdn2.steamgriddb.com/thumb/400af71a935022ba0b7d8cf49e412984.jpg",
             OrganizerId = adminId,
             CreatedDate = DateTime.Now
         },
@@ -295,7 +288,7 @@ namespace Esportify.Data.Initializers
             MinTeamSize = 1,
             MaxTeamSize = 1,
             PrizePool = 250000,
-            ImageUrl = tournamentImages[3],
+            ImageUrl = "https://cdn2.steamgriddb.com/thumb/51aa0970c09f34740671a6c41f92df51.jpg",
             OrganizerId = adminId,
             CreatedDate = DateTime.Now
         },
@@ -314,7 +307,7 @@ namespace Esportify.Data.Initializers
             MinTeamSize = 1,
             MaxTeamSize = 1,
             PrizePool = 200000,
-            ImageUrl = tournamentImages[4],
+            ImageUrl = "https://cdn2.steamgriddb.com/thumb/245710681d51a6dfb80ab06683f3be01.jpg",
             OrganizerId = adminId,
             CreatedDate = DateTime.Now
         },
@@ -331,7 +324,7 @@ namespace Esportify.Data.Initializers
             MinTeamSize = 1,
             MaxTeamSize = 1,
             PrizePool = 150000,
-            ImageUrl = tournamentImages[0],
+            ImageUrl = "https://cdn2.steamgriddb.com/thumb/7db48ed21ea58bdbe6cc5f0865acccd8.png",
             OrganizerId = adminId,
             CreatedDate = DateTime.Now
         },
@@ -350,7 +343,7 @@ namespace Esportify.Data.Initializers
             MinTeamSize = 1,
             MaxTeamSize = 1,
             PrizePool = 300000,
-            ImageUrl = tournamentImages[1],
+            ImageUrl = "https://cdn2.steamgriddb.com/thumb/7e0bb07735b79680eb1ee707248353fd.jpg",
             OrganizerId = adminId,
             CreatedDate = DateTime.Now
         },
@@ -367,7 +360,7 @@ namespace Esportify.Data.Initializers
             MinTeamSize = 1,
             MaxTeamSize = 1,
             PrizePool = 100000,
-            ImageUrl = tournamentImages[2],
+            ImageUrl = "https://cdn2.steamgriddb.com/thumb/5749ac926d0b4565b0594576f56858fd.jpg",
             OrganizerId = adminId,
             CreatedDate = DateTime.Now
         },
@@ -386,7 +379,7 @@ namespace Esportify.Data.Initializers
             MinTeamSize = 5,
             MaxTeamSize = 5,
             PrizePool = 50000,
-            ImageUrl = tournamentImages[3],
+            ImageUrl = "https://cdn2.steamgriddb.com/thumb/67559abce761a57a4e0782a9f60e4adc.jpg",
             OrganizerId = adminId,
             CreatedDate = DateTime.Now
         },
@@ -403,7 +396,7 @@ namespace Esportify.Data.Initializers
             MinTeamSize = 5,
             MaxTeamSize = 5,
             PrizePool = 75000,
-            ImageUrl = tournamentImages[4],
+            ImageUrl = "https://cdn2.steamgriddb.com/thumb/e0849f52064965cc7f5b564618f15663.jpg",
             OrganizerId = adminId,
             CreatedDate = DateTime.Now
         },
@@ -422,7 +415,7 @@ namespace Esportify.Data.Initializers
             MinTeamSize = 5,
             MaxTeamSize = 5,
             PrizePool = 10000,
-            ImageUrl = tournamentImages[0],
+            ImageUrl = "https://cdn2.steamgriddb.com/thumb/74d2bd1261cd7590e2acdfa9990b64e5.jpg",
             OrganizerId = adminId,
             CreatedDate = DateTime.Now
         },
@@ -439,7 +432,7 @@ namespace Esportify.Data.Initializers
             MinTeamSize = 3,
             MaxTeamSize = 3,
             PrizePool = 5000,
-            ImageUrl = tournamentImages[1],
+            ImageUrl = "https://cdn2.steamgriddb.com/thumb/90faf607cc2f5c89eb2107a72b06a2b7.jpg",
             OrganizerId = adminId,
             CreatedDate = DateTime.Now
         },
@@ -458,7 +451,7 @@ namespace Esportify.Data.Initializers
             MinTeamSize = 5,
             MaxTeamSize = 5,
             PrizePool = 250000,
-            ImageUrl = tournamentImages[2],
+            ImageUrl = "https://cdn2.steamgriddb.com/thumb/276e4b3032ceaa7e52e9c0a41483d58f.jpg",
             OrganizerId = adminId,
             CreatedDate = DateTime.Now
         },
@@ -475,7 +468,7 @@ namespace Esportify.Data.Initializers
             MinTeamSize = 5,
             MaxTeamSize = 5,
             PrizePool = 100000,
-            ImageUrl = tournamentImages[3],
+            ImageUrl = "https://cdn2.steamgriddb.com/thumb/23a37e8274e55459d40e40e9798efbf7.jpg",
             OrganizerId = adminId,
             CreatedDate = DateTime.Now
         },
@@ -494,7 +487,7 @@ namespace Esportify.Data.Initializers
             MinTeamSize = 1,
             MaxTeamSize = 4,
             PrizePool = 0,
-            ImageUrl = tournamentImages[4],
+            ImageUrl = "https://cdn2.steamgriddb.com/thumb/6dc3399d124d4cf965d4d62d0663228e.jpg",
             OrganizerId = adminId,
             CreatedDate = DateTime.Now
         },
@@ -511,7 +504,7 @@ namespace Esportify.Data.Initializers
             MinTeamSize = 5,
             MaxTeamSize = 5,
             PrizePool = 0,
-            ImageUrl = tournamentImages[0],
+            ImageUrl = "https://cdn2.steamgriddb.com/thumb/d8732349cbe3ba46021a86345bb98c4c.jpg",
             OrganizerId = adminId,
             CreatedDate = DateTime.Now
         }

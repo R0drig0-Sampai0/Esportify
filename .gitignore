@@ -1,22 +1,66 @@
-﻿# Arquivos e pastas gerados automaticamente
-bin/
-obj/
+# Visual Studio user-specific files
 .vs/
 *.user
 *.suo
 *.userosscache
 *.sln.docstates
+
+# Build results
+bin/
+obj/
+Debug/
+Release/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+
+# Generated files
 *.log
-
-# SQLite e bases de dados locais
-*.db
-*.sqlite
-
-# Arquivos de cache
-*.pdb
+*.tlog
 *.cache
+*.pdb
 
-# Configurações locais do Rider ou VS Code (opcional)
-.idea/
+# NuGet
+*.nupkg
+*.snupkg
+*.nuspec
+packages/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Visual Studio Code
 .vscode/
 
+# Resharper
+_ReSharper*/
+*.DotSettings.user
+
+# Rider
+.idea/
+
+# DotCover
+*.dotCover
+
+# Other
+*.dbmdl
+*.bak
+*.ldf
+*.mdf
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# Publish
+publish/
+wwwroot/lib/
+
+# Node.js (if you’re using npm/yarn for frontend assets)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Mac/Linux system files
+.DS_Store
+Thumbs.db
