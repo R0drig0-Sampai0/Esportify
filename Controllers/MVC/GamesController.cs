@@ -1,12 +1,9 @@
 ﻿using Esportify.Data;
 using Esportify.Models;
+using Esportify.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.IO;
-using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace Esportify.Controllers.MVC
 {
@@ -24,6 +21,7 @@ namespace Esportify.Controllers.MVC
         {
             int pageSize = 12;
             var games = await _context.Games
+                .OrderByDescending(g => g.CreatedAt)
                 .Include(g => g.Tournaments)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
@@ -70,22 +68,39 @@ namespace Esportify.Controllers.MVC
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddGame(Game game)
+        public async Task<IActionResult> AddGame(GamesViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return View(model);
+
+            string imageUrl = "/images/games/default.jpg"; 
+
+            if (model.Image != null && model.Image.Length > 0)
             {
-                // Generate a new ID
-                game.Id = Guid.NewGuid().ToString();
+                var fileName = Guid.NewGuid() + Path.GetExtension(model.Image.FileName);
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/games", fileName);
 
-                _context.Games.Add(game);
-                await _context.SaveChangesAsync();
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await model.Image.CopyToAsync(stream);
+                }
 
-                // Redirect back to the game list or details page
-                return RedirectToAction(nameof(Index));
+                imageUrl = "/images/games/" + fileName;
             }
 
-            // If validation failed, return the form with validation errors
-            return View(game);
+            var game = new Game
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = model.Name,
+                Genre = model.Genre,
+                ImageUrl = imageUrl,
+                OfficialWebsite = model.OfficialWebsite
+            };
+
+            _context.Games.Add(game);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index");
         }
 
         // POST: Deletes the game (Admin only)

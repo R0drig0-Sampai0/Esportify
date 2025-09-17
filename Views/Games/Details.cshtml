@@ -308,10 +308,12 @@
                 <span class="like-count">@Model.LikedByUsers.Count gostos</span>
 
                 <!-- Botão de Eliminar (Trigger do Modal) -->
-                <button type="button" class="delete-btn" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-@Model.Id">
-                    <i class="fa-solid fa-trash"></i>
-                    <span>Delete</span>
-                </button>
+                @if (User.Identity.IsAuthenticated && User.IsInRole("Admin")){
+                    <button type="button" class="delete-btn" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-@Model.Id">
+                        <i class="fa-solid fa-trash"></i>
+                        <span>Delete</span>
+                    </button>
+                }
 
                 <!-- Modal de Confirmação -->
                 <div class="modal fade" id="confirmDeleteModal-@Model.Id" tabindex="-1" aria-labelledby="confirmDeleteLabel-@Model.Id" aria-hidden="true">
@@ -402,54 +404,35 @@
 
 @section Scripts {
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const likeButton = document.querySelector('.like-btn[data-game-id]');
-            if (likeButton) {
-                likeButton.addEventListener('click', async function (e) {
-                    e.preventDefault();
-                    const gameId = this.getAttribute('data-game-id');
-                    const token = document.querySelector('[name="__RequestVerificationToken"]')?.value;
+        document.addEventListener("DOMContentLoaded", function () {
+            const likeBtn = document.querySelector(".like-btn");
 
-                    if (!token) {
-                        alert('Erro: Token CSRF ausente');
-                        console.error('Token CSRF não encontrado');
-                        return;
-                    }
+            if (likeBtn) {
+                likeBtn.addEventListener("click", async function () {
+                    const gameId = this.dataset.gameId;
+                    const isLiked = this.classList.contains("liked");
+                    const url = `/api/games/${isLiked ? "unlike" : "like"}/${gameId}`;
 
                     try {
-                        const response = await fetch(`/api/games/${gameId}/toggle-like`, {
-                            method: 'POST',
+                        const response = await fetch(url, {
+                            method: "POST",
                             headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': token
+                                "Content-Type": "application/json",
                             },
-                            body: JSON.stringify({})
                         });
 
                         if (!response.ok) {
                             const error = await response.json();
-                            alert(error.error || 'Falha ao alternar gosto');
+                            alert(error.message || "Erro ao processar ação");
                             return;
                         }
 
-                        const data = await response.json();
-                        const isLiked = data.isLiked;
-                        const likeCount = data.likeCount;
+                        this.classList.toggle("liked");
+                        this.querySelector("span").textContent = isLiked ? "Gostar" : "Gostado";
 
-                        
-                        this.classList.toggle('liked', isLiked);
-                        this.querySelector('span').textContent = isLiked ? 'Gostado' : 'Gostar';
-                        const heart = this.querySelector('i');
-                        heart.style.transform = 'scale(1.3)';
-                        setTimeout(() => {
-                            heart.style.transform = 'scale(1)';
-                        }, 300);
-
-                        const likeCountElement = document.querySelector('.like-count');
-                        likeCountElement.textContent = `${likeCount} gostos`;
-                    } catch (error) {
-                        alert('Erro ao alternar gosto. Tenta novamente.');
-                        console.error('Erro ao alternar gosto:', error);
+                    } catch (err) {
+                        console.error(err);
+                        alert("Erro ao enviar pedido");
                     }
                 });
             }

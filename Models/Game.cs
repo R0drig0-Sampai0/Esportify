@@ -26,12 +26,13 @@ namespace Esportify.Models
         /// <summary>
         /// URL do logo do jogo.
         /// </summary>
-        public string? ImageUrl { get; set; }
+        public string ImageUrl { get; set; } = "/images/games/default.jpg";
 
         /// <summary>
         /// Site oficial do jogo.
         /// </summary>
         public string? OfficialWebsite { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         /****************************
         Definção dos relacionamentos
