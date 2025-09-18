@@ -222,17 +222,82 @@
                 border-color: var(--green);
                 color: var(--green);
             }
+
+        .btn-join {
+            background: var(--green);
+            color: var(--black);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+            .btn-join:hover {
+                background: var(--dark-green);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0, 255, 136, 0.3);
+            }
+
+        .btn-leave {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+            .btn-leave:hover {
+                background: #c82333;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+            }
     </style>
 }
 
 <div class="team-details-container">
     <div class="container">
+        <!-- Status Messages -->
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success" style="background-color: rgba(40, 167, 69, 0.1); border: 1px solid #28a745; color: #28a745; padding: 0.75rem; border-radius: 8px; margin-bottom: 1rem;">
+                <i class="fas fa-check-circle"></i> @TempData["Success"]
+            </div>
+        }
+        
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger" style="background-color: rgba(220, 53, 69, 0.1); border: 1px solid #dc3545; color: #dc3545; padding: 0.75rem; border-radius: 8px; margin-bottom: 1rem;">
+                <i class="fas fa-exclamation-triangle"></i> @TempData["Error"]
+            </div>
+        }
+        
         <!-- Team Header -->
         <div class="team-header">
             <img src="@Model.LogoUrl" alt="@Model.Name" class="team-logo"
                  onerror="this.onerror=null;this.src='/images/default-team-logo.png';">
             <h1 class="team-title">@Model.Name</h1>
             <p class="team-meta">Criado em @Model.CreatedAt.ToString("dd MMMM yyyy")</p>
+            <div class="team-status-badge" style="margin-bottom: 1rem;">
+                @if (Model.IsOpenForMembers)
+                {
+                    <span class="badge-open" style="background: rgba(40, 167, 69, 0.2); color: #28a745; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; border: 1px solid #28a745;">
+                        <i class="fas fa-door-open"></i> Aberta para Novos Membros
+                    </span>
+                }
+                else
+                {
+                    <span class="badge-closed" style="background: rgba(108, 117, 125, 0.2); color: #6c757d; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; border: 1px solid #6c757d;">
+                        <i class="fas fa-door-closed"></i> Fechada para Novos Membros
+                    </span>
+                }
+            </div>
 
             <div class="team-stats">
                 <div class="stat-card">
@@ -251,6 +316,35 @@
                 <a asp-controller="Teams" asp-action="Index" class="btn-back">
                     <i class="fas fa-arrow-left"></i> Voltar
                 </a>
+                
+                @if (User.Identity.IsAuthenticated)
+                {
+                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    var isUserMember = Model.Members.Any(m => m.UserId == userId);
+                    var isTeamLeader = Model.LeaderId == userId;
+                    
+                    @if (!isUserMember && Model.IsOpenForMembers)
+                    {
+                        <form asp-action="JoinTeam" method="post" style="display: inline;">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="teamId" value="@Model.Id" />
+                            <button type="submit" class="btn-join">
+                                <i class="fas fa-user-plus"></i> Juntar-se à Equipa
+                            </button>
+                        </form>
+                    }
+                    else if (isUserMember && !isTeamLeader)
+                    {
+                        <form asp-action="LeaveTeam" method="post" style="display: inline;">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="teamId" value="@Model.Id" />
+                            <button type="submit" class="btn-leave" onclick="return confirm('Tens a certeza que queres sair desta equipa?')">
+                                <i class="fas fa-user-minus"></i> Sair da Equipa
+                            </button>
+                        </form>
+                    }
+                }
+                
                 @if (User.Identity.IsAuthenticated && (User.IsInRole("Admin") || Model.LeaderId == User.FindFirstValue(ClaimTypes.NameIdentifier)))
                 {
                     <a asp-controller="Teams" asp-action="Edit" asp-route-id="@Model.Id" class="btn-edit">

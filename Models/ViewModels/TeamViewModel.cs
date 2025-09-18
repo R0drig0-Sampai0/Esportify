@@ -12,6 +12,14 @@ namespace Esportify.Models.ViewModels
         [StringLength(200, ErrorMessage = "A descrição não pode ter mais de 200 caracteres.")]
         [Display(Name = "Descrição")]
         public string? Description { get; set; }
-        public IFormFile Image { get; set; }
+        
+        [StringLength(4, ErrorMessage = "A tag não pode ter mais de 4 caracteres.")]
+        [Display(Name = "Tag")]
+        public string? Tag { get; set; }
+        
+        [Display(Name = "Aberta a novos membros")]
+        public bool IsOpenForMembers { get; set; }
+        
+        public IFormFile? Image { get; set; }
     }
 }

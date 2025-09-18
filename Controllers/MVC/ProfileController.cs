@@ -44,6 +44,9 @@ namespace Esportify.Controllers.MVC
                 return NotFound();
             }
 
+            // Load dropdown data
+            await LoadViewBagDataAsync();
+
             return View(currentUser);
         }
 
@@ -58,48 +61,90 @@ namespace Esportify.Controllers.MVC
 
             if (userInDb == null) return NotFound();
 
+            // Ensure user can only edit their own profile
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userInDb.Id != currentUserId)
+            {
+                return Forbid();
+            }
+
             if (!ModelState.IsValid)
+            {
+                // Reload ViewBag data for dropdowns
+                await LoadViewBagDataAsync();
                 return View(userInDb);
+            }
 
             var profile = userInDb.Profile ?? new UserProfile { UserId = user.Id };
 
-            profile.DisplayName = user.Profile.DisplayName;
-            profile.Bio = user.Profile.Bio;
-            profile.Country = user.Profile.Country;
-            profile.TwitchUrl = user.Profile.TwitchUrl;
-            profile.YouTubeUrl = user.Profile.YouTubeUrl;
-            profile.TwitterUrl = user.Profile.TwitterUrl;
-            profile.DiscordUrl = user.Profile.DiscordUrl;
-            profile.FavoriteGame = user.Profile.FavoriteGame;
-            profile.FavoriteTeam = user.Profile.FavoriteTeam;
+            // Update profile fields
+            profile.DisplayName = user.Profile?.DisplayName;
+            profile.Bio = user.Profile?.Bio;
+            profile.Country = user.Profile?.Country;
+            profile.TwitchUrl = user.Profile?.TwitchUrl;
+            profile.YouTubeUrl = user.Profile?.YouTubeUrl;
+            profile.TwitterUrl = user.Profile?.TwitterUrl;
+            profile.DiscordUrl = user.Profile?.DiscordUrl;
+            profile.FavoriteGame = user.Profile?.FavoriteGame;
+            profile.FavoriteTeam = user.Profile?.FavoriteTeam;
 
-            // Handle image upload (basic logic)
-            if (avatarFile != null && avatarFile.Length > 0)
+            try
             {
-                var avatarPath = "/uploads/avatars/" + Guid.NewGuid() + Path.GetExtension(avatarFile.FileName);
-                using (var stream = new FileStream("wwwroot" + avatarPath, FileMode.Create))
+                // Handle avatar upload
+                if (avatarFile != null && avatarFile.Length > 0)
                 {
-                    await avatarFile.CopyToAsync(stream);
+                    var fileName = Guid.NewGuid() + Path.GetExtension(avatarFile.FileName);
+                    var avatarsPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "profile");
+                    
+                    // Create directory if it doesn't exist
+                    Directory.CreateDirectory(avatarsPath);
+                    
+                    var filePath = Path.Combine(avatarsPath, fileName);
+                    
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await avatarFile.CopyToAsync(stream);
+                    }
+                    
+                    profile.AvatarUrl = $"/images/profile/{fileName}";
                 }
-                profile.AvatarUrl = avatarPath;
-            }
 
-            if (bannerFile != null && bannerFile.Length > 0)
+                // Handle banner upload
+                if (bannerFile != null && bannerFile.Length > 0)
+                {
+                    var fileName = Guid.NewGuid() + Path.GetExtension(bannerFile.FileName);
+                    var bannersPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "profile");
+                    
+                    // Create directory if it doesn't exist
+                    Directory.CreateDirectory(bannersPath);
+                    
+                    var filePath = Path.Combine(bannersPath, fileName);
+                    
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await bannerFile.CopyToAsync(stream);
+                    }
+                    
+                    profile.BannerUrl = $"/images/profile/{fileName}";
+                }
+
+                // If profile is new, add it to context
+                if (userInDb.Profile == null)
+                {
+                    _context.UserProfiles.Add(profile);
+                }
+
+                await _context.SaveChangesAsync();
+                TempData["Success"] = "Perfil atualizado com sucesso!";
+                return RedirectToAction("Me");
+            }
+            catch (Exception ex)
             {
-                var bannerPath = "/uploads/banners/" + Guid.NewGuid() + Path.GetExtension(bannerFile.FileName);
-                using (var stream = new FileStream("wwwroot" + bannerPath, FileMode.Create))
-                {
-                    await bannerFile.CopyToAsync(stream);
-                }
-                profile.BannerUrl = bannerPath;
+                TempData["Error"] = "Erro ao salvar o perfil: " + ex.Message;
+                // Reload ViewBag data for dropdowns
+                await LoadViewBagDataAsync();
+                return View(userInDb);
             }
-
-            // If profile is new
-            if (userInDb.Profile == null)
-                _context.UserProfiles.Add(profile);
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Me");
         }
 
         // GET: Profile/{username}
@@ -133,6 +178,25 @@ namespace Esportify.Controllers.MVC
             return await _context.Users
                 .Include(u => u.Profile)
                 .FirstOrDefaultAsync(u => u.Id == userId);
+        }
+
+        private async Task LoadViewBagDataAsync()
+        {
+            // Get all games for favorite game dropdown
+            var games = await _context.Games
+                .OrderBy(g => g.Name)
+                .ToListAsync();
+            ViewBag.Games = games;
+
+            // Get teams that the user is a member of
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userTeams = await _context.TeamMembers
+                .Where(tm => tm.UserId == userId)
+                .Include(tm => tm.Team)
+                .Select(tm => tm.Team)
+                .OrderBy(t => t.Name)
+                .ToListAsync();
+            ViewBag.UserTeams = userTeams;
         }
 
     }

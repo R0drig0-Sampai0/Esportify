@@ -46,40 +46,62 @@
 
         .section-title {
             color: var(--green);
-            font-size: 1.5rem;
+            font-size: 1.4rem;
+            margin-bottom: 1.5rem;
             font-weight: 600;
-            margin-bottom: 1rem;
-            text-transform: uppercase;
+            position: relative;
+            padding-left: 1rem;
         }
+
+            .section-title::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 0;
+                height: 100%;
+                width: 4px;
+                background: var(--green);
+                border-radius: 4px;
+            }
 
         .form-group {
             margin-bottom: 1.5rem;
         }
 
         .form-label {
-            display: block;
-            color: var(--green);
+            color: #e0e0e0;
+            font-weight: 500;
             margin-bottom: 0.5rem;
-            font-weight: 600;
-            font-size: 0.9rem;
-            text-transform: uppercase;
+            display: block;
         }
 
         .form-control {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
             width: 100%;
-            padding: 0.75rem;
-            background: var(--medium-grey);
-            border: 1px solid var(--light-grey);
-            border-radius: 4px;
-            color: var(--text);
             font-size: 1rem;
         }
 
             .form-control:focus {
+                background-color: rgba(255, 255, 255, 0.08);
                 border-color: var(--green);
+                color: white;
+                box-shadow: 0 0 0 0.2rem rgba(0, 255, 136, 0.25);
                 outline: none;
-                box-shadow: 0 0 0 2px rgba(0, 255, 136, 0.2);
             }
+
+            .form-control::placeholder {
+                color: #666;
+            }
+
+        .form-control option {
+            background-color: rgba(26, 26, 26, 0.95);
+            color: white;
+        }
 
         textarea.form-control {
             resize: vertical;
@@ -141,6 +163,21 @@
 
         <form asp-action="Edit" enctype="multipart/form-data" class="profile-form">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success" style="background-color: rgba(40, 167, 69, 0.1); border: 1px solid #28a745; color: #28a745; padding: 0.75rem; border-radius: 4px; margin-bottom: 1rem;">
+                    <i class="fas fa-check-circle"></i> @TempData["Success"]
+                </div>
+            }
+            
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger" style="background-color: rgba(255, 70, 85, 0.1); border: 1px solid #ff4655; color: #ff4655; padding: 0.75rem; border-radius: 4px; margin-bottom: 1rem;">
+                    <i class="fas fa-exclamation-triangle"></i> @TempData["Error"]
+                </div>
+            }
+            
             <input type="hidden" asp-for="Id" />
 
             <div class="row">
@@ -220,12 +257,34 @@
                     <h4 class="section-title">Preferências</h4>
                     <div class="form-group">
                         <label asp-for="Profile.FavoriteGame" class="form-label">Jogo Favorito</label>
-                        <input asp-for="Profile.FavoriteGame" class="form-control" />
+                        <select asp-for="Profile.FavoriteGame" class="form-control">
+                            <option value="">Selecione um jogo</option>
+                            @if (ViewBag.Games != null)
+                            {
+                                @foreach (var game in ViewBag.Games as List<Esportify.Models.Game>)
+                                {
+                                    <option value="@game.Name" selected="@(Model.Profile?.FavoriteGame == game.Name)">
+                                        @game.Name
+                                    </option>
+                                }
+                            }
+                        </select>
                         <span asp-validation-for="Profile.FavoriteGame" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="Profile.FavoriteTeam" class="form-label">Equipa Favorita</label>
-                        <input asp-for="Profile.FavoriteTeam" class="form-control" />
+                        <select asp-for="Profile.FavoriteTeam" class="form-control">
+                            <option value="">Selecione uma equipa</option>
+                            @if (ViewBag.UserTeams != null)
+                            {
+                                @foreach (var team in ViewBag.UserTeams as List<Esportify.Models.Team>)
+                                {
+                                    <option value="@team.Name" selected="@(Model.Profile?.FavoriteTeam == team.Name)">
+                                        @team.Name
+                                    </option>
+                                }
+                            }
+                        </select>
                         <span asp-validation-for="Profile.FavoriteTeam" class="text-danger"></span>
                     </div>
                 </div>

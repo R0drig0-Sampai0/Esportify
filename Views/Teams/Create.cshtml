@@ -1,4 +1,4 @@
-﻿@model Esportify.Models.Team
+@model Esportify.Models.ViewModels.TeamViewModel
 @using System.Security.Claims
 
 @{
@@ -157,22 +157,19 @@
                     </div>
 
                     <div class="form-group mb-4">
-                        <label asp-for="LogoUrl" class="form-label">Logótipo</label>
+                        <label class="form-label">Logótipo</label>
                         <div class="file-upload-wrapper">
                             <input type="file" name="logoFile" class="form-control input-dark file-upload" accept="image/*" />
                             <div class="file-upload-preview mt-2">
                                 <img id="logoPreview" src="#" alt="Pré-visualização do logótipo" style="display:none; max-height: 100px;" />
                             </div>
                         </div>
-                        <span asp-validation-for="LogoUrl" class="text-danger"></span>
                     </div>
 
                     <div class="form-group form-switch mb-4">
                         <input class="form-check-input" type="checkbox" role="switch" asp-for="IsOpenForMembers" />
                         <label class="form-check-label" asp-for="IsOpenForMembers">Aberta a novos membros</label>
                     </div>
-
-                    <input type="hidden" asp-for="LeaderId" value="@User.FindFirstValue(ClaimTypes.NameIdentifier)" />
 
                     <div class="form-group d-flex justify-content-between mt-5">
                         <a asp-action="Index" class="btn btn-outline-green">
