@@ -1,45 +1,32 @@
-# Use the official .NET 8.0 SDK image for building
+# Use the official .NET 8.0 SDK image
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
-# Set the working directory
+WORKDIR /src
+
+# Copy project file and restore
+COPY ["Esportify.csproj", "./"]
+RUN dotnet restore "Esportify.csproj"
+
+# Copy everything else and build
+COPY . .
+RUN dotnet build "Esportify.csproj" -c Release -o /app/build
+RUN dotnet publish "Esportify.csproj" -c Release -o /app/publish --no-restore
+
+# Runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 
-# Copy the project file and restore dependencies
-COPY *.csproj ./
-RUN dotnet restore
+# Install curl for health checks
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 
-# Copy the rest of the application files
-COPY . ./
-
-# Build the application
-RUN dotnet publish -c Release -o /app/publish
-
-# Use the official .NET 8.0 runtime image for running the application
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
-
-# Set the working directory
-WORKDIR /app
-
-# Copy the published application from the build stage
+# Copy the app
 COPY --from=build /app/publish .
 
-# Create directories for uploaded images
-RUN mkdir -p /app/wwwroot/images/games && \
-    mkdir -p /app/wwwroot/images/profile && \
-    mkdir -p /app/wwwroot/images/teams && \
-    mkdir -p /app/wwwroot/images/tournaments
+# Create upload directories
+RUN mkdir -p wwwroot/images/games wwwroot/images/profile wwwroot/images/teams wwwroot/images/tournaments
 
-# Set permissions for uploaded images directories
-RUN chmod -R 755 /app/wwwroot/images
-
-# Set environment variables
+# Set the environment
 ENV ASPNETCORE_ENVIRONMENT=Production
 
-# Create startup script
-RUN echo '#!/bin/bash' > /app/start.sh && \
-    echo 'export ASPNETCORE_URLS="http://+:${PORT:-10000}"' >> /app/start.sh && \
-    echo 'exec dotnet Esportify.dll' >> /app/start.sh && \
-    chmod +x /app/start.sh
-
-# Run the application
-CMD ["/app/start.sh"]
+# Use the PORT environment variable
+CMD ASPNETCORE_URLS=http://*:$PORT dotnet Esportify.dll
