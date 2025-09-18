@@ -108,6 +108,7 @@ public class TeamsController : Controller
                     .ThenInclude(u => u.Profile)
             .Include(t => t.Registrations)
                 .ThenInclude(r => r.Tournament)
+                    .ThenInclude(t => t.Game)
             .FirstOrDefaultAsync(t => t.Id == id);
 
         if (team == null)

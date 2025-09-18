@@ -1,19 +1,11 @@
 ﻿@model Tournament
 @using Esportify.Models
 @using System.Security.Claims
-@using Microsoft.EntityFrameworkCore
-@inject Esportify.Data.EsportifyContext _context
-
 @{
     ViewData["Title"] = Model.Name;
     var isAdmin = User.IsInRole("Admin");
     var isRegistered = ViewBag.IsRegistered as bool? ?? false;
-    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-    var userTeams = await _context.TeamMembers
-        .Where(tm => tm.UserId == userId)
-        .Include(tm => tm.Team)
-        .Select(tm => tm.Team)
-        .ToListAsync();
+    var userTeams = ViewBag.UserTeams as List<Team> ?? new List<Team>();
 }
 
 @section Styles {
@@ -379,9 +371,6 @@
                                 <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-edit">
                                     <i class="fas fa-edit"></i> Editar
                                 </a>
-                                <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-sm btn-danger">
-                                    <i class="fas fa-trash"></i> Eliminar
-                                </a>
                             </div>
                         }
                     </div>
@@ -496,6 +485,22 @@
                             <div class="alert alert-success">
                                 <i class="fas fa-check-circle"></i> Já estás inscrito neste torneio
                             </div>
+                            @if (userTeams.Any())
+                            {
+                                var registeredTeam = userTeams.FirstOrDefault(t => Model.Registrations.Any(r => r.TeamId == t.Id));
+                                if (registeredTeam != null)
+                                {
+                                    <form id="unregisterForm" method="post"
+                                          asp-controller="Tournaments" asp-action="Unregister"
+                                          asp-route-tournamentId="@Model.Id"
+                                          asp-route-teamId="@registeredTeam.Id">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-danger w-100 mt-2">
+                                            <i class="fas fa-times"></i> Cancelar Inscrição (@registeredTeam.Name)
+                                        </button>
+                                    </form>
+                                }
+                            }
                         }
                         else if (User.Identity.IsAuthenticated)
                         {

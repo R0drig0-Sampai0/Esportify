@@ -73,6 +73,9 @@ namespace Esportify.Controllers.MVC
                 .Include(t => t.Organizer)
                 .Include(t => t.Registrations)
                     .ThenInclude(r => r.Team)
+                        .ThenInclude(t => t.Members)
+                                .ThenInclude(m => m.User)
+                                    .ThenInclude(u => u.Profile)
                 .FirstOrDefaultAsync(t => t.Id == id);
 
             if (tournament == null)
@@ -86,6 +89,15 @@ namespace Esportify.Controllers.MVC
                 ViewBag.IsRegistered = await _context.Registrations
                     .AnyAsync(r => r.TournamentId == id &&
                                   r.Team.Members.Any(tm => tm.UserId == userId));
+
+                // Get user's teams for the registration dropdown
+                var userTeams = await _context.TeamMembers
+                    .Where(tm => tm.UserId == userId)
+                    .Include(tm => tm.Team)
+                        .ThenInclude(t => t.Members)
+                    .Select(tm => tm.Team)
+                    .ToListAsync();
+                ViewBag.UserTeams = userTeams;
             }
 
             return View(tournament);
@@ -141,6 +153,168 @@ namespace Esportify.Controllers.MVC
 
             _context.Tournaments.Add(tournament);
             await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index");
+        }
+
+        // GET: Tournaments/Edit/5
+        [Authorize]
+        public async Task<IActionResult> Edit(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return NotFound();
+            }
+
+            var tournament = await _context.Tournaments
+                .Include(t => t.Game)
+                .FirstOrDefaultAsync(t => t.Id == id);
+
+            if (tournament == null)
+            {
+                return NotFound();
+            }
+
+            // Only tournament organizer or admin can edit
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (tournament.OrganizerId != userId && !User.IsInRole("Admin"))
+            {
+                return Forbid();
+            }
+
+            var viewModel = new TournamentsViewModel
+            {
+                Name = tournament.Name,
+                Description = tournament.Description,
+                GameId = tournament.GameId,
+                StartDate = tournament.StartDate,
+                EndDate = tournament.EndDate,
+                RegistrationDeadline = tournament.RegistrationDeadline,
+                MaxTeams = tournament.MaxTeams,
+                MinTeamSize = tournament.MinTeamSize,
+                MaxTeamSize = tournament.MaxTeamSize,
+                PrizePool = tournament.PrizePool
+            };
+
+            ViewBag.Games = await _context.Games.ToListAsync();
+            ViewBag.TournamentId = id;
+            ViewBag.CurrentImageUrl = tournament.ImageUrl;
+
+            return View(viewModel);
+        }
+
+        // POST: Tournaments/Edit/5
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(string id, TournamentsViewModel model)
+        {
+            var tournament = await _context.Tournaments.FindAsync(id);
+            if (tournament == null)
+            {
+                return NotFound();
+            }
+
+            // Only tournament organizer or admin can edit
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (tournament.OrganizerId != userId && !User.IsInRole("Admin"))
+            {
+                return Forbid();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Games = await _context.Games.ToListAsync();
+                ViewBag.TournamentId = id;
+                ViewBag.CurrentImageUrl = tournament.ImageUrl;
+                return View(model);
+            }
+
+            try
+            {
+                // Update basic properties
+                tournament.Name = model.Name;
+                tournament.Description = model.Description;
+                tournament.GameId = model.GameId;
+                tournament.StartDate = model.StartDate;
+                tournament.EndDate = model.EndDate;
+                tournament.RegistrationDeadline = model.RegistrationDeadline;
+                tournament.MaxTeams = model.MaxTeams;
+                tournament.MinTeamSize = model.MinTeamSize;
+                tournament.MaxTeamSize = model.MaxTeamSize;
+                tournament.PrizePool = model.PrizePool;
+
+                // Handle image upload
+                if (model.Image != null && model.Image.Length > 0)
+                {
+                    var fileName = Guid.NewGuid() + Path.GetExtension(model.Image.FileName);
+                    var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "tournaments");
+
+                    // Create directory if it doesn't exist
+                    Directory.CreateDirectory(uploadsPath);
+
+                    var filePath = Path.Combine(uploadsPath, fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await model.Image.CopyToAsync(stream);
+                    }
+
+                    tournament.ImageUrl = $"/images/tournaments/{fileName}";
+                }
+
+                await _context.SaveChangesAsync();
+                TempData["Success"] = "Torneio atualizado com sucesso!";
+                return RedirectToAction("Details", new { id = tournament.Id });
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Erro ao atualizar torneio: " + ex.Message;
+                ViewBag.Games = await _context.Games.ToListAsync();
+                ViewBag.TournamentId = id;
+                ViewBag.CurrentImageUrl = tournament.ImageUrl;
+                return View(model);
+            }
+        }
+
+        // POST: Tournaments/Delete/5
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(string id)
+        {
+            var tournament = await _context.Tournaments
+                .Include(t => t.Registrations)
+                .FirstOrDefaultAsync(t => t.Id == id);
+
+            if (tournament == null)
+            {
+                return NotFound();
+            }
+
+            // Only tournament organizer or admin can delete
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (tournament.OrganizerId != userId && !User.IsInRole("Admin"))
+            {
+                return Forbid();
+            }
+
+            try
+            {
+                // Remove all registrations first
+                _context.Registrations.RemoveRange(tournament.Registrations);
+
+                // Remove the tournament
+                _context.Tournaments.Remove(tournament);
+
+                await _context.SaveChangesAsync();
+                TempData["Success"] = "Torneio eliminado com sucesso!";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Erro ao eliminar torneio: " + ex.Message;
+                return RedirectToAction("Details", new { id });
+            }
 
             return RedirectToAction("Index");
         }
@@ -223,6 +397,48 @@ namespace Esportify.Controllers.MVC
             await _context.SaveChangesAsync();
 
             TempData["Success"] = "Equipa inscrita com sucesso no torneio!";
+            return RedirectToAction("Details", new { id = tournamentId });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> Unregister(string tournamentId, string teamId)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            // Check if user is a member of the team
+            var isTeamMember = await _context.TeamMembers
+                .AnyAsync(tm => tm.TeamId == teamId && tm.UserId == userId);
+
+            if (!isTeamMember)
+            {
+                TempData["Error"] = "Não tens permissão para desinscrever esta equipa.";
+                return RedirectToAction("Details", new { id = tournamentId });
+            }
+
+            // Check if team is actually registered
+            var registration = await _context.Registrations
+                .FirstOrDefaultAsync(r => r.TournamentId == tournamentId && r.TeamId == teamId);
+
+            if (registration == null)
+            {
+                TempData["Error"] = "Esta equipa não está inscrita neste torneio.";
+                return RedirectToAction("Details", new { id = tournamentId });
+            }
+
+            // Check if tournament has already started
+            var tournament = await _context.Tournaments.FindAsync(tournamentId);
+            if (tournament != null && tournament.StartDate <= DateTime.Now)
+            {
+                TempData["Error"] = "Não é possível cancelar a inscrição após o torneio ter iniciado.";
+                return RedirectToAction("Details", new { id = tournamentId });
+            }
+
+            // Remove registration
+            _context.Registrations.Remove(registration);
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] = "Inscrição cancelada com sucesso!";
             return RedirectToAction("Details", new { id = tournamentId });
         }
     }

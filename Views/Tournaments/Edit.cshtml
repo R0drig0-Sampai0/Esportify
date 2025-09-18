@@ -1,0 +1,503 @@
+@model Esportify.Models.ViewModels.TournamentsViewModel
+@{
+    ViewData["Title"] = "Editar Torneio";
+    var currentImageUrl = ViewBag.CurrentImageUrl as string ?? "/images/tournaments/default.jpg";
+}
+
+@section Styles {
+    <style>
+        :root {
+            --black: #0a0a0a;
+            --dark-grey: #1a1a1a;
+            --medium-grey: #2a2a2a;
+            --light-grey: #3a3a3a;
+            --green: #00ff88;
+            --dark-green: #00cc6a;
+            --text: #ffffff;
+            --error: #ff4655;
+        }
+
+        body {
+            background-color: var(--black);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .edit-tournament-container {
+            padding: 2rem 0;
+            background-color: var(--black);
+        }
+
+        .page-title {
+            font-family: 'Oxanium', sans-serif;
+            font-weight: 700;
+            color: var(--green);
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .tournament-form {
+            background: var(--dark-grey);
+            border: 1px solid var(--medium-grey);
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            color: var(--text);
+        }
+
+        .section-title {
+            color: var(--green);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--green);
+            padding-bottom: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            color: var(--green);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--medium-grey);
+            border: 1px solid var(--light-grey);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--green);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.1);
+        }
+
+        .form-control option {
+            background: var(--medium-grey);
+            color: var(--text);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .form-row-thirds {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .image-section {
+            display: flex;
+            gap: 2rem;
+            align-items: flex-start;
+        }
+
+        .image-preview {
+            width: 200px;
+            height: 150px;
+            border-radius: 8px;
+            border: 2px solid var(--medium-grey);
+            overflow: hidden;
+            background: var(--medium-grey);
+        }
+
+        .image-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .upload-controls {
+            flex: 1;
+        }
+
+        .form-text {
+            color: var(--text);
+            opacity: 0.7;
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+
+        .text-danger {
+            color: var(--error);
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--medium-grey);
+        }
+
+        .btn-primary {
+            background: var(--green);
+            border-color: var(--green);
+            color: var(--black);
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background: var(--dark-green);
+            border-color: var(--dark-green);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 255, 136, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--medium-grey);
+            border-color: var(--light-grey);
+            color: var(--text);
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-secondary:hover {
+            background: var(--light-grey);
+            border-color: var(--green);
+            color: var(--green);
+        }
+
+        .btn-danger {
+            background: var(--error);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-danger:hover {
+            background: #ff2d3d;
+            transform: translateY(-2px);
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .alert-danger {
+            background-color: rgba(255, 70, 85, 0.1);
+            border: 1px solid var(--error);
+            color: var(--error);
+        }
+
+        /* Modal Styles */
+        .modal-content {
+            background-color: var(--dark-grey);
+            border: 1px solid var(--medium-grey);
+            color: var(--text);
+            border-radius: 8px;
+        }
+
+        .modal-header,
+        .modal-footer {
+            border: none;
+        }
+
+        .modal-title {
+            color: var(--green);
+            font-weight: 700;
+        }
+
+        .btn-close {
+            filter: invert(1);
+            opacity: 0.8;
+            transition: opacity 0.2s ease;
+        }
+
+            .btn-close:hover {
+                opacity: 1;
+            }
+
+        .modal .btn-secondary {
+            background-color: var(--medium-grey);
+            border: 1px solid var(--light-grey);
+            color: var(--text);
+            transition: all 0.3s ease;
+        }
+
+            .modal .btn-secondary:hover {
+                background-color: var(--light-grey);
+                border-color: var(--green);
+                color: var(--green);
+            }
+
+        .modal .btn-danger {
+            background-color: var(--error);
+            border: 1px solid var(--error);
+            color: var(--text);
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+            .modal .btn-danger:hover {
+                background-color: #ff2d3d;
+                border-color: #ff2d3d;
+                transform: translateY(-2px);
+            }
+    </style>
+}
+
+<div class="edit-tournament-container">
+    <div class="container">
+        <h2 class="page-title">Editar Torneio</h2>
+
+        <form asp-action="Edit" asp-route-id="@ViewBag.TournamentId" enctype="multipart/form-data" class="tournament-form">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+            <!-- Basic Information -->
+            <div class="mb-4">
+                <h3 class="section-title">Informações Básicas</h3>
+
+                <div class="form-group">
+                    <label asp-for="Name" class="form-label">Nome do Torneio</label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Description" class="form-label">Descrição</label>
+                    <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="GameId" class="form-label">Jogo</label>
+                    <select asp-for="GameId" class="form-control">
+                        <option value="">Selecione um jogo</option>
+                        @foreach (var game in ViewBag.Games as List<Esportify.Models.Game>)
+                        {
+                            <option value="@game.Id">@game.Name</option>
+                        }
+                    </select>
+                    <span asp-validation-for="GameId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- Dates -->
+            <div class="mb-4">
+                <h3 class="section-title">Datas</h3>
+                
+                <div class="form-row-thirds">
+                    <div class="form-group">
+                        <label asp-for="StartDate" class="form-label">Data de Início</label>
+                        <input asp-for="StartDate" type="datetime-local" class="form-control" />
+                        <span asp-validation-for="StartDate" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="EndDate" class="form-label">Data de Fim</label>
+                        <input asp-for="EndDate" type="datetime-local" class="form-control" />
+                        <span asp-validation-for="EndDate" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="RegistrationDeadline" class="form-label">Prazo de Inscrição</label>
+                        <input asp-for="RegistrationDeadline" type="datetime-local" class="form-control" />
+                        <span asp-validation-for="RegistrationDeadline" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tournament Settings -->
+            <div class="mb-4">
+                <h3 class="section-title">Configurações</h3>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label asp-for="MaxTeams" class="form-label">Máximo de Equipas</label>
+                        <input asp-for="MaxTeams" type="number" min="2" max="64" class="form-control" />
+                        <span asp-validation-for="MaxTeams" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="PrizePool" class="form-label">Prémio Total (€)</label>
+                        <input asp-for="PrizePool" type="number" step="0.01" min="0" class="form-control" />
+                        <span asp-validation-for="PrizePool" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label asp-for="MinTeamSize" class="form-label">Tamanho Mínimo da Equipa</label>
+                        <input asp-for="MinTeamSize" type="number" min="1" max="10" class="form-control" />
+                        <span asp-validation-for="MinTeamSize" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="MaxTeamSize" class="form-label">Tamanho Máximo da Equipa</label>
+                        <input asp-for="MaxTeamSize" type="number" min="1" max="10" class="form-control" />
+                        <span asp-validation-for="MaxTeamSize" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Image Upload -->
+            <div class="mb-4">
+                <h3 class="section-title">Imagem do Torneio</h3>
+                
+                <div class="image-section">
+                    <div class="image-preview">
+                        <img src="@currentImageUrl" alt="Imagem atual" id="imagePreview"
+                             onerror="this.onerror=null;this.src='/images/tournaments/default.jpg';">
+                    </div>
+                    <div class="upload-controls">
+                        <div class="form-group">
+                            <label class="form-label">Nova Imagem</label>
+                            <input asp-for="Image" type="file" accept="image/*" class="form-control" id="imageInput" />
+                            <div class="form-text">PNG, JPG até 5MB. Recomendado: 800x600px</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <div>
+                    <a asp-action="Details" asp-route-id="@ViewBag.TournamentId" class="btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Cancelar
+                    </a>
+                </div>
+                
+                <div style="display: flex; gap: 1rem;">
+                    <button type="button" class="btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-@ViewBag.TournamentId">
+                        <i class="fas fa-trash"></i> Eliminar Torneio
+                    </button>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-save"></i> Guardar Alterações
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Tournament Deletion Confirmation Modal -->
+<div class="modal fade" id="confirmDeleteModal-@ViewBag.TournamentId" tabindex="-1" aria-labelledby="confirmDeleteLabel-@ViewBag.TournamentId" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteLabel-@ViewBag.TournamentId">Confirmar Eliminação</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Tem a certeza que deseja eliminar este torneio?</p>
+                <div class="alert alert-warning" style="background-color: rgba(255, 193, 7, 0.1); border: 1px solid #ffc107; color: #ffc107; padding: 0.75rem; border-radius: 6px; margin-top: 1rem;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Atenção:</strong> Esta ação não pode ser desfeita e irá:
+                    <ul style="margin-top: 0.5rem; margin-bottom: 0;">
+                        <li>Eliminar o torneio permanentemente</li>
+                        <li>Remover todas as inscrições das equipas</li>
+                        <li>Eliminar todos os dados relacionados</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i> Cancelar
+                </button>
+                <!-- Actual delete form -->
+                <form asp-action="Delete" asp-route-id="@ViewBag.TournamentId" method="post" style="display: inline;">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Eliminar Torneio
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    
+    <script>
+        // Image preview functionality
+        document.getElementById('imageInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('imagePreview').src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Modal is now handled by Bootstrap, no need for confirm function
+
+        // Form validation enhancements
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const startDate = new Date(document.getElementById('StartDate').value);
+            const endDate = new Date(document.getElementById('EndDate').value);
+            const regDeadline = new Date(document.getElementById('RegistrationDeadline').value);
+
+            if (endDate <= startDate) {
+                e.preventDefault();
+                alert('A data de fim deve ser posterior à data de início.');
+                return;
+            }
+
+            if (regDeadline >= startDate) {
+                e.preventDefault();
+                alert('O prazo de inscrição deve ser anterior à data de início.');
+                return;
+            }
+
+            const minSize = parseInt(document.getElementById('MinTeamSize').value);
+            const maxSize = parseInt(document.getElementById('MaxTeamSize').value);
+
+            if (maxSize < minSize) {
+                e.preventDefault();
+                alert('O tamanho máximo da equipa deve ser maior ou igual ao tamanho mínimo.');
+                return;
+            }
+        });
+    </script>
+}
