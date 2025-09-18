@@ -30,7 +30,6 @@ namespace Esportify.Controllers.MVC
         [HttpPost]
         public async Task<IActionResult> Register(RegisterModel model)
         {
-            // Validação do modelo
             if (!ModelState.IsValid)
             {
                 ModelState.AddModelError("", "Dados inválidos. Verifique os campos.");

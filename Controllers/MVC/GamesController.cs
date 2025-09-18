@@ -4,6 +4,7 @@ using Esportify.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Esportify.Controllers.MVC
 {
@@ -16,10 +17,12 @@ namespace Esportify.Controllers.MVC
             _context = context;
         }
 
-        // GET: Lists all games
+        // GET: Lists all games with pagination
         public async Task<IActionResult> Index(int page = 1)
         {
             int pageSize = 12;
+
+            // Get paginated games
             var games = await _context.Games
                 .OrderByDescending(g => g.CreatedAt)
                 .Include(g => g.Tournaments)
@@ -27,34 +30,56 @@ namespace Esportify.Controllers.MVC
                 .Take(pageSize)
                 .ToListAsync();
 
+            // Get total pages for pagination
             var totalGames = await _context.Games.CountAsync();
             ViewBag.TotalPages = (int)Math.Ceiling(totalGames / (double)pageSize);
             ViewBag.CurrentPage = page;
 
+            // Get currently logged-in user's liked games
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            List<string> likedGameIds = new List<string>();
+            if (userId != null)
+            {
+                likedGameIds = await _context.UserGames
+                                             .Where(ug => ug.UserId == userId)
+                                             .Select(ug => ug.GameId)
+                                             .ToListAsync();
+            }
+            ViewBag.LikedGameIds = likedGameIds;
+
             return View(games);
         }
+
 
         // GET: Shows game details
         [Authorize]
         public async Task<IActionResult> Details(string id)
         {
             if (string.IsNullOrEmpty(id))
-            {
                 return NotFound();
-            }
 
+            // Load the game with tournaments and liked users
             var game = await _context.Games
                 .Include(g => g.Tournaments)
                 .Include(g => g.LikedByUsers)
                 .FirstOrDefaultAsync(g => g.Id == id);
 
             if (game == null)
-            {
                 return NotFound();
+
+            // Check if the current user liked this game
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            ViewBag.IsLikedByUser = false;
+
+            if (userId != null)
+            {
+                ViewBag.IsLikedByUser = await _context.UserGames
+                    .AnyAsync(ug => ug.UserId == userId && ug.GameId == id);
             }
 
             return View(game);
         }
+
 
         // GET: Displays the form to add a new game (Admin only)
         [Authorize(Roles = "Admin")]

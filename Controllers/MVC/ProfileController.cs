@@ -3,7 +3,6 @@ using Esportify.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -35,38 +34,6 @@ namespace Esportify.Controllers.MVC
 
             return View(currentUser);
         }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ToggleOrganizer(bool IsOrganizer)
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = await _context.Users.FindAsync(userId);
-
-            if (user == null) return NotFound();
-
-            user.IsOrganizer = IsOrganizer;
-            await _context.SaveChangesAsync();
-
-            // Refresh claims so role changes immediately
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
-            var claims = new List<Claim>
-    {
-        new Claim(ClaimTypes.NameIdentifier, user.Id),
-        new Claim(ClaimTypes.Name, user.UserName),
-        new Claim(ClaimTypes.Role, user.IsAdmin ? "Admin" : "User"),
-        new Claim("IsOrganizer", user.IsOrganizer.ToString())
-    };
-
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var principal = new ClaimsPrincipal(identity);
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-
-            TempData["Success"] = "Configuração atualizada com sucesso!";
-            return RedirectToAction("Profile");
-        }
-
 
         // GET: Profile/Edit
         public async Task<IActionResult> Edit()
@@ -168,28 +135,5 @@ namespace Esportify.Controllers.MVC
                 .FirstOrDefaultAsync(u => u.Id == userId);
         }
 
-        private async Task<bool> UserExistsAsync(string id)
-        {
-            return await _context.Users.AnyAsync(e => e.Id == id);
-        }
-
-        private async Task<string> UploadFileAsync(IFormFile file, string folderName)
-        {
-            var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads", folderName);
-            if (!Directory.Exists(uploadsFolder))
-            {
-                Directory.CreateDirectory(uploadsFolder);
-            }
-
-            var uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
-            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-
-            return $"/uploads/{folderName}/{uniqueFileName}";
-        }
     }
 }

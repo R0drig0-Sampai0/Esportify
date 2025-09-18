@@ -1,7 +1,10 @@
 ﻿@model Esportify.Models.Game
 @{
     ViewData["Title"] = Model.Name;
-    bool isLiked = ViewData["IsLiked"] as bool? ?? false;
+}
+
+@{
+    var isLiked = ViewBag.IsLikedByUser as bool? ?? false;
 }
 
 @section Styles {
@@ -299,10 +302,10 @@
 
             <div class="like-section">
                 <!-- Botão de Gosto -->
-                    <button class="like-btn @(isLiked ? "liked" : "")" data-game-id="@Model.Id">
-                        <i class="fas fa-heart"></i>
-                        <span>@(isLiked ? "Gostado" : "Gostar")</span>
-                    </button>
+                <button class="like-btn @(isLiked ? "liked" : "")" data-game-id="@Model.Id">
+                    <i class="@(isLiked ? "fas fa-heart" : "far fa-heart")"></i>
+                    <span>@(isLiked ? "Gostado" : "Gostar")</span>
+                </button>
                     @Html.AntiForgeryToken()
 
                 <span class="like-count">@Model.LikedByUsers.Count gostos</span>
