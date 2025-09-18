@@ -61,7 +61,10 @@ No Web Service criado, vá à aba **"Environment"** e adicione:
 ```
 DATABASE_URL=postgresql://[copiar da base de dados criada]
 ASPNETCORE_ENVIRONMENT=Production
+INITIALIZE_DATABASE=true
 ```
+
+**Nota**: `INITIALIZE_DATABASE=true` só é necessário no primeiro deploy para criar as tabelas e dados iniciais. Pode ser removido após o primeiro deploy bem-sucedido.
 
 ### 5. Deploy Automático
 

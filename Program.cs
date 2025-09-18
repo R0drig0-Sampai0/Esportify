@@ -12,7 +12,17 @@ if (builder.Environment.IsProduction())
 {
     // Use PostgreSQL in production
     builder.Services.AddDbContext<EsportifyContext>(options =>
-        options.UseNpgsql(connectionString));
+    {
+        options.UseNpgsql(connectionString, npgsqlOptions => 
+        {
+            npgsqlOptions.EnableRetryOnFailure();
+            npgsqlOptions.CommandTimeout(30);
+        });
+        
+        // Disable sensitive data logging in production
+        options.EnableSensitiveDataLogging(false);
+        options.EnableDetailedErrors(false);
+    });
 }
 else
 {
@@ -43,18 +53,37 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
+// Initialize database only if not in production or if specific env var is set
+if (!app.Environment.IsProduction() || builder.Configuration.GetValue<bool>("INITIALIZE_DATABASE", false))
 {
-    var services = scope.ServiceProvider;
-    var context = services.GetRequiredService<EsportifyContext>();
-    try
+    using (var scope = app.Services.CreateScope())
     {
-        await DbInitializer.InitializeAsync(context);
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"An error occurred while initializing the database: {ex.Message}");
-        throw;
+        var services = scope.ServiceProvider;
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        
+        try
+        {
+            var context = services.GetRequiredService<EsportifyContext>();
+            logger.LogInformation("Starting database initialization...");
+            
+            // Ensure database is created
+            await context.Database.EnsureCreatedAsync();
+            
+            // Initialize with sample data
+            await DbInitializer.InitializeAsync(context);
+            
+            logger.LogInformation("Database initialization completed successfully.");
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "An error occurred while initializing the database: {Message}", ex.Message);
+            
+            // In production, don't crash the app if DB initialization fails
+            if (!app.Environment.IsProduction())
+            {
+                throw;
+            }
+        }
     }
 }
 
