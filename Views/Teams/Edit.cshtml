@@ -1,0 +1,353 @@
+﻿@model Team
+@{
+    ViewData["Title"] = $"Editar {Model.Name} | Esportify";
+}
+
+@section Styles {
+    <style>
+        .edit-team-container {
+            padding: 2rem 0;
+            background-color: var(--black);
+        }
+
+        .edit-header {
+            background: var(--dark-grey);
+            border: 1px solid var(--medium-grey);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .edit-title {
+            color: var(--green);
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        .edit-form {
+            background: var(--dark-grey);
+            border: 1px solid var(--medium-grey);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            color: var(--green);
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--green);
+            padding-bottom: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            color: var(--text);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .form-control {
+            background: var(--medium-grey);
+            border: 1px solid var(--light-grey);
+            border-radius: 8px;
+            color: var(--text);
+            padding: 0.75rem 1rem;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+            .form-control:focus {
+                border-color: var(--green);
+                box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.1);
+                outline: none;
+            }
+
+        .form-text {
+            color: var(--text);
+            opacity: 0.7;
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+
+        .image-upload {
+            display: flex;
+            gap: 2rem;
+            align-items: flex-start;
+        }
+
+        .image-preview {
+            width: 150px;
+            height: 150px;
+            border-radius: 8px;
+            border: 2px solid var(--medium-grey);
+            overflow: hidden;
+            background: var(--medium-grey);
+        }
+
+            .image-preview img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        .upload-controls {
+            flex: 1;
+        }
+
+        .btn-upload {
+            background: var(--green);
+            color: var(--black);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .btn-upload:hover {
+                background: var(--dark-green);
+            }
+
+        .members-management {
+            background: var(--medium-grey);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .member-item {
+            display: flex;
+            align-items: center;
+            justify-content: between;
+            padding: 1rem;
+            border-bottom: 1px solid var(--light-grey);
+        }
+
+            .member-item:last-child {
+                border-bottom: none;
+            }
+
+        .member-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+        }
+
+        .member-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--green);
+            object-fit: cover;
+        }
+
+        .member-name {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .member-role {
+            color: var(--green);
+            font-size: 0.9rem;
+        }
+
+        .member-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-action {
+            background: var(--light-grey);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .btn-action:hover {
+                background: var(--green);
+                color: var(--black);
+            }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--medium-grey);
+        }
+
+        .btn-save {
+            background: var(--green);
+            color: var(--black);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+            .btn-save:hover {
+                background: var(--dark-green);
+                transform: translateY(-2px);
+            }
+
+        .btn-cancel {
+            background: var(--medium-grey);
+            color: var(--text);
+            border: 1px solid var(--light-grey);
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+            .btn-cancel:hover {
+                border-color: var(--green);
+                color: var(--green);
+            }
+
+        .btn-danger {
+            background: var(--error);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+            .btn-danger:hover {
+                background: #ff2d3d;
+                transform: translateY(-2px);
+            }
+    </style>
+}
+
+<div class="edit-team-container">
+    <div class="container">
+        <div class="edit-header">
+            <h1 class="edit-title">Editar Equipa: @Model.Name</h1>
+        </div>
+
+        <form asp-controller="Teams" asp-action="Edit" asp-route-id="@Model.Id" method="post" class="edit-form" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <!-- Basic Information -->
+            <div class="form-section">
+                <h2 class="section-title">Informações Básicas</h2>
+
+                <div class="form-group">
+                    <label class="form-label" asp-for="Name">Nome da Equipa</label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" asp-for="Description">Descrição</label>
+                    <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- Images -->
+            <div class="form-section">
+                <h2 class="section-title">Imagens</h2>
+
+                <div class="image-upload">
+                    <div class="image-preview">
+                        <img src="@Model.LogoUrl" alt="Logo atual"
+                             onerror="this.onerror=null;this.src='/images/default-team-logo.png';">
+                    </div>
+                    <div class="upload-controls">
+                        <label class="form-label">Logo da Equipa</label>
+                        <input type="file" name="logoFile" accept="image/*" class="form-control" />
+                        <div class="form-text">PNG, JPG até 2MB</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Banner URL</label>
+                    <div class="form-text">URL para imagem de banner</div>
+                </div>
+            </div>
+
+            <!-- Members Management -->
+            <div class="form-section">
+                <h2 class="section-title">Gestão de Membros</h2>
+
+                <div class="members-management">
+                    @foreach (var member in Model.Members)
+                    {
+                        <div class="member-item">
+                            <div class="member-info">
+                                <img src="@member.User.Profile.AvatarUrl" class="member-avatar"
+                                     onerror="this.onerror=null;this.src='/images/default-avatar.png';">
+                                <div>
+                                    <div class="member-name">@member.User.UserName</div>
+                                    <div class="member-role">@member.Role</div>
+                                </div>
+                            </div>
+                            <div class="member-actions">
+                                <button type="button" class="btn-action">Promover</button>
+                                <button type="button" class="btn-action">Remover</button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <a asp-controller="Teams" asp-action="Details" asp-route-id="@Model.Id" class="btn-cancel">
+                    Cancelar
+                </a>
+                <button type="submit" class="btn-save">Guardar Alterações</button>
+                <button type="button" class="btn-danger" onclick="confirmDelete()">Eliminar Equipa</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function confirmDelete() {
+            if (confirm('Tem a certeza que deseja eliminar esta equipa? Esta ação não pode ser desfeita.')) {
+                // Implement delete functionality
+                console.log('Delete team');
+            }
+        }
+
+        // Image preview functionality
+        document.querySelector('input[name="logoFile"]').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.querySelector('.image-preview img').src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+}

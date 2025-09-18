@@ -85,7 +85,7 @@ namespace Esportify.Controllers.MVC
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 ViewBag.IsRegistered = await _context.Registrations
                     .AnyAsync(r => r.TournamentId == id &&
-                                  r.Team.TeamMembers.Any(tm => tm.UserId == userId));
+                                  r.Team.Members.Any(tm => tm.UserId == userId));
             }
 
             return View(tournament);
@@ -143,6 +143,87 @@ namespace Esportify.Controllers.MVC
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> Register(string tournamentId, string teamId)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            // Check if user is a member of the team
+            var isTeamMember = await _context.TeamMembers
+                .AnyAsync(tm => tm.TeamId == teamId && tm.UserId == userId);
+
+            if (!isTeamMember)
+            {
+                TempData["Error"] = "Não tens permissão para inscrever esta equipa.";
+                return RedirectToAction("Details", new { id = tournamentId });
+            }
+
+            // Check if team is already registered
+            var existingRegistration = await _context.Registrations
+                .FirstOrDefaultAsync(r => r.TournamentId == tournamentId && r.TeamId == teamId);
+
+            if (existingRegistration != null)
+            {
+                TempData["Error"] = "Esta equipa já está inscrita neste torneio.";
+                return RedirectToAction("Details", new { id = tournamentId });
+            }
+
+            // Check if tournament is still accepting registrations
+            var tournament = await _context.Tournaments
+                .Include(t => t.Registrations)
+                .FirstOrDefaultAsync(t => t.Id == tournamentId);
+            if (tournament == null)
+            {
+                TempData["Error"] = "Torneio não encontrado.";
+                return RedirectToAction("Details", new { id = tournamentId });
+            }
+
+            if (tournament.RegistrationDeadline < DateTime.Now)
+            {
+                TempData["Error"] = "O prazo de inscrição já expirou.";
+                return RedirectToAction("Details", new { id = tournamentId });
+            }
+
+            var registrationCount = tournament.Registrations?.Count ?? 0;
+            if (registrationCount >= tournament.MaxTeams)
+            {
+                TempData["Error"] = "Este torneio já atingiu o número máximo de equipas.";
+                return RedirectToAction("Details", new { id = tournamentId });
+            }
+
+            // Check team size requirements
+            var team = await _context.Teams
+                .Include(t => t.Members)
+                .FirstOrDefaultAsync(t => t.Id == teamId);
+
+            if (team == null)
+            {
+                TempData["Error"] = "Equipa não encontrada.";
+                return RedirectToAction("Details", new { id = tournamentId });
+            }
+
+            if (team.Members.Count < tournament.MinTeamSize || team.Members.Count > tournament.MaxTeamSize)
+            {
+                TempData["Error"] = $"A equipa deve ter entre {tournament.MinTeamSize} e {tournament.MaxTeamSize} membros.";
+                return RedirectToAction("Details", new { id = tournamentId });
+            }
+
+            // Create registration
+            var registration = new Registration
+            {
+                TournamentId = tournamentId,
+                TeamId = teamId,
+                RegistrationDate = DateTime.Now
+            };
+
+            _context.Registrations.Add(registration);
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] = "Equipa inscrita com sucesso no torneio!";
+            return RedirectToAction("Details", new { id = tournamentId });
         }
     }
 }

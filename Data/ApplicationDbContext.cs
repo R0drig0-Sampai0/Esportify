@@ -58,7 +58,7 @@ namespace Esportify.Data
 
             modelBuilder.Entity<TeamMember>()
                 .HasOne(tm => tm.Team)
-                .WithMany(t => t.TeamMembers)
+                .WithMany(t => t.Members)
                 .HasForeignKey(tm => tm.TeamId);
 
             modelBuilder.Entity<TeamMember>()

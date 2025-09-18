@@ -1,0 +1,305 @@
+﻿@model Esportify.Models.Team
+@using System.Security.Claims
+
+@{
+    ViewData["Title"] = $"{Model.Name} | Esportify";
+}
+
+@section Styles {
+    <style>
+        .team-details-container {
+            padding: 2rem 0;
+            background-color: var(--black);
+        }
+
+        .team-header {
+            background: var(--dark-grey);
+            border: 1px solid var(--medium-grey);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .team-banner {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--medium-grey);
+        }
+
+        .team-logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid var(--green);
+            object-fit: cover;
+            margin: -80px auto 1rem;
+            background: var(--dark-grey);
+        }
+
+        .team-title {
+            color: var(--green);
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .team-meta {
+            color: var(--text);
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .team-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: var(--medium-grey);
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid var(--light-grey);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--green);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .members-section, .tournaments-section {
+            background: var(--dark-grey);
+            border: 1px solid var(--medium-grey);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            color: var(--green);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+        }
+
+        .members-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .member-card {
+            background: var(--medium-grey);
+            border: 1px solid var(--light-grey);
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+        }
+
+            .member-card:hover {
+                border-color: var(--green);
+                transform: translateY(-2px);
+            }
+
+        .member-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid var(--green);
+            object-fit: cover;
+        }
+
+        .member-info h4 {
+            color: var(--text);
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        .member-info span {
+            color: var(--green);
+            font-size: 0.9rem;
+        }
+
+        .tournament-card {
+            background: var(--medium-grey);
+            border: 1px solid var(--light-grey);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+            .tournament-card:hover {
+                border-color: var(--green);
+                transform: translateX(4px);
+            }
+
+        .tournament-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .tournament-name {
+            color: var(--text);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .tournament-prize {
+            background: var(--green);
+            color: var(--black);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .tournament-meta {
+            display: flex;
+            gap: 2rem;
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            justify-content: center;
+        }
+
+        .btn-edit {
+            background: var(--green);
+            color: var(--black);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+            .btn-edit:hover {
+                background: var(--dark-green);
+                transform: translateY(-2px);
+            }
+
+        .btn-back {
+            background: var(--medium-grey);
+            color: var(--text);
+            border: 1px solid var(--light-grey);
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+            .btn-back:hover {
+                border-color: var(--green);
+                color: var(--green);
+            }
+    </style>
+}
+
+<div class="team-details-container">
+    <div class="container">
+        <!-- Team Header -->
+        <div class="team-header">
+            <img src="@Model.LogoUrl" alt="@Model.Name" class="team-logo"
+                 onerror="this.onerror=null;this.src='/images/default-team-logo.png';">
+            <h1 class="team-title">@Model.Name</h1>
+            <p class="team-meta">Criado em @Model.CreatedAt.ToString("dd MMMM yyyy")</p>
+
+            <div class="team-stats">
+                <div class="stat-card">
+                    <div class="stat-number">@Model.Members.Count</div>
+                    <div class="stat-label">Membros</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Torneios</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Vitórias</div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <a asp-controller="Teams" asp-action="Index" class="btn-back">
+                    <i class="fas fa-arrow-left"></i> Voltar
+                </a>
+                @if (User.Identity.IsAuthenticated && (User.IsInRole("Admin") || Model.LeaderId == User.FindFirstValue(ClaimTypes.NameIdentifier)))
+                {
+                    <a asp-controller="Teams" asp-action="Edit" asp-route-id="@Model.Id" class="btn-edit">
+                        <i class="fas fa-edit"></i> Editar Equipa
+                    </a>
+                }
+            </div>
+        </div>
+
+        <!-- Members Section -->
+        <div class="members-section">
+            <h2 class="section-title">Membros da Equipa</h2>
+            <div class="members-grid">
+                @foreach (var member in Model.Members)
+                {
+                    <div class="member-card">
+                        <div class="member-info">
+                            <h4>@member.User.UserName</h4>
+                            <span>@member.Role</span>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Tournaments Section -->
+        <div class="tournaments-section">
+            <h2 class="section-title">Torneios Participados</h2>
+            @if (Model.Registrations.Any())
+            {
+                @foreach (var registration in Model.Registrations)
+                {
+                    <div class="tournament-card">
+                        <div class="tournament-header">
+                            <h3 class="tournament-name">@registration.Tournament.Name</h3>
+                            <span class="tournament-prize">@registration.Tournament.PrizePool.ToString("C")</span>
+                        </div>
+                        <div class="tournament-meta">
+                            <span><i class="fas fa-calendar"></i> @registration.Tournament.StartDate.ToString("dd MMM yyyy")</span>
+                            <span><i class="fas fa-gamepad"></i> @registration.Tournament.Game.Name</span>
+                            <span><i class="fas fa-users"></i> @registration.Tournament.Registrations.Count equipas</span>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <p style="color: var(--text); text-align: center; padding: 2rem;">Esta equipa ainda não participou em nenhum torneio.</p>
+            }
+        </div>
+    </div>
+</div>

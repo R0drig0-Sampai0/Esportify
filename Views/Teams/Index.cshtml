@@ -157,7 +157,7 @@
         </a>
     </div>
 
-    @if (!Model.Any())
+    @if (Model == null || !Model.Any())
     {
         <div class="alert alert-dark text-center">
             <i class="fas fa-users-slash me-2"></i>Não foram encontradas equipas
@@ -172,7 +172,7 @@
                     <div class="team-card">
                         <div class="team-header">
                             <div class="team-title">
-                                <h5>@team.TeamName</h5>
+                                <h5>@team.Name</h5>
                                 @if (!string.IsNullOrEmpty(team.Tag))
                                 {
                                     <span class="team-tag">@team.Tag</span>
@@ -181,7 +181,7 @@
                             @if (!string.IsNullOrEmpty(team.LogoUrl))
                             {
                                 <div class="team-logo-container">
-                                    <img src="@team.LogoUrl" class="team-logo" alt="Logótipo @team.TeamName">
+                                    <img src="@team.LogoUrl" class="team-logo" alt="Logótipo @team.Name">
                                 </div>
                             }
                         </div>

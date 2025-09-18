@@ -13,7 +13,12 @@ namespace Esportify.Models
         /// Nome da equipa.
         /// </summary>
         [StringLength(64)]
-        public string TeamName { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Descrição sobre a equipa
+        /// </summary>
+        public string Description { get; set; } = string.Empty;
 
         /// <summary>
         /// Sigla da equipa.
@@ -57,7 +62,7 @@ namespace Esportify.Models
         /// <summary>
         /// Lista de membros da equipa, que são utilizadores.
         /// </summary>
-        public ICollection<TeamMember> TeamMembers { get; set; } = new List<TeamMember>();
+        public ICollection<TeamMember> Members { get; set; } = new List<TeamMember>();
 
     }
 

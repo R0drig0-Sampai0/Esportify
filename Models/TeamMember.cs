@@ -22,6 +22,7 @@
         /// </summary>
         public User User { get; set; } = null!;
 
+        public string Role { get; set; } = string.Empty;
         /// <summary>
         /// Data e hora em que o membro se juntou à equipa.
         /// </summary>

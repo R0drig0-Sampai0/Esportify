@@ -451,18 +451,18 @@
                                 {
                                     <div class="team-card">
                                         <div class="team-header">
-                                            <h3>@registration.Team.TeamName</h3>
-                                            <span class="members-count">@registration.Team.TeamMembers.Count membros</span>
+                                            <h3>@registration.Team.Name</h3>
+                                            <span class="members-count">@registration.Team.Members.Count membros</span>
                                         </div>
                                         <div class="team-members">
-                                            @foreach (var member in registration.Team.TeamMembers.Take(3))
+                                            @foreach (var member in registration.Team.Members.Take(3))
                                             {
                                                 <img src="@member.User.Profile.AvatarUrl" alt="@member.User.UserName"
                                                      title="@member.User.UserName" class="member-avatar">
                                             }
-                                            @if (registration.Team.TeamMembers.Count > 3)
+                                            @if (registration.Team.Members.Count > 3)
                                             {
-                                                <span class="more-members">+@(registration.Team.TeamMembers.Count - 3) mais</span>
+                                                <span class="more-members">+@(registration.Team.Members.Count - 3) mais</span>
                                             }
                                         </div>
                                         <div class="team-footer">
@@ -509,7 +509,7 @@
                                         <select name="teamId" class="form-select" required>
                                             @foreach (var team in userTeams)
                                             {
-                                                <option value="@team.Id">@team.TeamName (@team.TeamMembers.Count membros)</option>
+                                                <option value="@team.Id">@team.Name (@team.Members.Count membros)</option>
                                             }
                                         </select>
                                     </div>

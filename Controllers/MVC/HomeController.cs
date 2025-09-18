@@ -60,7 +60,7 @@ namespace Esportify.Controllers.MVC
                     .ThenInclude(fg => fg.Game)
                     .FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);
 
-                ViewData["FavoriteGames"] = user?.FavoriteGames.Select(fg => fg.Game).Take(5).ToList();
+                ViewData["FavoriteGames"] = user?.FavoriteGames.Select(fg => fg.Game).ToList();
             }
 
             return View();
