@@ -148,6 +148,21 @@
                 transform: translateY(-2px);
                 box-shadow: 0 4px 8px rgba(0, 255, 136, 0.3);
             }
+
+        .organizer-toggle-form {
+            margin-top: 1rem;
+        }
+
+            .organizer-toggle-form .form-check-input {
+                accent-color: var(--green); /* makes the toggle green */
+            }
+
+            .organizer-toggle-form .btn {
+                font-size: 0.8rem;
+                padding: 0.3rem 0.8rem;
+                border-radius: 6px;
+            }
+
     </style>
 }
 
@@ -157,11 +172,26 @@
     <div class="profile-header">
         <img src="@Model.Profile?.AvatarUrl" alt="Avatar" class="profile-avatar" />
         <h1>@Model.Profile?.DisplayName</h1>
-        <p>@@@Model.UserName</p>
+        <p>@Model.UserName</p>
 
         @if (!string.IsNullOrEmpty(Model.Profile?.Country))
         {
             <p>📍 @Model.Profile.Country</p>
+        }
+
+        @* Organizer toggle *@
+        @if (!User.IsInRole("Admin"))  @* Optional: Admins always can create tournaments *@
+        {
+            <form asp-action="ToggleOrganizer" method="post" class="organizer-toggle-form">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="IsOrganizer" name="IsOrganizer"
+                    @(Model.IsOrganizer ? "checked" : "")>
+                    <label class="form-check-label" for="IsOrganizer">
+                        Habilitar criação de torneios
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-sm btn-primary mt-1">Salvar</button>
+            </form>
         }
     </div>
 

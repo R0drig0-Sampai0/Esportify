@@ -1,12 +1,9 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace Esportify.Models
+namespace Esportify.Models.ViewModels
 {
-    public class Tournament
+    public class TournamentsViewModel
     {
-        public string Id { get; set; }
-
         [Required]
         public string Name { get; set; }
 
@@ -14,7 +11,6 @@ namespace Esportify.Models
 
         [Required]
         public string GameId { get; set; }
-        public Game Game { get; set; }
 
         [Required]
         [Display(Name = "Start Date")]
@@ -40,14 +36,6 @@ namespace Esportify.Models
         [Range(0, double.MaxValue)]
         public decimal PrizePool { get; set; } = 1000;
 
-        public string ImageUrl { get; set; } = "/images/tournaments/default.png";
-
-        public string OrganizerId { get; set; }
-        public User Organizer { get; set; }
-
-        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
-
-        // Navigation properties
-        public ICollection<Registration> Registrations { get; set; }
+        public IFormFile Image { get; set; } 
     }
 }

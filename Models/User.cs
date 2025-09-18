@@ -7,7 +7,7 @@ namespace Esportify.Models
     {
 
         public bool IsAdmin { get; set; }
-
+        public bool IsOrganizer { get; set; }
         /****************************
          Definção dos relacionamentos
         ****************************/

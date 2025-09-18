@@ -1,5 +1,6 @@
 ﻿using Esportify.Data;
 using Esportify.Models;
+using Esportify.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -88,6 +89,60 @@ namespace Esportify.Controllers.MVC
             }
 
             return View(tournament);
+        }
+
+        public IActionResult Create()
+        {
+            ViewBag.Games = _context.Games.ToList();
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(TournamentsViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Games = _context.Games.ToList();
+                return View(model);
+            }
+
+            string imageUrl = "/images/tournaments/default.jpg";
+
+            if (model.Image != null && model.Image.Length > 0)
+            {
+                var fileName = Guid.NewGuid() + Path.GetExtension(model.Image.FileName);
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/tournaments", fileName);
+
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    await model.Image.CopyToAsync(stream);
+                }
+
+                imageUrl = "/images/tournaments/" + fileName;
+            }
+
+            var tournament = new Tournament
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = model.Name,
+                Description = model.Description,
+                GameId = model.GameId,
+                StartDate = model.StartDate,
+                EndDate = model.EndDate,
+                RegistrationDeadline = model.RegistrationDeadline,
+                MaxTeams = model.MaxTeams,
+                MinTeamSize = model.MinTeamSize,
+                MaxTeamSize = model.MaxTeamSize,
+                PrizePool = model.PrizePool,
+                ImageUrl = imageUrl,
+                OrganizerId = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                CreatedDate = DateTime.UtcNow
+            };
+
+            _context.Tournaments.Add(tournament);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index");
         }
     }
 }

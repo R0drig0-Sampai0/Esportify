@@ -1,4 +1,4 @@
-﻿@model Tournament
+﻿@model Esportify.Models.ViewModels.TournamentsViewModel
 @{
     ViewData["Title"] = "Criar Torneio";
 }
@@ -107,6 +107,67 @@
             justify-content: flex-end;
         }
 
+        .custom-dropdown {
+            position: relative;
+            user-select: none;
+        }
+
+            .custom-dropdown label {
+                color: #e0e0e0;
+                font-weight: 500;
+                display: block;
+                margin-bottom: 0.5rem;
+            }
+
+        .dropdown-selected {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            position: relative;
+        }
+
+            .dropdown-selected::after {
+                content: "\25BC"; /* down arrow */
+                position: absolute;
+                right: 1rem;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #fff;
+                font-size: 0.8rem;
+            }
+
+        .dropdown-options {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            max-height: 200px;
+            overflow-y: auto;
+            background-color: rgba(26, 26, 26, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            margin-top: 0.25rem;
+            display: none;
+            z-index: 10;
+            padding: 0;
+            list-style: none;
+        }
+
+            .dropdown-options li {
+                padding: 0.75rem 1rem;
+                cursor: pointer;
+                color: #fff;
+                transition: all 0.2s ease;
+            }
+
+                .dropdown-options li:hover {
+                    background-color: var(--green);
+                    color: #121212;
+                }
+
         .btn-primary {
             background-color: var(--green);
             border-color: var(--green);
@@ -175,24 +236,23 @@
                                 <span asp-validation-for="Description" class="text-danger"></span>
                             </div>
 
-                            <div class="form-group">
-                                <label asp-for="GameId" class="control-label">Jogo</label>
-                                <select asp-for="GameId" class="form-control" asp-items="ViewBag.Games">
-                                    <option value="">-- Selecionar Jogo --</option>
-                                </select>
+                            <div class="form-group custom-dropdown">
+                                <label for="GameId">Jogo</label>
+                                <div class="dropdown-selected">-- Selecionar Jogo --</div>
+                                <ul class="dropdown-options">
+                                    @foreach (var game in ViewBag.Games)
+                                    {
+                                        <li data-value="@game.Id">@game.Name</li>
+                                    }
+                                </ul>
+                                <input type="hidden" asp-for="GameId" />
                                 <span asp-validation-for="GameId" class="text-danger"></span>
                             </div>
 
                             <div class="form-group">
-                                <label asp-for="ImageUrl" class="control-label">URL da Imagem</label>
-                                <input asp-for="ImageUrl" class="form-control" placeholder="https://exemplo.com/imagem.jpg" />
-                                <span asp-validation-for="ImageUrl" class="text-danger"></span>
-                                <small class="form-text text-muted">Ou carregue uma imagem abaixo</small>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="control-label">Carregar Imagem</label>
-                                <input type="file" name="imageFile" class="form-control-file" accept="image/*" />
+                                <label asp-for="Image" class="control-label">URL da Imagem</label>
+                                <input asp-for="Image" class="form-control" placeholder="https://exemplo.com/imagem.jpg" />
+                                <span asp-validation-for="Image" class="text-danger"></span>
                             </div>
                         </div>
 
@@ -303,43 +363,73 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Set default dates
+            // ====== Set default dates ======
             const now = new Date();
             const startDate = new Date(now.getTime() + 24 * 60 * 60 * 1000); // Amanhã
 
-            // Format for datetime-local input
             function toLocalISOString(date) {
                 const offset = date.getTimezoneOffset() * 60000;
                 const localISOTime = (new Date(date - offset)).toISOString().slice(0, -1);
                 return localISOTime.substring(0, 16);
             }
 
-            // Set default start date (amanhã às 18:00)
+            // Default start date (amanhã às 18:00)
             startDate.setHours(18, 0, 0, 0);
             document.getElementById('StartDate').value = toLocalISOString(startDate);
 
-            // Set default end date (start date + 3 horas)
+            // Default end date (start date + 3 horas)
             const endDate = new Date(startDate.getTime() + 3 * 60 * 60 * 1000);
             document.getElementById('EndDate').value = toLocalISOString(endDate);
 
-            // Set default registration deadline (start date - 1 hora)
+            // Default registration deadline (start date - 1 hora)
             const regDeadline = new Date(startDate.getTime() - 60 * 60 * 1000);
             document.getElementById('RegistrationDeadline').value = toLocalISOString(regDeadline);
 
-            // Image upload preview
+            // ====== Image upload preview ======
             const imageFileInput = document.querySelector('input[name="imageFile"]');
             const imageUrlInput = document.getElementById('ImageUrl');
 
-            imageFileInput.addEventListener('change', function(e) {
-                if (e.target.files.length > 0) {
-                    imageUrlInput.value = 'A carregar imagem...';
+            if (imageFileInput) {
+                imageFileInput.addEventListener('change', function(e) {
+                    if (e.target.files.length > 0) {
+                        imageUrlInput.value = 'A carregar imagem...';
 
-                    // Simulate upload delay
-                    setTimeout(() => {
-                        imageUrlInput.value = '/uploads/torneios/' + e.target.files[0].name;
-                    }, 1000);
-                }
+                        // Simulate upload delay
+                        setTimeout(() => {
+                            imageUrlInput.value = '/uploads/torneios/' + e.target.files[0].name;
+                        }, 1000);
+                    }
+                });
+            }
+
+            // ====== Custom dropdown for games ======
+            const dropdowns = document.querySelectorAll(".custom-dropdown");
+
+            dropdowns.forEach(dropdown => {
+                const selected = dropdown.querySelector(".dropdown-selected");
+                const options = dropdown.querySelector(".dropdown-options");
+                const hiddenInput = dropdown.querySelector("input[type=hidden]");
+
+                selected.addEventListener("click", () => {
+                    options.style.display = options.style.display === "block" ? "none" : "block";
+                });
+
+                options.querySelectorAll("li").forEach(option => {
+                    option.addEventListener("click", () => {
+                        selected.textContent = option.textContent;
+                        hiddenInput.value = option.dataset.value;
+                        options.style.display = "none";
+                    });
+                });
+
+                // Close dropdown when clicking outside
+                document.addEventListener("click", (e) => {
+                    if (!dropdown.contains(e.target)) {
+                        options.style.display = "none";
+                    }
+                });
             });
+
         });
     </script>
 }

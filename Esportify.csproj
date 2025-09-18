@@ -27,6 +27,7 @@
   <ItemGroup>
     <Folder Include="Data\Migrations\" />
     <Folder Include="wwwroot\images\games\" />
+    <Folder Include="wwwroot\images\tournaments\" />
   </ItemGroup>
 
 </Project>
