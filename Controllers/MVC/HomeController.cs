@@ -22,7 +22,7 @@ namespace Esportify.Controllers.MVC
 
         public async Task<IActionResult> Index()
         {
-            // Upcoming tournaments (next 7 days) - OK as is
+            // Upcoming tournaments (next 7 days)
             ViewData["UpcomingTournaments"] = await _context.Tournaments
                 .Include(t => t.Game)
                 .Where(t => t.StartDate >= DateTime.Now && t.StartDate <= DateTime.Now.AddDays(7))
@@ -30,23 +30,22 @@ namespace Esportify.Controllers.MVC
                 .Take(3)
                 .ToListAsync();
 
-            // Popular games (most tournaments) - OK as is
+            // Popular games (most tournaments) 
             ViewData["PopularGames"] = await _context.Games
                 .OrderByDescending(g => g.Tournaments.Count)
                 .Take(4)
                 .ToListAsync();
 
-            // Tournaments with most registrations - OK as is
+            // Tournaments with most registrations 
             ViewData["PopularTournaments"] = await _context.Tournaments
                 .Include(t => t.Game)
                 .OrderByDescending(t => t.Registrations.Count)
                 .Take(2)
                 .ToListAsync();
 
-            // FIXED: Tournaments with highest prize pools
             var tournaments = await _context.Tournaments
                 .Include(t => t.Game)
-                .Take(100)  // Limit to reasonable number for client-side processing
+                .Take(100)
                 .ToListAsync();
 
             ViewData["HighPrizeTournaments"] = tournaments

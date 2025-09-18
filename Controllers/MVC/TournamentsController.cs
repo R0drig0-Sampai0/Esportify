@@ -3,7 +3,6 @@ using Esportify.Models;
 using Esportify.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
@@ -60,6 +59,7 @@ namespace Esportify.Controllers.MVC
             return View(tournaments);
         }
 
+        // GET: Teams/Details/5
         [AllowAnonymous]
         public async Task<IActionResult> Details(string id)
         {
@@ -90,25 +90,24 @@ namespace Esportify.Controllers.MVC
                     .AnyAsync(r => r.TournamentId == id &&
                                   r.Team.Members.Any(tm => tm.UserId == userId));
 
-                // Get user's teams for the registration dropdown
-                var userTeams = await _context.TeamMembers
-                    .Where(tm => tm.UserId == userId)
-                    .Include(tm => tm.Team)
-                        .ThenInclude(t => t.Members)
-                    .Select(tm => tm.Team)
+                var userLeaderTeams = await _context.Teams
+                    .Where(t => t.LeaderId == userId)
+                    .Include(t => t.Members)
                     .ToListAsync();
-                ViewBag.UserTeams = userTeams;
+                ViewBag.UserTeams = userLeaderTeams;
             }
 
             return View(tournament);
         }
 
+        // GET: Tournaments/Create
         public IActionResult Create()
         {
             ViewBag.Games = _context.Games.ToList();
             return View();
         }
 
+        // POST: Tournaments/Create
         [HttpPost]
         public async Task<IActionResult> Create(TournamentsViewModel model)
         {
@@ -157,7 +156,7 @@ namespace Esportify.Controllers.MVC
             return RedirectToAction("Index");
         }
 
-        // GET: Tournaments/Edit/5
+        /* GET: Tournament/Edit/5 */
         [Authorize]
         public async Task<IActionResult> Edit(string id)
         {
@@ -175,7 +174,6 @@ namespace Esportify.Controllers.MVC
                 return NotFound();
             }
 
-            // Only tournament organizer or admin can edit
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (tournament.OrganizerId != userId && !User.IsInRole("Admin"))
             {
@@ -215,7 +213,6 @@ namespace Esportify.Controllers.MVC
                 return NotFound();
             }
 
-            // Only tournament organizer or admin can edit
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (tournament.OrganizerId != userId && !User.IsInRole("Admin"))
             {
@@ -232,7 +229,6 @@ namespace Esportify.Controllers.MVC
 
             try
             {
-                // Update basic properties
                 tournament.Name = model.Name;
                 tournament.Description = model.Description;
                 tournament.GameId = model.GameId;
@@ -244,13 +240,11 @@ namespace Esportify.Controllers.MVC
                 tournament.MaxTeamSize = model.MaxTeamSize;
                 tournament.PrizePool = model.PrizePool;
 
-                // Handle image upload
                 if (model.Image != null && model.Image.Length > 0)
                 {
                     var fileName = Guid.NewGuid() + Path.GetExtension(model.Image.FileName);
                     var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "tournaments");
 
-                    // Create directory if it doesn't exist
                     Directory.CreateDirectory(uploadsPath);
 
                     var filePath = Path.Combine(uploadsPath, fileName);
@@ -277,7 +271,7 @@ namespace Esportify.Controllers.MVC
             }
         }
 
-        // POST: Tournaments/Delete/5
+        /* POST: Tournaments/Delete/5 */
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
@@ -292,7 +286,6 @@ namespace Esportify.Controllers.MVC
                 return NotFound();
             }
 
-            // Only tournament organizer or admin can delete
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (tournament.OrganizerId != userId && !User.IsInRole("Admin"))
             {
@@ -301,10 +294,8 @@ namespace Esportify.Controllers.MVC
 
             try
             {
-                // Remove all registrations first
                 _context.Registrations.RemoveRange(tournament.Registrations);
 
-                // Remove the tournament
                 _context.Tournaments.Remove(tournament);
 
                 await _context.SaveChangesAsync();
@@ -325,17 +316,21 @@ namespace Esportify.Controllers.MVC
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            // Check if user is a member of the team
-            var isTeamMember = await _context.TeamMembers
-                .AnyAsync(tm => tm.TeamId == teamId && tm.UserId == userId);
+            var team = await _context.Teams
+                .FirstOrDefaultAsync(t => t.Id == teamId);
 
-            if (!isTeamMember)
+            if (team == null)
             {
-                TempData["Error"] = "Não tens permissão para inscrever esta equipa.";
+                TempData["Error"] = "Equipa não encontrada.";
                 return RedirectToAction("Details", new { id = tournamentId });
             }
 
-            // Check if team is already registered
+            if (team.LeaderId != userId)
+            {
+                TempData["Error"] = "Apenas o líder da equipa pode inscrever a equipa em torneios.";
+                return RedirectToAction("Details", new { id = tournamentId });
+            }
+
             var existingRegistration = await _context.Registrations
                 .FirstOrDefaultAsync(r => r.TournamentId == tournamentId && r.TeamId == teamId);
 
@@ -345,7 +340,6 @@ namespace Esportify.Controllers.MVC
                 return RedirectToAction("Details", new { id = tournamentId });
             }
 
-            // Check if tournament is still accepting registrations
             var tournament = await _context.Tournaments
                 .Include(t => t.Registrations)
                 .FirstOrDefaultAsync(t => t.Id == tournamentId);
@@ -368,8 +362,7 @@ namespace Esportify.Controllers.MVC
                 return RedirectToAction("Details", new { id = tournamentId });
             }
 
-            // Check team size requirements
-            var team = await _context.Teams
+            team = await _context.Teams
                 .Include(t => t.Members)
                 .FirstOrDefaultAsync(t => t.Id == teamId);
 
@@ -385,7 +378,6 @@ namespace Esportify.Controllers.MVC
                 return RedirectToAction("Details", new { id = tournamentId });
             }
 
-            // Create registration
             var registration = new Registration
             {
                 TournamentId = tournamentId,
@@ -400,23 +392,30 @@ namespace Esportify.Controllers.MVC
             return RedirectToAction("Details", new { id = tournamentId });
         }
 
+        /* POST: Tournament/Unregister/55 */
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> Unregister(string tournamentId, string teamId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            // Check if user is a member of the team
-            var isTeamMember = await _context.TeamMembers
-                .AnyAsync(tm => tm.TeamId == teamId && tm.UserId == userId);
+            var teamLeader = await _context.Teams
+                .Where(t => t.Id == teamId)
+                .Select(t => t.LeaderId)
+                .FirstOrDefaultAsync();
 
-            if (!isTeamMember)
+            if (string.IsNullOrEmpty(teamLeader))
             {
-                TempData["Error"] = "Não tens permissão para desinscrever esta equipa.";
+                TempData["Error"] = "Equipa não encontrada.";
                 return RedirectToAction("Details", new { id = tournamentId });
             }
 
-            // Check if team is actually registered
+            if (teamLeader != userId)
+            {
+                TempData["Error"] = "Apenas o líder da equipa pode desinscrever a equipa de torneios.";
+                return RedirectToAction("Details", new { id = tournamentId });
+            }
+
             var registration = await _context.Registrations
                 .FirstOrDefaultAsync(r => r.TournamentId == tournamentId && r.TeamId == teamId);
 
@@ -426,7 +425,6 @@ namespace Esportify.Controllers.MVC
                 return RedirectToAction("Details", new { id = tournamentId });
             }
 
-            // Check if tournament has already started
             var tournament = await _context.Tournaments.FindAsync(tournamentId);
             if (tournament != null && tournament.StartDate <= DateTime.Now)
             {
@@ -434,7 +432,6 @@ namespace Esportify.Controllers.MVC
                 return RedirectToAction("Details", new { id = tournamentId });
             }
 
-            // Remove registration
             _context.Registrations.Remove(registration);
             await _context.SaveChangesAsync();
 

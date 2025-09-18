@@ -17,12 +17,10 @@ namespace Esportify.Controllers.MVC
             _context = context;
         }
 
-        // GET: Lists all games with pagination
         public async Task<IActionResult> Index(int page = 1)
         {
             int pageSize = 12;
 
-            // Get paginated games
             var games = await _context.Games
                 .OrderByDescending(g => g.CreatedAt)
                 .Include(g => g.Tournaments)
@@ -30,12 +28,10 @@ namespace Esportify.Controllers.MVC
                 .Take(pageSize)
                 .ToListAsync();
 
-            // Get total pages for pagination
             var totalGames = await _context.Games.CountAsync();
             ViewBag.TotalPages = (int)Math.Ceiling(totalGames / (double)pageSize);
             ViewBag.CurrentPage = page;
 
-            // Get currently logged-in user's liked games
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             List<string> likedGameIds = new List<string>();
             if (userId != null)
@@ -51,14 +47,13 @@ namespace Esportify.Controllers.MVC
         }
 
 
-        // GET: Shows game details
+        // GET: Games/5
         [Authorize]
         public async Task<IActionResult> Details(string id)
         {
             if (string.IsNullOrEmpty(id))
                 return NotFound();
 
-            // Load the game with tournaments and liked users
             var game = await _context.Games
                 .Include(g => g.Tournaments)
                 .Include(g => g.LikedByUsers)
@@ -67,7 +62,6 @@ namespace Esportify.Controllers.MVC
             if (game == null)
                 return NotFound();
 
-            // Check if the current user liked this game
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             ViewBag.IsLikedByUser = false;
 
@@ -81,7 +75,7 @@ namespace Esportify.Controllers.MVC
         }
 
 
-        // GET: Displays the form to add a new game (Admin only)
+        // GET: Games/AddGame
         [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult AddGame()
@@ -89,7 +83,7 @@ namespace Esportify.Controllers.MVC
             return View();
         }
 
-        // POST: Adds a new game (Admin only)
+        // POST: Games/AddGame
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -128,7 +122,7 @@ namespace Esportify.Controllers.MVC
             return RedirectToAction("Index");
         }
 
-        // POST: Deletes the game (Admin only)
+        // POST: Games/DeleteGame/5
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]

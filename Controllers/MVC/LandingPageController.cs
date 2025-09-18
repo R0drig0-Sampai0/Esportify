@@ -30,7 +30,7 @@ namespace Esportify.Controllers
                         user => user.Id,
                         profile => profile.UserId,
                         (user, profile) => new { user, profile })
-                    .OrderByDescending(up => (double)up.profile.Earnings) // Cast decimal to double for SQLite
+                    .OrderByDescending(up => (double)up.profile.Earnings)
                     .Take(3)
                     .Select(up => new PlayerViewModel
                     {

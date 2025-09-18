@@ -44,7 +44,6 @@ namespace Esportify.Controllers.MVC
                 return NotFound();
             }
 
-            // Load dropdown data
             await LoadViewBagDataAsync();
 
             return View(currentUser);
@@ -61,7 +60,6 @@ namespace Esportify.Controllers.MVC
 
             if (userInDb == null) return NotFound();
 
-            // Ensure user can only edit their own profile
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userInDb.Id != currentUserId)
             {
@@ -70,14 +68,12 @@ namespace Esportify.Controllers.MVC
 
             if (!ModelState.IsValid)
             {
-                // Reload ViewBag data for dropdowns
                 await LoadViewBagDataAsync();
                 return View(userInDb);
             }
 
             var profile = userInDb.Profile ?? new UserProfile { UserId = user.Id };
 
-            // Update profile fields
             profile.DisplayName = user.Profile?.DisplayName;
             profile.Bio = user.Profile?.Bio;
             profile.Country = user.Profile?.Country;
@@ -90,13 +86,11 @@ namespace Esportify.Controllers.MVC
 
             try
             {
-                // Handle avatar upload
                 if (avatarFile != null && avatarFile.Length > 0)
                 {
                     var fileName = Guid.NewGuid() + Path.GetExtension(avatarFile.FileName);
                     var avatarsPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "profile");
                     
-                    // Create directory if it doesn't exist
                     Directory.CreateDirectory(avatarsPath);
                     
                     var filePath = Path.Combine(avatarsPath, fileName);
@@ -109,13 +103,11 @@ namespace Esportify.Controllers.MVC
                     profile.AvatarUrl = $"/images/profile/{fileName}";
                 }
 
-                // Handle banner upload
                 if (bannerFile != null && bannerFile.Length > 0)
                 {
                     var fileName = Guid.NewGuid() + Path.GetExtension(bannerFile.FileName);
                     var bannersPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "profile");
                     
-                    // Create directory if it doesn't exist
                     Directory.CreateDirectory(bannersPath);
                     
                     var filePath = Path.Combine(bannersPath, fileName);
@@ -128,7 +120,6 @@ namespace Esportify.Controllers.MVC
                     profile.BannerUrl = $"/images/profile/{fileName}";
                 }
 
-                // If profile is new, add it to context
                 if (userInDb.Profile == null)
                 {
                     _context.UserProfiles.Add(profile);
@@ -141,7 +132,6 @@ namespace Esportify.Controllers.MVC
             catch (Exception ex)
             {
                 TempData["Error"] = "Erro ao salvar o perfil: " + ex.Message;
-                // Reload ViewBag data for dropdowns
                 await LoadViewBagDataAsync();
                 return View(userInDb);
             }
@@ -182,13 +172,11 @@ namespace Esportify.Controllers.MVC
 
         private async Task LoadViewBagDataAsync()
         {
-            // Get all games for favorite game dropdown
             var games = await _context.Games
                 .OrderBy(g => g.Name)
                 .ToListAsync();
             ViewBag.Games = games;
 
-            // Get teams that the user is a member of
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var userTeams = await _context.TeamMembers
                 .Where(tm => tm.UserId == userId)

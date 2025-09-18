@@ -36,21 +36,18 @@ namespace Esportify.Controllers.MVC
                 return View(model);
             }
 
-            // Validação do nome de utilizador (mínimo 3 caracteres)
             if (string.IsNullOrWhiteSpace(model.Username) || model.Username.Length < 3)
             {
                 ModelState.AddModelError("Username", "O nome de utilizador deve ter pelo menos 3 caracteres");
                 return View(model);
             }
 
-            // Validação do email
             if (string.IsNullOrWhiteSpace(model.Email) || !model.Email.Contains("@"))
             {
                 ModelState.AddModelError("Email", "O email deve ser válido");
                 return View(model);
             }
 
-            // Validação da palavra-passe (mínimo 8 caracteres, maiúscula, número, caractere especial)
             if (string.IsNullOrWhiteSpace(model.Password) || model.Password.Length < 8 ||
                 !System.Text.RegularExpressions.Regex.IsMatch(model.Password, @"[A-Z]") ||
                 !System.Text.RegularExpressions.Regex.IsMatch(model.Password, @"[0-9]") ||
@@ -60,14 +57,12 @@ namespace Esportify.Controllers.MVC
                 return View(model);
             }
 
-            // Confirmação da palavra-passe
             if (model.Password != model.ConfirmPassword)
             {
                 ModelState.AddModelError("ConfirmPassword", "As palavras-passe não coincidem");
                 return View(model);
             }
 
-            // Verificar utilizador existente
             var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.UserName == model.Username || u.Email == model.Email);
 
             if (existingUser != null)

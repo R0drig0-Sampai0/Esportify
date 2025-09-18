@@ -2,10 +2,8 @@
 using Esportify.Models;
 using Esportify.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 using System.Security.Claims;
 
 [Authorize]
@@ -68,13 +66,11 @@ public class TeamsController : Controller
 
         string logoUrl = null;
         
-        // Handle logo upload
         if (logoFile != null && logoFile.Length > 0)
         {
             var fileName = Guid.NewGuid() + Path.GetExtension(logoFile.FileName);
             var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "teams");
             
-            // Create directory if it doesn't exist
             Directory.CreateDirectory(uploadsPath);
             
             var filePath = Path.Combine(uploadsPath, fileName);
@@ -105,7 +101,6 @@ public class TeamsController : Controller
             _context.Teams.Add(team);
             await _context.SaveChangesAsync();
 
-            // Add the leader as a member too
             _context.TeamMembers.Add(new TeamMember
             {
                 TeamId = team.Id,
@@ -172,7 +167,6 @@ public class TeamsController : Controller
             return NotFound();
         }
 
-        // Only team leader or admin can edit
         if (team.LeaderId != userId && !User.IsInRole("Admin"))
         {
             return Forbid();
@@ -201,7 +195,6 @@ public class TeamsController : Controller
             return NotFound();
         }
 
-        // Only team leader or admin can edit
         if (existingTeam.LeaderId != userId && !User.IsInRole("Admin"))
         {
             return Forbid();
@@ -211,19 +204,16 @@ public class TeamsController : Controller
         {
             try
             {
-                // Update basic properties
                 existingTeam.Name = team.Name;
                 existingTeam.Description = team.Description ?? string.Empty;
                 existingTeam.Tag = team.Tag;
                 existingTeam.IsOpenForMembers = team.IsOpenForMembers;
 
-                // Handle logo upload
                 if (logoFile != null && logoFile.Length > 0)
                 {
                     var fileName = Guid.NewGuid() + Path.GetExtension(logoFile.FileName);
                     var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "teams");
 
-                    // Create directory if it doesn't exist
                     Directory.CreateDirectory(uploadsPath);
 
                     var filePath = Path.Combine(uploadsPath, fileName);
@@ -246,7 +236,6 @@ public class TeamsController : Controller
             }
         }
 
-        // Reload team data for the view
         existingTeam = await _context.Teams
             .Include(t => t.Members)
                 .ThenInclude(tm => tm.User)
@@ -272,7 +261,6 @@ public class TeamsController : Controller
             return NotFound();
         }
 
-        // Only team leader or admin can delete
         if (team.LeaderId != userId && !User.IsInRole("Admin"))
         {
             return Forbid();
@@ -280,13 +268,10 @@ public class TeamsController : Controller
 
         try
         {
-            // Remove all team members first
             _context.TeamMembers.RemoveRange(team.Members);
 
-            // Remove all registrations
             _context.Registrations.RemoveRange(team.Registrations);
 
-            // Remove the team
             _context.Teams.Remove(team);
 
             await _context.SaveChangesAsync();
@@ -320,14 +305,12 @@ public class TeamsController : Controller
             return RedirectToAction("Index");
         }
 
-        // Check if team is open for new members
         if (!team.IsOpenForMembers)
         {
             TempData["Error"] = "Esta equipa não está aberta para novos membros.";
             return RedirectToAction("Details", new { id = teamId });
         }
 
-        // Check if user is already a member
         var existingMembership = await _context.TeamMembers
             .FirstOrDefaultAsync(tm => tm.TeamId == teamId && tm.UserId == userId);
 
@@ -339,7 +322,6 @@ public class TeamsController : Controller
 
         try
         {
-            // Add user to team
             var teamMember = new TeamMember
             {
                 TeamId = teamId,
@@ -382,14 +364,12 @@ public class TeamsController : Controller
             return RedirectToAction("Index");
         }
 
-        // Check if user is the team leader
         if (team.LeaderId == userId)
         {
             TempData["Error"] = "Não podes sair da equipa sendo o líder. Transfere a liderança primeiro.";
             return RedirectToAction("Details", new { id = teamId });
         }
 
-        // Check if user is actually a member
         var membership = await _context.TeamMembers
             .FirstOrDefaultAsync(tm => tm.TeamId == teamId && tm.UserId == userId);
 
