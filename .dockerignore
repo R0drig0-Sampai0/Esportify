@@ -1,0 +1,58 @@
+# .dockerignore
+
+# Directories
+**/bin/
+**/obj/
+**/out/
+**/TestResults/
+
+# Files
+*.trx
+*.coverage
+*.log
+*.tmp
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+LICENSE
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.sln.DotSettings.user
+
+# Development environment
+.vscode/
+*.code-workspace
+
+# Dependencies
+**/node_modules/
+
+# Runtime artifacts
+**/*.dll
+**/*.exe
+**/*.pdb
+
+# SQLite database files (we'll use PostgreSQL in production)
+**/*.db
+**/*.db-shm
+**/*.db-wal
+
+# Docker
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# CI/CD
+.github/
+azure-pipelines.yml
+
+# Local development files
+appsettings.Development.json
+Properties/launchSettings.json

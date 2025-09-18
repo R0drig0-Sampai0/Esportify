@@ -1,11 +1,11 @@
-﻿using Esportify.Data;
+using Esportify.Data;
 using Esportify.Models;
 using Esportify.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-
 namespace Esportify.Controllers.MVC
 {
     public class TournamentsController : Controller

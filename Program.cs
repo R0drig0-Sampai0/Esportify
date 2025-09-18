@@ -6,12 +6,23 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<EsportifyContext>(options =>
-    options.UseSqlite(connectionString));
+
+// Configure database based on environment
+if (builder.Environment.IsProduction())
+{
+    // Use PostgreSQL in production
+    builder.Services.AddDbContext<EsportifyContext>(options =>
+        options.UseNpgsql(connectionString));
+}
+else
+{
+    // Use SQLite in development
+    builder.Services.AddDbContext<EsportifyContext>(options =>
+        options.UseSqlite(connectionString));
+}
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddControllersWithViews();
-builder.Services.AddSignalR();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -73,5 +84,6 @@ app.MapControllerRoute(
     name: "profile",
     pattern: "profile/{username}",
     defaults: new { controller = "Profile", action = "Index" });
+
 
 app.Run();
