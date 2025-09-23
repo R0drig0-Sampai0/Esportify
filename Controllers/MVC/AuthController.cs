@@ -115,7 +115,7 @@ namespace Esportify.Controllers.MVC
 
             HttpContext.Session.SetString("UserId", user.Id);
 
-            return RedirectToAction("Index", "LandingPage");
+            return RedirectToAction("Index", "Home");
         }
 
         // GET: /Auth/IniciarSessao
@@ -158,7 +158,7 @@ namespace Esportify.Controllers.MVC
             Console.WriteLine($"Utilizador {user.UserName} autenticado, IsAdmin: {user.IsAdmin}");
 
             HttpContext.Session.SetString("UserId", user.Id);
-            return RedirectToAction("Index", "LandingPage");
+            return RedirectToAction("Index", "Home");
         }
 
         // POST: /Auth/TerminarSessao
