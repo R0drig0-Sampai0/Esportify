@@ -25,6 +25,7 @@ namespace Esportify.Controllers.MVC
             // Upcoming tournaments (next 7 days)
             ViewData["UpcomingTournaments"] = await _context.Tournaments
                 .Include(t => t.Game)
+                .Include(t => t.Registrations)
                 .Where(t => t.StartDate >= DateTime.Now && t.StartDate <= DateTime.Now.AddDays(7))
                 .OrderBy(t => t.StartDate)
                 .Take(3)
@@ -39,12 +40,14 @@ namespace Esportify.Controllers.MVC
             // Tournaments with most registrations 
             ViewData["PopularTournaments"] = await _context.Tournaments
                 .Include(t => t.Game)
+                .Include(t => t.Registrations)
                 .OrderByDescending(t => t.Registrations.Count)
                 .Take(2)
                 .ToListAsync();
 
             var tournaments = await _context.Tournaments
                 .Include(t => t.Game)
+                .Include(t => t.Registrations)
                 .Take(100)
                 .ToListAsync();
 

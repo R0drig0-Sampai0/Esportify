@@ -60,84 +60,125 @@
             transition: all 0.3s ease;
         }
 
-            .btn-outline-success:hover {
-                background-color: var(--green);
-                border-color: var(--green);
-                color: var(--black);
-                transform: translateY(-2px);
-                box-shadow: 0 4px 12px rgba(0, 255, 136, 0.3);
-            }
+        .btn-outline-success:hover {
+            background-color: var(--green);
+            border-color: var(--green);
+            color: var(--black);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 255, 136, 0.3);
+        }
 
-        .favorite-games-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 0.75rem;
+        /* Sidebar-specific button styling */
+        .sidebar .btn-outline-success {
+            border: 1px solid var(--green);
+            font-size: 0.8rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+
+        .sidebar .btn-outline-success:hover {
+            background-color: var(--green);
+            border-color: var(--green);
+            color: var(--black);
+            transform: translateY(-1px);
+            box-shadow: none;
+        }
+
+        .favorite-games-list {
             margin: 1rem 0 0 0;
             padding: 0;
-            list-style: none;
         }
 
         .favorite-game-item {
-            position: relative;
-            aspect-ratio: 1/1;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
             border-radius: 8px;
-            overflow: hidden;
-            border: 2px solid var(--medium-grey);
-            transition: all 0.3s ease;
+            background: var(--medium-grey);
+            border: 1px solid var(--light-grey);
+            transition: all 0.2s ease;
             cursor: pointer;
+            text-decoration: none;
+            color: inherit;
         }
 
-            .favorite-game-item:hover {
-                border-color: var(--green);
-                transform: scale(1.05);
-                box-shadow: 0 8px 24px rgba(0, 255, 136, 0.2);
-            }
+        .favorite-game-item:hover {
+            background: var(--light-grey);
+            border-color: var(--green);
+            transform: translateX(4px);
+            color: inherit;
+        }
 
         .game-icon {
-            width: 100%;
-            height: 100%;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
             object-fit: cover;
+            flex-shrink: 0;
         }
 
-        .game-name-tooltip {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(transparent, rgba(0, 0, 0, 0.95));
+        .game-name {
+            font-size: 0.9rem;
+            font-weight: 500;
             color: var(--text);
-            padding: 0.75rem;
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-align: center;
-            opacity: 0;
-            transform: translateY(100%);
-            transition: all 0.3s ease;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .favorite-game-item:hover .game-name-tooltip {
-            opacity: 1;
-            transform: translateY(0);
+        .more-games {
+            padding: 0.5rem;
+            text-align: center;
+            background: var(--dark-grey);
+            border-radius: 8px;
+            border: 1px dashed var(--green);
+            margin-top: 0.5rem;
+        }
+
+        .more-games-text {
+            color: var(--green);
+            font-size: 0.85rem;
+            font-weight: 600;
         }
 
         .empty-state {
             text-align: center;
-            padding: 3rem 1rem;
+            padding: 2rem 1rem;
             color: var(--text);
         }
 
-            .empty-state i {
-                font-size: 3rem;
-                margin-bottom: 1.5rem;
-                color: var(--green);
-                opacity: 0.7;
-            }
+        .empty-state i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--green);
+            opacity: 0.7;
+        }
 
-            .empty-state p {
-                margin-bottom: 2rem;
-                opacity: 0.8;
-                font-size: 1.1rem;
-            }
+        .empty-state p {
+            margin-bottom: 1.5rem;
+            opacity: 0.8;
+            font-size: 0.95rem;
+        }
+
+        /* Sidebar-specific empty state */
+        .sidebar .empty-state {
+            padding: 1.5rem 0.5rem;
+        }
+
+        .sidebar .empty-state i {
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .sidebar .empty-state p {
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
 
         .btn-success {
             background: var(--green);
@@ -355,17 +396,9 @@
             padding-left: 0;
         }
 
-        .favorite-games-grid {
-            grid-template-columns: repeat(4, 1fr);
-        }
-
         .games-grid {
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             gap: 1rem;
-        }
-
-        .favorite-games-grid {
-            grid-template-columns: repeat(3, 1fr);
         }
 
         .tournaments-grid {
@@ -388,32 +421,63 @@
             flex-direction: column;
             gap: 0.5rem;
         }
-    </style>
+        
+        /* Additional Styles */
+        .game-tag {
+            background: var(--medium-grey);
+            color: var(--green);
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .create-team-cta {
+            background: linear-gradient(135deg, var(--dark-grey) 0%, var(--medium-grey) 100%);
+            border: 2px solid var(--green);
+            border-radius: 16px;
+            padding: 2.5rem;
+        }
+        
+        .create-team-cta h2 {
+            color: var(--green);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .create-team-cta p {
+            color: var(--text);
+            opacity: 0.9;
+            margin-bottom: 0;
+        }
+</style>
 }
 
 <div class="homepage-container">
     <div class="row">
         <!-- Barra Lateral Esquerda - Jogos Favoritos -->
-    <div class="col-lg-2 col-xl-2 sidebar"> <!-- Changed to col-lg-2 for thinner sidebar -->
+    <div class="col-lg-3 col-xl-2 sidebar">
         <div class="sidebar-card">
             <h3 class="sidebar-title">Os Meus Jogos</h3>
             <a asp-controller="Games" asp-action="Index" class="btn btn-sm btn-outline-success">Adicionar Mais</a>
 
             @if (User.Identity.IsAuthenticated && ViewData["FavoriteGames"] is List<Game> favoriteGames && favoriteGames.Any())
             {
-                <div class="favorite-games-grid">
-                    @foreach (var game in favoriteGames.Take(12))
+                <div class="favorite-games-list">
+                    @foreach (var game in favoriteGames.Take(8))
                     {
-                        <div class="favorite-game-item">
+                        <a asp-controller="Games" asp-action="Details" asp-route-id="@game.Id" class="favorite-game-item">
                             <img src="@game.ImageUrl" alt="@game.Name" class="game-icon"
-                                 onerror="this.onerror=null;this.src='/images/default-game.jpg';">
-                            <div class="game-name-tooltip">@game.Name</div>
-                        </div>
+                                 onerror="this.onerror=null;this.src='/images/games/default.jpg';">
+                            <span class="game-name">@game.Name</span>
+                        </a>
                     }
-                    @if (favoriteGames.Count > 12)
+                    @if (favoriteGames.Count > 8)
                     {
-                        <div class="more-games-count">
-                            <small>+@(favoriteGames.Count - 12) mais</small>
+                        <div class="more-games">
+                            <span class="more-games-text">+@(favoriteGames.Count - 8) mais jogos</span>
                         </div>
                     }
                 </div>
@@ -430,7 +494,7 @@
     </div>
 
         <!-- Conteúdo Principal -->
-        <div class="col-lg-9 main-content">
+        <div class="col-lg-9 col-xl-10 main-content">
             <!-- Secção de Torneios Futuros -->
             <section class="mb-5">
                 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -438,7 +502,100 @@
                     <a asp-controller="Tournaments" asp-action="Index" class="btn btn-sm btn-outline-success">Ver Todos</a>
                 </div>
 
-                
+                <div class="tournaments-grid">
+                    @if (ViewData["UpcomingTournaments"] is List<Tournament> upcomingTournaments && upcomingTournaments.Any())
+                    {
+                        @foreach (var tournament in upcomingTournaments)
+                        {
+                            <div class="tournament-card">
+                                <img src="@tournament.ImageUrl" alt="@tournament.Name" class="tournament-image"
+                                     onerror="this.onerror=null;this.src='/images/tournaments/default.png';">
+                                <div class="tournament-content">
+                                    <div class="prize-badge">@tournament.PrizePool.ToString("C")</div>
+                                    <h3 class="tournament-title">@tournament.Name</h3>
+                                    <div class="tournament-meta">
+                                        <div class="meta-item">
+                                            <i class="fas fa-gamepad"></i>
+                                            <span>@(tournament.Game?.Name ?? "Game not found")</span>
+                                        </div>
+                                        <div class="meta-item">
+                                            <i class="fas fa-calendar-alt"></i>
+                                            <span>@tournament.StartDate.ToString("dd/MM/yyyy")</span>
+                                        </div>
+                                        <div class="meta-item">
+                                            <i class="fas fa-users"></i>
+                                            <span>@(tournament.Registrations?.Count ?? 0)/@tournament.MaxTeams equipas</span>
+                                        </div>
+                                    </div>
+                                    <a asp-controller="Tournaments" asp-action="Details" asp-route-id="@tournament.Id" class="btn btn-success w-100">Ver Detalhes</a>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="empty-state">
+                            <i class="fas fa-trophy"></i>
+                            <p>Nenhum torneio programado para os próximos 7 dias</p>
+                            <a asp-controller="Tournaments" asp-action="Index" class="btn btn-success">Explorar Torneios</a>
+                        </div>
+                    }
+                </div>
+            </section>
+
+            <!-- Secção de Torneios Populares -->
+            <section class="mb-5">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="section-title">Torneios Populares</h2>
+                    <a asp-controller="Tournaments" asp-action="Index" class="btn btn-sm btn-outline-success">Ver Todos</a>
+                </div>
+
+                <div class="row">
+                    @if (ViewData["PopularTournaments"] is List<Tournament> popularTournaments && popularTournaments.Any())
+                    {
+                        @foreach (var tournament in popularTournaments)
+                        {
+                            <div class="col-md-6 mb-4">
+                                <div class="tournament-card">
+                                    <img src="@tournament.ImageUrl" alt="@tournament.Name" class="tournament-image"
+                                         onerror="this.onerror=null;this.src='/images/tournaments/default.png';">
+                                    <div class="tournament-content">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <span class="badge bg-success">@(tournament.Game?.Name ?? "Game not found")</span>
+                                            <span class="prize-badge">@tournament.PrizePool.ToString("C")</span>
+                                        </div>
+                                        <h3 class="tournament-title">@tournament.Name</h3>
+                                        <div class="tournament-meta mb-3">
+                                            <div class="meta-item">
+                                                <i class="fas fa-calendar-alt"></i>
+                                                <span>Início: @tournament.StartDate.ToString("dd/MM/yyyy")</span>
+                                            </div>
+                                            <div class="meta-item">
+                                                <i class="fas fa-users"></i>
+                                                <span>@(tournament.Registrations?.Count ?? 0) equipas inscritas</span>
+                                            </div>
+                                            <div class="meta-item">
+                                                <i class="fas fa-clock"></i>
+                                                <span>Prazo: @tournament.RegistrationDeadline.ToString("dd/MM/yyyy")</span>
+                                            </div>
+                                        </div>
+                                        <a asp-controller="Tournaments" asp-action="Details" asp-route-id="@tournament.Id" class="btn btn-success w-100">Participar</a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="col-12">
+                            <div class="empty-state">
+                                <i class="fas fa-trophy"></i>
+                                <p>Nenhum torneio popular encontrado</p>
+                                <a asp-controller="Tournaments" asp-action="Index" class="btn btn-success">Explorar Torneios</a>
+                            </div>
+                        </div>
+                    }
+                </div>
             </section>
 
             <!-- Secção de Explorar Jogos -->
@@ -495,27 +652,49 @@
                 </div>
 
                 <div class="row">
-                    @if (ViewData["HighPrizeTournaments"] is List<Tournament> highPrizeTournaments)
+                    @if (ViewData["HighPrizeTournaments"] is IEnumerable<Tournament> highPrizeTournaments && highPrizeTournaments.Any())
                     {
                         @foreach (var tournament in highPrizeTournaments)
                         {
                             <div class="col-md-4 mb-4">
-                                <div class="prize-tournament-card">
-                                    <div class="prize-badge">@tournament.PrizePool</div>
-                                    <img src="@tournament.ImageUrl" alt="@tournament.Name" class="card-img-top">
-                                    <div class="card-body">
-                                        <span class="game-tag">@tournament.Game.Name</span>
+                                <div class="tournament-card">
+                                    <img src="@tournament.ImageUrl" alt="@tournament.Name" class="tournament-image"
+                                         onerror="this.onerror=null;this.src='/images/tournaments/default.png';">
+                                    <div class="tournament-content">
+                                        <div class="prize-badge">@tournament.PrizePool.ToString("C")</div>
+                                        <span class="badge bg-secondary mb-2">@(tournament.Game?.Name ?? "Game not found")</span>
                                         <h3 class="tournament-title">@tournament.Name</h3>
-                                        <div class="tournament-meta">
-                                            <span><i class="fas fa-calendar-alt text-success"></i> @tournament.StartDate.ToString("MMM dd")</span>
-                                            <span><i class="fas fa-users text-success"></i> @tournament.Registrations.Count</span>
+                                        <div class="tournament-meta mb-3">
+                                            <div class="meta-item">
+                                                <i class="fas fa-calendar-alt"></i>
+                                                <span>@tournament.StartDate.ToString("dd/MM/yyyy")</span>
+                                            </div>
+                                            <div class="meta-item">
+                                                <i class="fas fa-users"></i>
+                                                <span>@(tournament.Registrations?.Count ?? 0)/@tournament.MaxTeams equipas</span>
+                                            </div>
+                                            <div class="meta-item">
+                                                <i class="fas fa-trophy"></i>
+                                                <span>@tournament.PrizePool.ToString("C") em prémios</span>
+                                            </div>
                                         </div>
-                                        <a asp-controller="Tournaments" asp-action="Details" asp-route-id="@tournament.Id" class="btn btn-success w-100 mt-3">Detalhes</a>
+                                        <a asp-controller="Tournaments" asp-action="Details" asp-route-id="@tournament.Id" class="btn btn-success w-100">Ver Detalhes</a>
                                     </div>
                                 </div>
                             </div>
                         }
                     }
+                    else
+                    {
+                        <div class="col-12">
+                            <div class="empty-state">
+                                <i class="fas fa-trophy"></i>
+                                <p>Nenhum torneio com grandes prémios disponível no momento</p>
+                                <a asp-controller="Tournaments" asp-action="Index" class="btn btn-success">Explorar Torneios</a>
+                            </div>
+                        </div>
+                    }
+                </div>
                 </div>
             </section>
         </div>
