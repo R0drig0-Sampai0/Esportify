@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Esportify.Controllers.API
 {
@@ -59,6 +60,7 @@ namespace Esportify.Controllers.API
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateGame([FromBody] CreateGameDto createDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -90,6 +92,7 @@ namespace Esportify.Controllers.API
         }
 
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> UpdateGame(string id, [FromBody] UpdateGameDto updateDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -112,6 +115,7 @@ namespace Esportify.Controllers.API
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteGame(string id)
         {
             var game = await _context.Games.FindAsync(id);
@@ -124,6 +128,7 @@ namespace Esportify.Controllers.API
         }
 
         [HttpPost("like/{gameId}")]
+        [Authorize]
         public async Task<IActionResult> LikeGame(string gameId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -139,6 +144,7 @@ namespace Esportify.Controllers.API
         }
 
         [HttpPost("unlike/{gameId}")]
+        [Authorize]
         public async Task<IActionResult> UnlikeGame(string gameId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
