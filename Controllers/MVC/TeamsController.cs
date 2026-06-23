@@ -277,8 +277,9 @@ public class TeamsController : Controller
             await _context.SaveChangesAsync();
             TempData["Success"] = "Equipa eliminada com sucesso!";
         }
-        catch (Exception ex)
+        catch (Exception)
         {
+            TempData["Error"] = "Erro ao eliminar a equipa.";
         }
 
         return RedirectToAction("Index");

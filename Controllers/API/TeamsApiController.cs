@@ -34,7 +34,7 @@ namespace Esportify.Controllers.API
                     CreatedAt = t.CreatedAt,
                     IsOpenForMembers = t.IsOpenForMembers,
                     LeaderId = t.LeaderId,
-                    LeaderUserName = t.Leader.UserName,
+                    LeaderUserName = t.Leader != null ? t.Leader.UserName : null,
                     MembersCount = t.Members.Count()
                 })
                 .ToListAsync();
@@ -58,7 +58,7 @@ namespace Esportify.Controllers.API
                     CreatedAt = t.CreatedAt,
                     IsOpenForMembers = t.IsOpenForMembers,
                     LeaderId = t.LeaderId,
-                    LeaderUserName = t.Leader.UserName,
+                    LeaderUserName = t.Leader != null ? t.Leader.UserName : null,
                     MembersCount = t.Members.Count()
                 })
                 .FirstOrDefaultAsync();
@@ -112,6 +112,13 @@ namespace Esportify.Controllers.API
             };
 
             _context.Teams.Add(team);
+            _context.TeamMembers.Add(new TeamMember
+            {
+                TeamId = team.Id,
+                UserId = userId,
+                Role = "Leader",
+                JoinedAt = DateTime.UtcNow
+            });
             await _context.SaveChangesAsync();
 
             var dto = new TeamDto
@@ -124,7 +131,7 @@ namespace Esportify.Controllers.API
                 CreatedAt = team.CreatedAt,
                 IsOpenForMembers = team.IsOpenForMembers,
                 LeaderId = team.LeaderId,
-                MembersCount = 0
+                MembersCount = 1
             };
 
             return CreatedAtAction(nameof(GetTeam), new { id = team.Id }, dto);
