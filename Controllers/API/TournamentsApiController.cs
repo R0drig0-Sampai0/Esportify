@@ -23,6 +23,7 @@ namespace Esportify.Controllers.API
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetTournaments()
         {
             var tournaments = await _context.Tournaments
@@ -60,6 +61,7 @@ namespace Esportify.Controllers.API
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetTournament(string id)
         {
             var tournament = await _context.Tournaments
@@ -191,6 +193,93 @@ namespace Esportify.Controllers.API
             if (tournament == null) return NotFound();
 
             _context.Tournaments.Remove(tournament);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        // Endpoints para gerir inscrições de equipas em torneios
+
+        [HttpGet("{tournamentId}/registrations")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetRegistrations(string tournamentId)
+        {
+            var tournament = await _context.Tournaments.FindAsync(tournamentId);
+            if (tournament == null) return NotFound("O torneio não existe.");
+
+            var registrations = await _context.Registrations
+                .Where(r => r.TournamentId == tournamentId)
+                .Select(r => new RegistrationDto
+                {
+                    TeamId = r.TeamId,
+                    TeamName = r.Team.Name,
+                    TeamTag = r.Team.Tag,
+                    RegistrationDate = r.RegistrationDate
+                })
+                .ToListAsync();
+
+            return Ok(registrations);
+        }
+
+        [HttpPost("{tournamentId}/registrations")]
+        public async Task<IActionResult> RegisterTeam(string tournamentId, [FromBody] CreateRegistrationDto createDto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            // Validar se o torneio existe
+            var tournament = await _context.Tournaments.FindAsync(tournamentId);
+            if (tournament == null) return NotFound("O torneio não existe.");
+
+            // Validar se a equipa existe
+            var team = await _context.Teams.FindAsync(createDto.TeamId);
+            if (team == null) return BadRequest("A equipa não existe.");
+
+            // Validar se a equipa já está inscrita
+            var alreadyRegistered = await _context.Registrations
+                .AnyAsync(r => r.TournamentId == tournamentId && r.TeamId == createDto.TeamId);
+            if (alreadyRegistered) return BadRequest("A equipa já está inscrita neste torneio.");
+
+            // Validar se o torneio ainda aceita inscrições (RegistrationDeadline)
+            if (DateTime.UtcNow > tournament.RegistrationDeadline)
+                return BadRequest("O prazo de inscrição para este torneio expirou.");
+
+            // Validar se o número máximo de equipas não foi atingido
+            var registeredCount = await _context.Registrations
+                .CountAsync(r => r.TournamentId == tournamentId);
+            if (registeredCount >= tournament.MaxTeams)
+                return BadRequest("Este torneio já atingiu o número máximo de equipas inscritas.");
+
+            // Criar a inscrição
+            var registration = new Registration
+            {
+                TournamentId = tournamentId,
+                TeamId = createDto.TeamId,
+                RegistrationDate = DateTime.UtcNow
+            };
+
+            _context.Registrations.Add(registration);
+            await _context.SaveChangesAsync();
+
+            var dto = new RegistrationDto
+            {
+                TeamId = registration.TeamId,
+                TeamName = team.Name,
+                TeamTag = team.Tag,
+                RegistrationDate = registration.RegistrationDate
+            };
+
+            return Ok(new { message = "Equipa inscrita com sucesso.", data = dto });
+        }
+
+        [HttpDelete("{tournamentId}/registrations/{teamId}")]
+        public async Task<IActionResult> UnregisterTeam(string tournamentId, string teamId)
+        {
+            // Validar se a inscrição existe
+            var registration = await _context.Registrations
+                .FirstOrDefaultAsync(r => r.TournamentId == tournamentId && r.TeamId == teamId);
+            if (registration == null) return NotFound("A inscrição não existe.");
+
+            _context.Registrations.Remove(registration);
             await _context.SaveChangesAsync();
 
             return NoContent();
