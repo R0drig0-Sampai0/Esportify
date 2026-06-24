@@ -1,9 +1,11 @@
 using Esportify.Data;
+using Esportify.Hubs;
 using Esportify.Models;
 using Esportify.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 namespace Esportify.Controllers.MVC
@@ -11,39 +13,70 @@ namespace Esportify.Controllers.MVC
     public class TournamentsController : Controller
     {
         private readonly EsportifyContext _context;
+        private readonly IHubContext<TournamentHub> _tournamentHubContext;
         private const int PageSize = 12;
 
-        public TournamentsController(EsportifyContext context)
+        public TournamentsController(
+            EsportifyContext context,
+            IHubContext<TournamentHub> tournamentHubContext)
         {
             _context = context;
+            _tournamentHubContext = tournamentHubContext;
         }
 
         [AllowAnonymous]
         public async Task<IActionResult> Index(int page = 1, string search = "", string gameFilter = "all")
         {
             var tournamentsQuery = _context.Tournaments
-                .Include(t => t.Game)
-                .Include(t => t.Registrations)
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(search))
             {
                 tournamentsQuery = tournamentsQuery.Where(t =>
-                    t.Name.Contains(search) ||
-                    t.Description.Contains(search));
+                    (t.Name ?? string.Empty).Contains(search) ||
+                    (t.Description ?? string.Empty).Contains(search));
             }
 
             if (gameFilter != "all")
             {
-                tournamentsQuery = tournamentsQuery.Where(t => t.Game.Genre.ToLower() == gameFilter.ToLower());
+                tournamentsQuery = tournamentsQuery.Where(t =>
+                    t.Game != null &&
+                    (t.Game.Genre ?? string.Empty).ToLower() == gameFilter.ToLower());
             }
 
             var totalTournaments = await tournamentsQuery.CountAsync();
-            var tournaments = await tournamentsQuery
+            var tournamentRows = await tournamentsQuery
                 .OrderBy(t => t.StartDate)
                 .Skip((page - 1) * PageSize)
                 .Take(PageSize)
+                .Select(t => new TournamentIndexRow
+                {
+                    Id = t.Id ?? string.Empty,
+                    Name = t.Name ?? string.Empty,
+                    Description = t.Description ?? string.Empty,
+                    GameId = t.GameId ?? string.Empty,
+                    ImageUrl = t.ImageUrl ?? string.Empty,
+                    StartDate = (DateTime?)t.StartDate,
+                    EndDate = (DateTime?)t.EndDate,
+                    RegistrationDeadline = (DateTime?)t.RegistrationDeadline,
+                    MaxTeams = (int?)t.MaxTeams,
+                    MinTeamSize = (int?)t.MinTeamSize,
+                    MaxTeamSize = (int?)t.MaxTeamSize,
+                    PrizePool = (decimal?)t.PrizePool,
+                    CreatedDate = (DateTime?)t.CreatedDate,
+                    RegistrationsCount = t.Registrations.Count(),
+                    HasGame = t.Game != null,
+                    GameName = t.Game != null ? t.Game.Name ?? string.Empty : string.Empty,
+                    GameGenre = t.Game != null ? t.Game.Genre ?? string.Empty : string.Empty,
+                    GameImageUrl = t.Game != null ? t.Game.ImageUrl ?? string.Empty : string.Empty,
+                    GameOfficialWebsite = t.Game != null ? t.Game.OfficialWebsite : null,
+                    GameCreatedAt = t.Game != null ? (DateTime?)t.Game.CreatedAt : null
+                })
                 .ToListAsync();
+
+            var tournaments = tournamentRows
+                .Select(MapTournamentIndexCard)
+                .ToList();
 
             var gameGenres = await _context.Games
                 .Select(g => g.Genre)
@@ -57,6 +90,68 @@ namespace Esportify.Controllers.MVC
             ViewBag.GameGenres = gameGenres;
 
             return View(tournaments);
+        }
+
+        private static Tournament MapTournamentIndexCard(TournamentIndexRow row)
+        {
+            return new Tournament
+            {
+                Id = row.Id ?? string.Empty,
+                Name = row.Name ?? string.Empty,
+                Description = row.Description ?? string.Empty,
+                GameId = row.GameId ?? string.Empty,
+                ImageUrl = string.IsNullOrWhiteSpace(row.ImageUrl)
+                    ? "/images/tournaments/default.png"
+                    : row.ImageUrl,
+                StartDate = row.StartDate ?? default,
+                EndDate = row.EndDate ?? default,
+                RegistrationDeadline = row.RegistrationDeadline ?? default,
+                MaxTeams = row.MaxTeams ?? 0,
+                MinTeamSize = row.MinTeamSize ?? 0,
+                MaxTeamSize = row.MaxTeamSize ?? 0,
+                PrizePool = row.PrizePool ?? 0,
+                CreatedDate = row.CreatedDate ?? default,
+                Game = !row.HasGame
+                    ? new Game { Id = string.Empty, Name = string.Empty, Genre = string.Empty }
+                    : new Game
+                    {
+                        Id = row.GameId ?? string.Empty,
+                        Name = row.GameName ?? string.Empty,
+                        Genre = row.GameGenre ?? string.Empty,
+                        ImageUrl = string.IsNullOrWhiteSpace(row.GameImageUrl)
+                            ? "/images/games/default.jpg"
+                            : row.GameImageUrl,
+                        OfficialWebsite = row.GameOfficialWebsite,
+                        CreatedAt = row.GameCreatedAt ?? default
+                    },
+                Registrations = Enumerable.Range(0, row.RegistrationsCount)
+                    .Select(_ => new Registration())
+                    .ToList()
+            };
+        }
+
+        private sealed class TournamentIndexRow
+        {
+            public string? Id { get; set; }
+            public string? Name { get; set; }
+            public string? Description { get; set; }
+            public string? GameId { get; set; }
+            public string? ImageUrl { get; set; }
+            public DateTime? StartDate { get; set; }
+            public DateTime? EndDate { get; set; }
+            public DateTime? RegistrationDeadline { get; set; }
+            public int? MaxTeams { get; set; }
+            public int? MinTeamSize { get; set; }
+            public int? MaxTeamSize { get; set; }
+            public decimal? PrizePool { get; set; }
+            public DateTime? CreatedDate { get; set; }
+            public int RegistrationsCount { get; set; }
+            public bool HasGame { get; set; }
+            public string? GameName { get; set; }
+            public string? GameGenre { get; set; }
+            public string? GameImageUrl { get; set; }
+            public string? GameOfficialWebsite { get; set; }
+            public DateTime? GameCreatedAt { get; set; }
         }
 
         // GET: Teams/Details/5
@@ -387,6 +482,17 @@ namespace Esportify.Controllers.MVC
 
             _context.Registrations.Add(registration);
             await _context.SaveChangesAsync();
+
+            await _tournamentHubContext.Clients
+                .Group($"tournament-{tournamentId}")
+                .SendAsync("TeamRegistered", new
+                {
+                    tournamentId,
+                    teamId = registration.TeamId,
+                    teamName = team.Name,
+                    teamTag = team.Tag,
+                    registrationDate = registration.RegistrationDate
+                });
 
             TempData["Success"] = "Equipa inscrita com sucesso no torneio!";
             return RedirectToAction("Details", new { id = tournamentId });

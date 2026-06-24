@@ -303,6 +303,14 @@
                 margin-bottom: 1.5rem;
             }
 
+        .tournament-notification {
+            display: none;
+            margin-bottom: 1rem;
+            border-color: rgba(0, 255, 136, 0.4);
+            background: rgba(0, 255, 136, 0.12);
+            color: white;
+        }
+
         /* Responsive Adjustments */
         @@media (max-width: 992px) {
             .hero-title {
@@ -430,15 +438,19 @@
                 <!-- Equipas Inscritas -->
                 <div class="tournament-card mt-4">
                     <div class="card-header">
-                        <h2>Equipas Inscritas (@Model.Registrations.Count/@Model.MaxTeams)</h2>
+                        <h2>
+                            Equipas Inscritas
+                            (<span id="registeredTeamsCount" data-count="@Model.Registrations.Count">@Model.Registrations.Count</span>/<span id="maxTeamsCount">@Model.MaxTeams</span>)
+                        </h2>
                     </div>
                     <div class="card-body">
+                        <div id="teamRegisteredNotification" class="alert tournament-notification" role="status" aria-live="polite"></div>
                         @if (Model.Registrations.Any())
                         {
-                            <div class="teams-grid">
+                            <div id="registeredTeamsGrid" class="teams-grid">
                                 @foreach (var registration in Model.Registrations)
                                 {
-                                    <div class="team-card">
+                                    <div class="team-card" data-team-id="@registration.TeamId">
                                         <div class="team-header">
                                             <h3>@registration.Team.Name</h3>
                                             <span class="members-count">@registration.Team.Members.Count membros</span>
@@ -463,7 +475,8 @@
                         }
                         else
                         {
-                            <div class="empty-state">
+                            <div id="registeredTeamsGrid" class="teams-grid"></div>
+                            <div id="noTeamsEmptyState" class="empty-state">
                                 <i class="fas fa-users-slash"></i>
                                 <p>Ainda não há equipas inscritas</p>
                             </div>
@@ -546,7 +559,7 @@
                         <div class="registration-meta">
                             <div class="meta-item">
                                 <i class="fas fa-users"></i>
-                                <span>@Model.Registrations.Count/@Model.MaxTeams equipas inscritas</span>
+                                <span><span id="registrationMetaCount">@Model.Registrations.Count</span>/@Model.MaxTeams equipas inscritas</span>
                             </div>
                             <div class="meta-item">
                                 <i class="fas fa-clock"></i>
@@ -595,8 +608,136 @@
 </div>
 
 @section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@8.0.7/dist/browser/signalr.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            const tournamentId = '@Model.Id';
+
+            function showTeamRegisteredNotification(teamName) {
+                const notification = document.getElementById('teamRegisteredNotification');
+                if (!notification) {
+                    return;
+                }
+
+                notification.textContent = `${teamName} acabou de se inscrever neste torneio.`;
+                notification.style.display = 'block';
+
+                window.setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 5000);
+            }
+
+            function updateRegisteredTeamsCount() {
+                const countElement = document.getElementById('registeredTeamsCount');
+                const metaCountElement = document.getElementById('registrationMetaCount');
+
+                if (!countElement) {
+                    return;
+                }
+
+                const currentCount = Number.parseInt(countElement.dataset.count || countElement.textContent, 10) || 0;
+                const nextCount = currentCount + 1;
+
+                countElement.dataset.count = nextCount.toString();
+                countElement.textContent = nextCount.toString();
+
+                if (metaCountElement) {
+                    metaCountElement.textContent = nextCount.toString();
+                }
+            }
+
+            function formatRegistrationDate(value) {
+                const registrationDate = new Date(value);
+
+                if (Number.isNaN(registrationDate.getTime())) {
+                    return '';
+                }
+
+                return registrationDate.toLocaleDateString('pt-PT', {
+                    month: 'short',
+                    day: '2-digit'
+                });
+            }
+
+            function addRegisteredTeamCard(data) {
+                const teamsGrid = document.getElementById('registeredTeamsGrid');
+                if (!teamsGrid || teamsGrid.querySelector(`[data-team-id="${CSS.escape(data.teamId)}"]`)) {
+                    return false;
+                }
+
+                const emptyState = document.getElementById('noTeamsEmptyState');
+                if (emptyState) {
+                    emptyState.remove();
+                }
+
+                const teamCard = document.createElement('div');
+                teamCard.className = 'team-card';
+                teamCard.dataset.teamId = data.teamId;
+
+                const teamHeader = document.createElement('div');
+                teamHeader.className = 'team-header';
+
+                const teamTitle = document.createElement('h3');
+                teamTitle.textContent = data.teamTag ? `${data.teamName} (${data.teamTag})` : data.teamName;
+
+                const membersCount = document.createElement('span');
+                membersCount.className = 'members-count';
+                membersCount.textContent = 'Nova inscrição';
+
+                teamHeader.appendChild(teamTitle);
+                teamHeader.appendChild(membersCount);
+
+                const teamFooter = document.createElement('div');
+                teamFooter.className = 'team-footer';
+
+                const registeredAt = document.createElement('span');
+                const formattedDate = formatRegistrationDate(data.registrationDate);
+                registeredAt.textContent = formattedDate ? `Inscrito em ${formattedDate}` : 'Inscrito agora';
+
+                teamFooter.appendChild(registeredAt);
+                teamCard.appendChild(teamHeader);
+                teamCard.appendChild(teamFooter);
+                teamsGrid.appendChild(teamCard);
+
+                return true;
+            }
+
+            if (window.signalR) {
+                const connection = new signalR.HubConnectionBuilder()
+                    .withUrl('/tournamentHub')
+                    .withAutomaticReconnect()
+                    .build();
+
+                connection.on('TeamRegistered', function(data) {
+                    if (!data || data.tournamentId !== tournamentId) {
+                        return;
+                    }
+
+                    const wasAdded = addRegisteredTeamCard(data);
+                    if (wasAdded) {
+                        updateRegisteredTeamsCount();
+                    }
+
+                    showTeamRegisteredNotification(data.teamName || 'Uma equipa');
+                });
+
+                async function startTournamentHubConnection() {
+                    try {
+                        await connection.start();
+                        await connection.invoke('JoinTournamentGroup', tournamentId);
+                    } catch (error) {
+                        console.error('SignalR connection failed:', error);
+                    }
+                }
+
+                connection.onreconnected(function() {
+                    connection.invoke('JoinTournamentGroup', tournamentId)
+                        .catch(error => console.error('SignalR rejoin failed:', error));
+                });
+
+                startTournamentHubConnection();
+            }
+
             // Handle registration form submission
             const registerForm = document.getElementById('registerForm');
             if (registerForm) {
