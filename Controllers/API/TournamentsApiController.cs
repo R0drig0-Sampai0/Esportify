@@ -116,8 +116,21 @@ namespace Esportify.Controllers.API
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
+            var validationError = ValidateTournamentRules(
+                createDto.StartDate,
+                createDto.EndDate,
+                createDto.RegistrationDeadline ?? createDto.StartDate,
+                createDto.MinTeamSize,
+                createDto.MaxTeamSize,
+                createDto.MaxTeams);
+
+            if (validationError != null)
+            {
+                return BadRequest(new { message = validationError });
+            }
+
             var gameExists = await _context.Games.AnyAsync(g => g.Id == createDto.GameId);
-            if (!gameExists) return BadRequest("O jogo indicado não existe.");
+            if (!gameExists) return BadRequest(new { message = "O jogo indicado não existe." });
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -170,7 +183,7 @@ namespace Esportify.Controllers.API
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var gameExists = await _context.Games.AnyAsync(g => g.Id == updateDto.GameId);
-            if (!gameExists) return BadRequest("O jogo indicado não existe.");
+            if (!gameExists) return BadRequest(new { message = "O jogo indicado não existe." });
 
             var tournament = await _context.Tournaments.FindAsync(id);
             if (tournament == null) return NotFound();
@@ -179,6 +192,19 @@ namespace Esportify.Controllers.API
             if (tournament.OrganizerId != userId && !User.IsInRole("Admin"))
             {
                 return Forbid();
+            }
+
+            var validationError = ValidateTournamentRules(
+                updateDto.StartDate,
+                updateDto.EndDate,
+                updateDto.RegistrationDeadline ?? tournament.RegistrationDeadline,
+                updateDto.MinTeamSize,
+                updateDto.MaxTeamSize,
+                updateDto.MaxTeams);
+
+            if (validationError != null)
+            {
+                return BadRequest(new { message = validationError });
             }
 
             tournament.Name = updateDto.Name;
@@ -254,22 +280,36 @@ namespace Esportify.Controllers.API
 
             // Validar se a equipa existe
             var team = await _context.Teams.FindAsync(createDto.TeamId);
-            if (team == null) return BadRequest("A equipa não existe.");
+            if (team == null) return BadRequest(new { message = "A equipa não existe." });
 
             // Validar se a equipa já está inscrita
             var alreadyRegistered = await _context.Registrations
                 .AnyAsync(r => r.TournamentId == tournamentId && r.TeamId == createDto.TeamId);
-            if (alreadyRegistered) return BadRequest("A equipa já está inscrita neste torneio.");
+            if (alreadyRegistered) return BadRequest(new { message = "A equipa já está inscrita neste torneio." });
 
             // Validar se o torneio ainda aceita inscrições (RegistrationDeadline)
             if (DateTime.UtcNow > tournament.RegistrationDeadline)
-                return BadRequest("O prazo de inscrição para este torneio expirou.");
+                return BadRequest(new { message = "O prazo de inscrição para este torneio expirou." });
 
             // Validar se o número máximo de equipas não foi atingido
             var registeredCount = await _context.Registrations
                 .CountAsync(r => r.TournamentId == tournamentId);
             if (registeredCount >= tournament.MaxTeams)
-                return BadRequest("Este torneio já atingiu o número máximo de equipas inscritas.");
+                return BadRequest(new { message = "Este torneio já atingiu o número máximo de equipas inscritas." });
+
+            // Validar se o tamanho da equipa cumpre as regras do torneio
+            var teamMembersCount = await _context.TeamMembers
+                .CountAsync(tm => tm.TeamId == createDto.TeamId);
+
+            if (teamMembersCount < tournament.MinTeamSize)
+            {
+                return BadRequest(new { message = $"A equipa deve ter pelo menos {tournament.MinTeamSize} membros." });
+            }
+
+            if (teamMembersCount > tournament.MaxTeamSize)
+            {
+                return BadRequest(new { message = $"A equipa deve ter no máximo {tournament.MaxTeamSize} membros." });
+            }
 
             // Criar a inscrição
             var registration = new Registration
@@ -316,6 +356,42 @@ namespace Esportify.Controllers.API
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        private static string? ValidateTournamentRules(
+            DateTime startDate,
+            DateTime endDate,
+            DateTime registrationDeadline,
+            int minTeamSize,
+            int maxTeamSize,
+            int maxTeams)
+        {
+            if (startDate >= endDate)
+            {
+                return "A data de início deve ser anterior à data de fim.";
+            }
+
+            if (registrationDeadline > startDate)
+            {
+                return "O prazo de inscrição deve ser anterior ou igual à data de início.";
+            }
+
+            if (minTeamSize <= 0)
+            {
+                return "O tamanho mínimo da equipa deve ser maior que 0.";
+            }
+
+            if (maxTeamSize < minTeamSize)
+            {
+                return "O tamanho máximo da equipa deve ser maior ou igual ao tamanho mínimo.";
+            }
+
+            if (maxTeams <= 0)
+            {
+                return "O número máximo de equipas deve ser maior que 0.";
+            }
+
+            return null;
         }
     }
 }
