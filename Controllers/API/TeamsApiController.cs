@@ -26,14 +26,14 @@ namespace Esportify.Controllers.API
             var teams = await _context.Teams
                 .Select(t => new TeamDto
                 {
-                    Id = t.Id,
-                    Name = t.Name,
-                    Description = t.Description,
+                    Id = t.Id ?? string.Empty,
+                    Name = t.Name ?? string.Empty,
+                    Description = t.Description ?? string.Empty,
                     Tag = t.Tag,
                     LogoUrl = t.LogoUrl,
                     CreatedAt = t.CreatedAt,
                     IsOpenForMembers = t.IsOpenForMembers,
-                    LeaderId = t.LeaderId,
+                    LeaderId = t.LeaderId ?? string.Empty,
                     LeaderUserName = t.Leader != null ? t.Leader.UserName : null,
                     MembersCount = t.Members.Count()
                 })
@@ -50,14 +50,14 @@ namespace Esportify.Controllers.API
                 .Where(t => t.Id == id)
                 .Select(t => new TeamDto
                 {
-                    Id = t.Id,
-                    Name = t.Name,
-                    Description = t.Description,
+                    Id = t.Id ?? string.Empty,
+                    Name = t.Name ?? string.Empty,
+                    Description = t.Description ?? string.Empty,
                     Tag = t.Tag,
                     LogoUrl = t.LogoUrl,
                     CreatedAt = t.CreatedAt,
                     IsOpenForMembers = t.IsOpenForMembers,
-                    LeaderId = t.LeaderId,
+                    LeaderId = t.LeaderId ?? string.Empty,
                     LeaderUserName = t.Leader != null ? t.Leader.UserName : null,
                     MembersCount = t.Members.Count()
                 })
@@ -79,10 +79,10 @@ namespace Esportify.Controllers.API
                 .Where(tm => tm.TeamId == id)
                 .Select(tm => new TeamMemberDto
                 {
-                    UserId = tm.UserId,
-                    UserName = tm.User.UserName,
-                    UserAvatarUrl = tm.User.Profile != null ? tm.User.Profile.AvatarUrl : null,
-                    Role = tm.Role,
+                    UserId = tm.UserId ?? string.Empty,
+                    UserName = tm.User != null ? tm.User.UserName ?? string.Empty : string.Empty,
+                    UserAvatarUrl = tm.User != null && tm.User.Profile != null ? tm.User.Profile.AvatarUrl : null,
+                    Role = tm.Role ?? string.Empty,
                     JoinedAt = tm.JoinedAt
                 })
                 .ToListAsync();
@@ -123,14 +123,14 @@ namespace Esportify.Controllers.API
 
             var dto = new TeamDto
             {
-                Id = team.Id,
-                Name = team.Name,
-                Description = team.Description,
+                Id = team.Id ?? string.Empty,
+                Name = team.Name ?? string.Empty,
+                Description = team.Description ?? string.Empty,
                 Tag = team.Tag,
                 LogoUrl = team.LogoUrl,
                 CreatedAt = team.CreatedAt,
                 IsOpenForMembers = team.IsOpenForMembers,
-                LeaderId = team.LeaderId,
+                LeaderId = team.LeaderId ?? string.Empty,
                 MembersCount = 1
             };
 

@@ -35,30 +35,32 @@ namespace Esportify.Controllers.API
             var tournaments = await _context.Tournaments
                 .Select(t => new TournamentDto
                 {
-                    Id = t.Id,
-                    Name = t.Name,
-                    Description = t.Description,
-                    GameId = t.GameId,
-                    Game = new GameDto
-                    {
-                        Id = t.Game.Id,
-                        Name = t.Game.Name,
-                        Genre = t.Game.Genre,
-                        ImageUrl = t.Game.ImageUrl,
-                        OfficialWebsite = t.Game.OfficialWebsite,
-                        CreatedAt = t.Game.CreatedAt
-                    },
-                    StartDate = t.StartDate,
-                    EndDate = t.EndDate,
-                    RegistrationDeadline = t.RegistrationDeadline,
-                    MaxTeams = t.MaxTeams,
-                    MinTeamSize = t.MinTeamSize,
-                    MaxTeamSize = t.MaxTeamSize,
-                    PrizePool = t.PrizePool,
-                    ImageUrl = t.ImageUrl,
+                    Id = t.Id ?? string.Empty,
+                    Name = t.Name ?? string.Empty,
+                    Description = t.Description ?? string.Empty,
+                    GameId = t.GameId ?? string.Empty,
+                    Game = t.Game != null
+                        ? new GameDto
+                        {
+                            Id = t.Game.Id ?? string.Empty,
+                            Name = t.Game.Name ?? string.Empty,
+                            Genre = t.Game.Genre,
+                            ImageUrl = t.Game.ImageUrl ?? string.Empty,
+                            OfficialWebsite = t.Game.OfficialWebsite,
+                            CreatedAt = t.Game.CreatedAt
+                        }
+                        : null,
+                    StartDate = (DateTime?)t.StartDate ?? default,
+                    EndDate = (DateTime?)t.EndDate ?? default,
+                    RegistrationDeadline = (DateTime?)t.RegistrationDeadline,
+                    MaxTeams = (int?)t.MaxTeams ?? 0,
+                    MinTeamSize = (int?)t.MinTeamSize ?? 0,
+                    MaxTeamSize = (int?)t.MaxTeamSize ?? 0,
+                    PrizePool = (decimal?)t.PrizePool ?? 0,
+                    ImageUrl = t.ImageUrl ?? string.Empty,
                     OrganizerId = t.OrganizerId,
                     OrganizerName = t.Organizer != null ? (t.Organizer.Profile != null ? t.Organizer.Profile.DisplayName ?? t.Organizer.UserName : t.Organizer.UserName) : null,
-                    CreatedDate = t.CreatedDate,
+                    CreatedDate = (DateTime?)t.CreatedDate ?? default,
                     RegisteredTeamsCount = t.Registrations.Count()
                 })
                 .ToListAsync();
@@ -74,30 +76,32 @@ namespace Esportify.Controllers.API
                 .Where(t => t.Id == id)
                 .Select(t => new TournamentDto
                 {
-                    Id = t.Id,
-                    Name = t.Name,
-                    Description = t.Description,
-                    GameId = t.GameId,
-                    Game = new GameDto
-                    {
-                        Id = t.Game.Id,
-                        Name = t.Game.Name,
-                        Genre = t.Game.Genre,
-                        ImageUrl = t.Game.ImageUrl,
-                        OfficialWebsite = t.Game.OfficialWebsite,
-                        CreatedAt = t.Game.CreatedAt
-                    },
-                    StartDate = t.StartDate,
-                    EndDate = t.EndDate,
-                    RegistrationDeadline = t.RegistrationDeadline,
-                    MaxTeams = t.MaxTeams,
-                    MinTeamSize = t.MinTeamSize,
-                    MaxTeamSize = t.MaxTeamSize,
-                    PrizePool = t.PrizePool,
-                    ImageUrl = t.ImageUrl,
+                    Id = t.Id ?? string.Empty,
+                    Name = t.Name ?? string.Empty,
+                    Description = t.Description ?? string.Empty,
+                    GameId = t.GameId ?? string.Empty,
+                    Game = t.Game != null
+                        ? new GameDto
+                        {
+                            Id = t.Game.Id ?? string.Empty,
+                            Name = t.Game.Name ?? string.Empty,
+                            Genre = t.Game.Genre,
+                            ImageUrl = t.Game.ImageUrl ?? string.Empty,
+                            OfficialWebsite = t.Game.OfficialWebsite,
+                            CreatedAt = t.Game.CreatedAt
+                        }
+                        : null,
+                    StartDate = (DateTime?)t.StartDate ?? default,
+                    EndDate = (DateTime?)t.EndDate ?? default,
+                    RegistrationDeadline = (DateTime?)t.RegistrationDeadline,
+                    MaxTeams = (int?)t.MaxTeams ?? 0,
+                    MinTeamSize = (int?)t.MinTeamSize ?? 0,
+                    MaxTeamSize = (int?)t.MaxTeamSize ?? 0,
+                    PrizePool = (decimal?)t.PrizePool ?? 0,
+                    ImageUrl = t.ImageUrl ?? string.Empty,
                     OrganizerId = t.OrganizerId,
                     OrganizerName = t.Organizer != null ? (t.Organizer.Profile != null ? t.Organizer.Profile.DisplayName ?? t.Organizer.UserName : t.Organizer.UserName) : null,
-                    CreatedDate = t.CreatedDate,
+                    CreatedDate = (DateTime?)t.CreatedDate ?? default,
                     RegisteredTeamsCount = t.Registrations.Count()
                 })
                 .FirstOrDefaultAsync();
@@ -140,10 +144,10 @@ namespace Esportify.Controllers.API
 
             var dto = new TournamentDto
             {
-                Id = tournament.Id,
-                Name = tournament.Name,
-                Description = tournament.Description,
-                GameId = tournament.GameId,
+                Id = tournament.Id ?? string.Empty,
+                Name = tournament.Name ?? string.Empty,
+                Description = tournament.Description ?? string.Empty,
+                GameId = tournament.GameId ?? string.Empty,
                 StartDate = tournament.StartDate,
                 EndDate = tournament.EndDate,
                 RegistrationDeadline = tournament.RegistrationDeadline,
@@ -151,7 +155,7 @@ namespace Esportify.Controllers.API
                 MinTeamSize = tournament.MinTeamSize,
                 MaxTeamSize = tournament.MaxTeamSize,
                 PrizePool = tournament.PrizePool,
-                ImageUrl = tournament.ImageUrl,
+                ImageUrl = tournament.ImageUrl ?? string.Empty,
                 OrganizerId = tournament.OrganizerId,
                 CreatedDate = tournament.CreatedDate,
                 RegisteredTeamsCount = 0
@@ -217,9 +221,9 @@ namespace Esportify.Controllers.API
                 .Where(r => r.TournamentId == tournamentId)
                 .Select(r => new RegistrationDto
                 {
-                    TeamId = r.TeamId,
-                    TeamName = r.Team.Name,
-                    TeamTag = r.Team.Tag,
+                    TeamId = r.TeamId ?? string.Empty,
+                    TeamName = r.Team != null ? r.Team.Name ?? string.Empty : string.Empty,
+                    TeamTag = r.Team != null ? r.Team.Tag : null,
                     RegistrationDate = r.RegistrationDate
                 })
                 .ToListAsync();
@@ -271,16 +275,16 @@ namespace Esportify.Controllers.API
                 .SendAsync("TeamRegistered", new
                 {
                     tournamentId,
-                    teamId = registration.TeamId,
-                    teamName = team.Name,
+                    teamId = registration.TeamId ?? string.Empty,
+                    teamName = team.Name ?? string.Empty,
                     teamTag = team.Tag,
                     registrationDate = registration.RegistrationDate
                 });
 
             var dto = new RegistrationDto
             {
-                TeamId = registration.TeamId,
-                TeamName = team.Name,
+                TeamId = registration.TeamId ?? string.Empty,
+                TeamName = team.Name ?? string.Empty,
                 TeamTag = team.Tag,
                 RegistrationDate = registration.RegistrationDate
             };
