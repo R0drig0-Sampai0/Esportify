@@ -175,6 +175,12 @@ namespace Esportify.Controllers.API
             var tournament = await _context.Tournaments.FindAsync(id);
             if (tournament == null) return NotFound();
 
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (tournament.OrganizerId != userId && !User.IsInRole("Admin"))
+            {
+                return Forbid();
+            }
+
             tournament.Name = updateDto.Name;
             tournament.Description = updateDto.Description;
             tournament.GameId = updateDto.GameId;
@@ -201,6 +207,12 @@ namespace Esportify.Controllers.API
         {
             var tournament = await _context.Tournaments.FindAsync(id);
             if (tournament == null) return NotFound();
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (tournament.OrganizerId != userId && !User.IsInRole("Admin"))
+            {
+                return Forbid();
+            }
 
             _context.Tournaments.Remove(tournament);
             await _context.SaveChangesAsync();

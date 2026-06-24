@@ -60,7 +60,7 @@ namespace Esportify.Controllers.API
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateGame([FromBody] CreateGameDto createDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -92,7 +92,7 @@ namespace Esportify.Controllers.API
         }
 
         [HttpPut("{id}")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateGame(string id, [FromBody] UpdateGameDto updateDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -115,7 +115,7 @@ namespace Esportify.Controllers.API
         }
 
         [HttpDelete("{id}")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteGame(string id)
         {
             var game = await _context.Games.FindAsync(id);
