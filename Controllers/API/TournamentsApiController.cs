@@ -253,7 +253,7 @@ namespace Esportify.Controllers.API
         public async Task<IActionResult> GetRegistrations(string tournamentId)
         {
             var tournament = await _context.Tournaments.FindAsync(tournamentId);
-            if (tournament == null) return NotFound("O torneio não existe.");
+            if (tournament == null) return NotFound(new { message = "O torneio não existe." });
 
             var registrations = await _context.Registrations
                 .Where(r => r.TournamentId == tournamentId)
@@ -276,7 +276,7 @@ namespace Esportify.Controllers.API
 
             // Validar se o torneio existe
             var tournament = await _context.Tournaments.FindAsync(tournamentId);
-            if (tournament == null) return NotFound("O torneio não existe.");
+            if (tournament == null) return NotFound(new { message = "O torneio não existe." });
 
             // Validar se a equipa existe
             var team = await _context.Teams.FindAsync(createDto.TeamId);
@@ -350,7 +350,7 @@ namespace Esportify.Controllers.API
             // Validar se a inscrição existe
             var registration = await _context.Registrations
                 .FirstOrDefaultAsync(r => r.TournamentId == tournamentId && r.TeamId == teamId);
-            if (registration == null) return NotFound("A inscrição não existe.");
+            if (registration == null) return NotFound(new { message = "A inscrição não existe." });
 
             _context.Registrations.Remove(registration);
             await _context.SaveChangesAsync();

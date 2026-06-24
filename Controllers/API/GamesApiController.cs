@@ -135,7 +135,7 @@ namespace Esportify.Controllers.API
             if (userId == null) return Unauthorized();
 
             var exists = await _context.UserGames.AnyAsync(ug => ug.UserId == userId && ug.GameId == gameId);
-            if (exists) return BadRequest("Already liked");
+            if (exists) return BadRequest(new { message = "Already liked" });
 
             _context.UserGames.Add(new UserGame { UserId = userId, GameId = gameId });
             await _context.SaveChangesAsync();
@@ -151,7 +151,7 @@ namespace Esportify.Controllers.API
             if (userId == null) return Unauthorized();
 
             var userGame = await _context.UserGames.FirstOrDefaultAsync(ug => ug.UserId == userId && ug.GameId == gameId);
-            if (userGame == null) return BadRequest("Game not liked yet");
+            if (userGame == null) return BadRequest(new { message = "Game not liked yet" });
 
             _context.UserGames.Remove(userGame);
             await _context.SaveChangesAsync();

@@ -198,7 +198,7 @@ namespace Esportify.Controllers.API
             }
             catch (Exception)
             {
-                return StatusCode(500, "Erro ao eliminar a equipa.");
+                return StatusCode(500, new { message = "Erro ao eliminar a equipa." });
             }
 
             return NoContent();
@@ -219,7 +219,7 @@ namespace Esportify.Controllers.API
 
             if (!team.IsOpenForMembers)
             {
-                return BadRequest("Esta equipa não está aberta para novos membros.");
+                return BadRequest(new { message = "Esta equipa não está aberta para novos membros." });
             }
 
             var existingMembership = await _context.TeamMembers
@@ -227,7 +227,7 @@ namespace Esportify.Controllers.API
 
             if (existingMembership != null)
             {
-                return BadRequest("Já és membro desta equipa.");
+                return BadRequest(new { message = "Já és membro desta equipa." });
             }
 
             var teamMember = new TeamMember
@@ -256,13 +256,13 @@ namespace Esportify.Controllers.API
 
             if (teamMember == null)
             {
-                return BadRequest("Não és membro desta equipa.");
+                return BadRequest(new { message = "Não és membro desta equipa." });
             }
 
             var team = await _context.Teams.FindAsync(id);
             if (team != null && team.LeaderId == userId)
             {
-                return BadRequest("O líder da equipa não pode sair.");
+                return BadRequest(new { message = "O líder da equipa não pode sair." });
             }
 
             _context.TeamMembers.Remove(teamMember);
