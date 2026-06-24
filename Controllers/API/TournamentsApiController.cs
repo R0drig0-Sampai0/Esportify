@@ -1,8 +1,10 @@
 ﻿using Esportify.Data;
 using Esportify.DTOs;
+using Esportify.Hubs;
 using Esportify.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using System;
@@ -16,10 +18,14 @@ namespace Esportify.Controllers.API
     public class TournamentsApiController : ControllerBase
     {
         private readonly EsportifyContext _context;
+        private readonly IHubContext<TournamentHub> _tournamentHubContext;
 
-        public TournamentsApiController(EsportifyContext context)
+        public TournamentsApiController(
+            EsportifyContext context,
+            IHubContext<TournamentHub> tournamentHubContext)
         {
             _context = context;
+            _tournamentHubContext = tournamentHubContext;
         }
 
         [HttpGet]
@@ -259,6 +265,17 @@ namespace Esportify.Controllers.API
 
             _context.Registrations.Add(registration);
             await _context.SaveChangesAsync();
+
+            await _tournamentHubContext.Clients
+                .Group($"tournament-{tournamentId}")
+                .SendAsync("TeamRegistered", new
+                {
+                    tournamentId,
+                    teamId = registration.TeamId,
+                    teamName = team.Name,
+                    teamTag = team.Tag,
+                    registrationDate = registration.RegistrationDate
+                });
 
             var dto = new RegistrationDto
             {

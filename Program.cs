@@ -1,5 +1,6 @@
 using Esportify.Data;
 using Esportify.Data.Initializers;
+using Esportify.Hubs;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
@@ -36,6 +37,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddSignalR();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -120,5 +122,6 @@ app.MapControllerRoute(
     pattern: "profile/{username}",
     defaults: new { controller = "Profile", action = "Index" });
 
+app.MapHub<TournamentHub>("/hubs/tournament");
 
 app.Run();
