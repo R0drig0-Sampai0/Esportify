@@ -123,5 +123,6 @@ app.MapControllerRoute(
     defaults: new { controller = "Profile", action = "Index" });
 
 app.MapHub<TournamentHub>("/hubs/tournament");
+app.MapHub<TournamentHub>("/tournamentHub");
 
 app.Run();
