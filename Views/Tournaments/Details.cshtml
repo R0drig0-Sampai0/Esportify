@@ -741,36 +741,63 @@
             // Handle registration form submission
             const registerForm = document.getElementById('registerForm');
             if (registerForm) {
-                registerForm.addEventListener('submit', function(e) {
+                registerForm.addEventListener('submit', async function(e) {
                     e.preventDefault();
 
                     // Show loading state
                     const submitBtn = registerForm.querySelector('button[type="submit"]');
+                    const teamSelect = registerForm.querySelector('select[name="teamId"]');
+                    const selectedTeamId = teamSelect ? teamSelect.value : '';
+
+                    if (!selectedTeamId) {
+                        alert('Seleciona uma equipa para inscrever.');
+                        return;
+                    }
+
                     submitBtn.disabled = true;
                     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> A Inscrever...';
 
-                    // Submit form
-                    fetch(registerForm.action, {
-                        method: 'POST',
-                        body: new FormData(registerForm),
-                        headers: {
-                            'RequestVerificationToken': registerForm.querySelector('input[name="__RequestVerificationToken"]').value
-                        }
-                    })
-                    .then(response => {
+                    try {
+                        const response = await fetch(`/api/tournaments/${encodeURIComponent(tournamentId)}/registrations`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ teamId: selectedTeamId })
+                        });
+
+                        const result = await response.json().catch(() => null);
+
                         if (response.ok) {
-                            window.location.reload();
-                        } else {
-                            alert('Inscrição falhada. Por favor, tenta novamente.');
-                            submitBtn.disabled = false;
-                            submitBtn.innerHTML = '<i class="fas fa-user-plus"></i> Inscrever Equipa';
+                            const registration = result && result.data ? result.data : {};
+                            const selectedTeamName = teamSelect.options[teamSelect.selectedIndex]?.text || 'A equipa';
+                            const teamRegisteredData = {
+                                tournamentId,
+                                teamId: registration.teamId || registration.TeamId || selectedTeamId,
+                                teamName: registration.teamName || registration.TeamName || selectedTeamName,
+                                teamTag: registration.teamTag || registration.TeamTag || null,
+                                registrationDate: registration.registrationDate || registration.RegistrationDate || new Date().toISOString()
+                            };
+
+                            const wasAdded = addRegisteredTeamCard(teamRegisteredData);
+                            if (wasAdded) {
+                                updateRegisteredTeamsCount();
+                            }
+
+                            showTeamRegisteredNotification(teamRegisteredData.teamName || 'A equipa');
+                            submitBtn.innerHTML = '<i class="fas fa-check"></i> Equipa Inscrita';
+                            return;
                         }
-                    })
-                    .catch(error => {
+
+                        alert(result?.message || 'Inscrição falhada. Por favor, tenta novamente.');
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = '<i class="fas fa-user-plus"></i> Inscrever Equipa';
+                    } catch (error) {
                         console.error('Error:', error);
                         submitBtn.disabled = false;
                         submitBtn.innerHTML = '<i class="fas fa-user-plus"></i> Inscrever Equipa';
-                    });
+                        alert('Inscrição falhada. Por favor, tenta novamente.');
+                    }
                 });
             }
         });
