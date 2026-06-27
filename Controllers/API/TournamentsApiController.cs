@@ -302,6 +302,12 @@ namespace Esportify.Controllers.API
             var team = await _context.Teams.FindAsync(createDto.TeamId);
             if (team == null) return BadRequest(new { message = "A equipa não existe." });
 
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (team.LeaderId != userId && !User.IsInRole("Admin"))
+            {
+                return Forbid();
+            }
+
             // Validar se a equipa já está inscrita
             var alreadyRegistered = await _context.Registrations
                 .AnyAsync(r => r.TournamentId == tournamentId && r.TeamId == createDto.TeamId);
@@ -376,10 +382,21 @@ namespace Esportify.Controllers.API
                 .Where(t => t.Id == teamId)
                 .Select(t => new
                 {
+                    t.LeaderId,
                     TeamName = t.Name ?? string.Empty,
                     TeamTag = t.Tag
                 })
                 .FirstOrDefaultAsync();
+
+            var tournament = await _context.Tournaments.FindAsync(tournamentId);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var isTeamLeader = userId != null && team?.LeaderId == userId;
+            var isTournamentOrganizer = userId != null && tournament?.OrganizerId == userId;
+
+            if (!isTeamLeader && !isTournamentOrganizer && !User.IsInRole("Admin"))
+            {
+                return Forbid();
+            }
 
             _context.Registrations.Remove(registration);
             await _context.SaveChangesAsync();
