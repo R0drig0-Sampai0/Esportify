@@ -158,7 +158,7 @@ namespace Esportify.Controllers.API
             {
                 Id = Guid.NewGuid().ToString(),
                 Name = createDto.Name,
-                Description = createDto.Description,
+                Description = createDto.Description ?? string.Empty,
                 GameId = createDto.GameId,
                 StartDate = createDto.StartDate,
                 EndDate = createDto.EndDate,
@@ -228,7 +228,7 @@ namespace Esportify.Controllers.API
             }
 
             tournament.Name = updateDto.Name;
-            tournament.Description = updateDto.Description;
+            tournament.Description = updateDto.Description ?? string.Empty;
             tournament.GameId = updateDto.GameId;
             tournament.StartDate = updateDto.StartDate;
             tournament.EndDate = updateDto.EndDate;

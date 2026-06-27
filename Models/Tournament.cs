@@ -48,6 +48,6 @@ namespace Esportify.Models
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
         // Navigation properties
-        public ICollection<Registration> Registrations { get; set; }
+        public ICollection<Registration> Registrations { get; set; } = new List<Registration>();
     }
 }
