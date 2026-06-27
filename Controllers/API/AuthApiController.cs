@@ -152,14 +152,13 @@ namespace Esportify.Controllers.API
                 return BadRequest(new { error = errorMessage });
             }
 
-            // Create user with admin role for specific condition (e.g., email domain or username)
             var user = new User
             {
                 Id = Guid.NewGuid().ToString(),
                 UserName = model.Username,
                 Email = model.Email,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password),
-                IsAdmin = model.Email.EndsWith("@admin.esportify.com") || model.Username == "admin" // Flexible admin assignment
+                IsAdmin = false
             };
 
             var userProfile = new UserProfile
