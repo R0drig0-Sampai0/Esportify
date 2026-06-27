@@ -21,9 +21,23 @@ namespace Esportify.Controllers.API
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> GetTeams()
+        public async Task<IActionResult> GetTeams(string? search, bool openOnly = false)
         {
-            var teams = await _context.Teams
+            var query = _context.Teams.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(t =>
+                    t.Name.Contains(search) ||
+                    (t.Tag != null && t.Tag.Contains(search)));
+            }
+
+            if (openOnly)
+            {
+                query = query.Where(t => t.IsOpenForMembers);
+            }
+
+            var teams = await query
                 .Select(t => new TeamDto
                 {
                     Id = t.Id ?? string.Empty,

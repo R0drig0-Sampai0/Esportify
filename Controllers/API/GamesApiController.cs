@@ -23,9 +23,21 @@ namespace Esportify.Controllers.API
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetGames()
+        public async Task<IActionResult> GetGames(string? search, string? genre)
         {
-            var games = await _context.Games
+            var query = _context.Games.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(g => g.Name.Contains(search));
+            }
+
+            if (!string.IsNullOrWhiteSpace(genre))
+            {
+                query = query.Where(g => g.Genre != null && g.Genre.Contains(genre));
+            }
+
+            var games = await query
                 .Select(g => new GameDto
                 {
                     Id = g.Id,

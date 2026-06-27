@@ -30,9 +30,29 @@ namespace Esportify.Controllers.API
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> GetTournaments()
+        public async Task<IActionResult> GetTournaments(string? search, string? gameId, bool onlyOpen = false)
         {
-            var tournaments = await _context.Tournaments
+            var query = _context.Tournaments.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(t => t.Name.Contains(search));
+            }
+
+            if (!string.IsNullOrWhiteSpace(gameId))
+            {
+                query = query.Where(t => t.GameId == gameId);
+            }
+
+            if (onlyOpen)
+            {
+                var now = DateTime.UtcNow;
+                query = query.Where(t =>
+                    t.RegistrationDeadline >= now &&
+                    t.Registrations.Count() < t.MaxTeams);
+            }
+
+            var tournaments = await query
                 .Select(t => new TournamentDto
                 {
                     Id = t.Id ?? string.Empty,
