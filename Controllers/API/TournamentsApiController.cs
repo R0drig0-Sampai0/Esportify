@@ -372,8 +372,27 @@ namespace Esportify.Controllers.API
                 .FirstOrDefaultAsync(r => r.TournamentId == tournamentId && r.TeamId == teamId);
             if (registration == null) return NotFound(new { message = "A inscrição não existe." });
 
+            var team = await _context.Teams
+                .Where(t => t.Id == teamId)
+                .Select(t => new
+                {
+                    TeamName = t.Name ?? string.Empty,
+                    TeamTag = t.Tag
+                })
+                .FirstOrDefaultAsync();
+
             _context.Registrations.Remove(registration);
             await _context.SaveChangesAsync();
+
+            await _tournamentHubContext.Clients
+                .Group($"tournament-{tournamentId}")
+                .SendAsync("TeamUnregistered", new
+                {
+                    tournamentId,
+                    teamId,
+                    teamName = team?.TeamName ?? string.Empty,
+                    teamTag = team?.TeamTag
+                });
 
             return NoContent();
         }
