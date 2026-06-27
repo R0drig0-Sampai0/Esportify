@@ -146,6 +146,9 @@ namespace Esportify.Controllers.API
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null) return Unauthorized();
 
+            var gameExists = await _context.Games.AnyAsync(g => g.Id == gameId);
+            if (!gameExists) return NotFound(new { message = "O jogo indicado não existe." });
+
             var exists = await _context.UserGames.AnyAsync(ug => ug.UserId == userId && ug.GameId == gameId);
             if (exists) return BadRequest(new { message = "Already liked" });
 
@@ -161,6 +164,9 @@ namespace Esportify.Controllers.API
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null) return Unauthorized();
+
+            var gameExists = await _context.Games.AnyAsync(g => g.Id == gameId);
+            if (!gameExists) return NotFound(new { message = "O jogo indicado não existe." });
 
             var userGame = await _context.UserGames.FirstOrDefaultAsync(ug => ug.UserId == userId && ug.GameId == gameId);
             if (userGame == null) return BadRequest(new { message = "Game not liked yet" });
