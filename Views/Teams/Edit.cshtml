@@ -333,16 +333,12 @@
                     {
                         <div class="member-item">
                             <div class="member-info">
-                                <img src="@member.User.Profile.AvatarUrl" class="member-avatar"
+                                <img src="@(member.User.Profile?.AvatarUrl ?? "/images/default-avatar.jpg")" class="member-avatar"
                                      onerror="this.onerror=null;this.src='/images/default-avatar.png';">
                                 <div>
                                     <div class="member-name">@member.User.UserName</div>
                                     <div class="member-role">@member.Role</div>
                                 </div>
-                            </div>
-                            <div class="member-actions">
-                                <button type="button" class="btn-action">Promover</button>
-                                <button type="button" class="btn-action">Remover</button>
                             </div>
                         </div>
                     }

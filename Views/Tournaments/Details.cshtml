@@ -458,7 +458,7 @@
                                         <div class="team-members">
                                             @foreach (var member in registration.Team.Members.Take(3))
                                             {
-                                                <img src="@member.User.Profile.AvatarUrl" alt="@member.User.UserName"
+                                                <img src="@(member.User.Profile?.AvatarUrl ?? "/images/default-avatar.jpg")" alt="@member.User.UserName"
                                                      title="@member.User.UserName" class="member-avatar">
                                             }
                                             @if (registration.Team.Members.Count > 3)
@@ -506,7 +506,9 @@
                                     <form id="unregisterForm" method="post"
                                           asp-controller="Tournaments" asp-action="Unregister"
                                           asp-route-tournamentId="@Model.Id"
-                                          asp-route-teamId="@registeredTeam.Id">
+                                          asp-route-teamId="@registeredTeam.Id"
+                                          data-team-id="@registeredTeam.Id"
+                                          data-team-name="@registeredTeam.Name">
                                         @Html.AntiForgeryToken()
                                         <button type="submit" class="btn btn-danger w-100 mt-2">
                                             <i class="fas fa-times"></i> Cancelar Inscrição (@registeredTeam.Name)
@@ -875,6 +877,53 @@
                         submitBtn.disabled = false;
                         submitBtn.innerHTML = '<i class="fas fa-user-plus"></i> Inscrever Equipa';
                         alert('Inscrição falhada. Por favor, tenta novamente.');
+                    }
+                });
+            }
+
+            const unregisterForm = document.getElementById('unregisterForm');
+            if (unregisterForm) {
+                unregisterForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+
+                    const teamId = unregisterForm.dataset.teamId;
+                    const teamName = unregisterForm.dataset.teamName || 'A equipa';
+                    const submitBtn = unregisterForm.querySelector('button[type="submit"]');
+
+                    if (!teamId) {
+                        alert('Não foi possível identificar a equipa.');
+                        return;
+                    }
+
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> A cancelar...';
+
+                    try {
+                        const response = await fetch(
+                            `/api/tournaments/${encodeURIComponent(tournamentId)}/registrations/${encodeURIComponent(teamId)}`,
+                            { method: 'DELETE' }
+                        );
+
+                        if (response.ok) {
+                            const wasRemoved = removeRegisteredTeamCard(teamId);
+                            if (wasRemoved) {
+                                decrementRegisteredTeamsCount();
+                                showTeamUnregisteredNotification(teamName);
+                            }
+
+                            submitBtn.innerHTML = '<i class="fas fa-check"></i> Inscrição cancelada';
+                            return;
+                        }
+
+                        const result = await response.json().catch(() => null);
+                        alert(result?.message || 'Não foi possível cancelar a inscrição.');
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = '<i class="fas fa-times"></i> Cancelar Inscrição';
+                    } catch (error) {
+                        console.error('Error:', error);
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = '<i class="fas fa-times"></i> Cancelar Inscrição';
+                        alert('Não foi possível cancelar a inscrição.');
                     }
                 });
             }

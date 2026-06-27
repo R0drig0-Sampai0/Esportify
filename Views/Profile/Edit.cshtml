@@ -214,7 +214,7 @@
                         @if (!string.IsNullOrEmpty(Model.Profile?.AvatarUrl))
                         {
                             <div class="mt-2">
-                                <img src="@Model.Profile.AvatarUrl" id="avatarPreview" style="max-height: 150px;" />
+                                <img src="@(Model.Profile?.AvatarUrl ?? "/images/default-avatar.jpg")" id="avatarPreview" style="max-height: 150px;" />
                             </div>
                         }
                     </div>

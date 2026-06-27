@@ -80,7 +80,7 @@ namespace Esportify.Controllers.MVC
                 UserName = model.Username,
                 Email = model.Email,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password),
-                IsAdmin = model.Email.EndsWith("@admin.esportify.com") || model.Username == "admin"
+                IsAdmin = false
             };
 
             var userProfile = new UserProfile
