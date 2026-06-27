@@ -627,6 +627,20 @@
                 }, 5000);
             }
 
+            function showTeamUnregisteredNotification(teamName) {
+                const notification = document.getElementById('teamRegisteredNotification');
+                if (!notification) {
+                    return;
+                }
+
+                notification.textContent = `${teamName} cancelou a inscrição neste torneio.`;
+                notification.style.display = 'block';
+
+                window.setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 5000);
+            }
+
             function updateRegisteredTeamsCount() {
                 const countElement = document.getElementById('registeredTeamsCount');
                 const metaCountElement = document.getElementById('registrationMetaCount');
@@ -637,6 +651,25 @@
 
                 const currentCount = Number.parseInt(countElement.dataset.count || countElement.textContent, 10) || 0;
                 const nextCount = currentCount + 1;
+
+                countElement.dataset.count = nextCount.toString();
+                countElement.textContent = nextCount.toString();
+
+                if (metaCountElement) {
+                    metaCountElement.textContent = nextCount.toString();
+                }
+            }
+
+            function decrementRegisteredTeamsCount() {
+                const countElement = document.getElementById('registeredTeamsCount');
+                const metaCountElement = document.getElementById('registrationMetaCount');
+
+                if (!countElement) {
+                    return;
+                }
+
+                const currentCount = Number.parseInt(countElement.dataset.count || countElement.textContent, 10) || 0;
+                const nextCount = Math.max(0, currentCount - 1);
 
                 countElement.dataset.count = nextCount.toString();
                 countElement.textContent = nextCount.toString();
@@ -702,6 +735,38 @@
                 return true;
             }
 
+            function removeRegisteredTeamCard(teamId) {
+                const teamsGrid = document.getElementById('registeredTeamsGrid');
+                if (!teamsGrid || !teamId) {
+                    return false;
+                }
+
+                const teamCard = teamsGrid.querySelector(`[data-team-id="${CSS.escape(teamId)}"]`);
+                if (!teamCard) {
+                    return false;
+                }
+
+                teamCard.remove();
+
+                if (!teamsGrid.querySelector('.team-card') && !document.getElementById('noTeamsEmptyState')) {
+                    const emptyState = document.createElement('div');
+                    emptyState.id = 'noTeamsEmptyState';
+                    emptyState.className = 'empty-state';
+
+                    const icon = document.createElement('i');
+                    icon.className = 'fas fa-users-slash';
+
+                    const message = document.createElement('p');
+                    message.textContent = 'Ainda não há equipas inscritas';
+
+                    emptyState.appendChild(icon);
+                    emptyState.appendChild(message);
+                    teamsGrid.insertAdjacentElement('afterend', emptyState);
+                }
+
+                return true;
+            }
+
             if (window.signalR) {
                 const connection = new signalR.HubConnectionBuilder()
                     .withUrl('/tournamentHub')
@@ -719,6 +784,19 @@
                     }
 
                     showTeamRegisteredNotification(data.teamName || 'Uma equipa');
+                });
+
+                connection.on('TeamUnregistered', function(data) {
+                    if (!data || data.tournamentId !== tournamentId) {
+                        return;
+                    }
+
+                    const wasRemoved = removeRegisteredTeamCard(data.teamId);
+                    if (wasRemoved) {
+                        decrementRegisteredTeamsCount();
+                    }
+
+                    showTeamUnregisteredNotification(data.teamName || 'Uma equipa');
                 });
 
                 async function startTournamentHubConnection() {
